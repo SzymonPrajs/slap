@@ -28,16 +28,16 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
     class SNEvent *sn = (struct SNEvent *) vars;
 
     double t;
+    sn->explosionMJD_ = p[n-1];
     for (int i = 0; i < n-1; ++i) {
         sn->snmodel_->modelParam_[i] = p[i];
     }
 
     for (int i = 0; i < sn->mjd_.size(); ++i) {
-        if ((sn->mjd_[i] - sn->firstObs_) > p[n-1]) {
-            t = sn->mjd_[i] - sn->firstObs_ - p[n-1];
+        if (sn->mjd_[i] >= sn->explosionMJD_) {
+            t = sn->mjd_[i] - sn->explosionMJD_;
             residual[i] = (sn->flux_[i] - sn->snmodel_->flux(t, sn->filter_[i])) / sn->fluxErr_[i];
         } else {
-            t = sn->mjd_[i] - sn->firstObs_ - p[n-1];
             residual[i] = sn->flux_[i] / sn->fluxErr_[i];
         }
     }

@@ -46,7 +46,7 @@ public:
     vector<double> flux_;    
     vector<double> fluxErr_;
     vector<string> filter_;
-    double firstObs_;
+    double explosionMJD_;
     shared_ptr<SNModel> snmodel_;
 
     SNEvent(string, shared_ptr<SNModel>);

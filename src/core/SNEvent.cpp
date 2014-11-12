@@ -40,7 +40,7 @@ void SNEvent::readData(string file) {
     completeFilter_ = data[3];
 
     restoreCompleteLC();
-    firstObs_ = min<double>(mjd_);
+    explosionMJD_ = min<double>(mjd_);
 }
 
 void SNEvent::restoreCompleteLC() {
