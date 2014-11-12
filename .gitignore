@@ -7,6 +7,7 @@
 # Precompiled Headers
 *.gch
 *.pch
+*.swp
 
 # Compiled Dynamic libraries
 *.so
@@ -26,3 +27,8 @@
 *.exe
 *.out
 *.app
+slap
+
+# Unnecessary folders
+.DS_Store
+data/test
