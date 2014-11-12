@@ -31,6 +31,7 @@ void split(const string &s, char delim, vector<string> &elems) {
     }
 }
 
+
 vector<string> split(const string &s, char delim) {
     vector<string> elems;
     split(s, delim, elems);
@@ -60,8 +61,14 @@ void dirlist(const string &path, vector<string> &files) {
     }
 }
 
+
 vector<string> dirlist(const string &path) {
     vector<string> files;
     dirlist(path, files);
     return files;
+}
+
+
+bool compareStrings(string i, string j) {
+  return (i==j);
 }

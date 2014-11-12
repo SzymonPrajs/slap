@@ -28,6 +28,7 @@ using namespace vmath;
 SNEvent::SNEvent(string file, shared_ptr<SNModel> model) {
     snmodel_ = model;
     readData(file);
+    setFilterList();
 }
 
 void SNEvent::readData(string file) {
@@ -48,4 +49,11 @@ void SNEvent::restoreCompleteLC() {
     flux_ = completeFlux_; 
     fluxErr_ = completeFluxErr_; 
     filter_ = completeFilter_;
+}
+
+void SNEvent::setFilterList() {
+    vector<string> list;
+    unique_copy(filter_.begin(), filter_.end(), back_inserter(list), compareStrings);
+
+    filterList_ = list;
 }

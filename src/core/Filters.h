@@ -63,13 +63,15 @@ public:
     // public data members 
     map<string,int> filterID_;
     map<int,string> filterName_;
-
+    vector<double> masterWavelength_;
+    
     // constructor
     Filters(string);
 
     // public functions
     void rescale(double,double,double);
     void rescale(const vector<double>&);
+    void setFullRange();
     double flux(const vector<double>&, const string&);
 };
 

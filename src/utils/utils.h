@@ -40,4 +40,6 @@ vector<string> split(const string&, char);
 void dirlist(const string&, vector<string>&);
 vector<string> dirlist(const string&);
 
+bool compareStrings(string, string);
+
 #endif
