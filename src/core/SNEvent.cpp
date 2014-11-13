@@ -29,6 +29,7 @@ SNEvent::SNEvent(string file, shared_ptr<SNModel> model) {
     snmodel_ = model;
     readData(file);
     setFilterList();
+    setFilterRange();
 }
 
 void SNEvent::readData(string file) {
@@ -56,4 +57,31 @@ void SNEvent::setFilterList() {
     unique_copy(filter_.begin(), filter_.end(), back_inserter(list), compareStrings);
 
     filterList_ = list;
+}
+
+void SNEvent::setFilterRange() {
+    setFilterList();
+    int ID;
+    double start = 999999; 
+    double end = 0;
+    double step = 9999;
+
+
+    for (int i = 0; i < filterList_.size(); ++i) {
+        ID = snmodel_->filters_->filterID_[filterList_[i]];
+
+        if (snmodel_->filters_->filters_[ID].inputWavelength_.front() < start) {
+            start = snmodel_->filters_->filters_[ID].inputWavelength_.front();
+        }
+        if (snmodel_->filters_->filters_[ID].inputWavelength_.back() > end) {
+            end = snmodel_->filters_->filters_[ID].inputWavelength_.back();
+        }
+        if ((snmodel_->filters_->filters_[ID].inputWavelength_[1] - snmodel_->filters_->filters_[ID].inputWavelength_[0]) < step) {
+            step = snmodel_->filters_->filters_[ID].inputWavelength_[1] - snmodel_->filters_->filters_[ID].inputWavelength_[0];
+        }
+    }
+
+    snmodel_->filters_->rescale(start, end, step);
+    snmodel_->setWavelength();
+    cout << snmodel_->filters_->masterWavelength_.front() << " " << snmodel_->filters_->masterWavelength_.back() << endl;
 }

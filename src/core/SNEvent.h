@@ -56,6 +56,7 @@ public:
 	void readData(string);
     void restoreCompleteLC();
     void setFilterList();
+    void setFilterRange();
 };
 
 #endif

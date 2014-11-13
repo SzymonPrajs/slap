@@ -52,7 +52,6 @@ class Filters {
 private:
     // private data members
     string folderPath_;    
-    vector<FilterData> filters_;
     vector<string> fileList_;
 
     // private functions 
@@ -63,6 +62,7 @@ public:
     // public data members 
     map<string,int> filterID_;
     map<int,string> filterName_;
+    vector<FilterData> filters_;
     vector<double> masterWavelength_;
     
     // constructor
