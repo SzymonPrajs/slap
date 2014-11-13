@@ -30,6 +30,7 @@ Filters::Filters(string path) : folderPath_(path) {
     setFullRange();
 }
 
+
 void Filters::readFolder() {
     vector<string> list = dirlist(folderPath_);
 
@@ -44,6 +45,7 @@ void Filters::readFolder() {
         loadFilter(i);
     }
 }
+
 
 void Filters::loadFilter(int ID) {
     FilterData filter;
@@ -60,6 +62,7 @@ void Filters::loadFilter(int ID) {
     filters_.push_back(filter);
 }
 
+
 void Filters::rescale(const vector<double> &wavelength) {
     masterWavelength_ = wavelength;
 
@@ -69,6 +72,7 @@ void Filters::rescale(const vector<double> &wavelength) {
     }
 }
 
+
 void Filters::rescale(double start, double end, double step) {
     masterWavelength_ = range<double>(start, end, step);
 
@@ -77,6 +81,7 @@ void Filters::rescale(double start, double end, double step) {
         filters_[i].bandpass_ = interp<double>(masterWavelength_,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
     }
 }
+
 
 void Filters::setFullRange() {
     double start = filters_[0].inputWavelength_.front();
@@ -97,6 +102,7 @@ void Filters::setFullRange() {
 
     rescale(start, end, step);
 }
+
 
 double Filters::flux(const vector<double>& SED, const string& filterName) {
     if (filterID_.find(filterName) == filterID_.end()) {

@@ -34,6 +34,7 @@ SNEvent::SNEvent(string file, shared_ptr<SNModel> model) : snmodel_(model) {
     setFilterRange();
 }
 
+
 void SNEvent::readData(string file) {
     vector< vector<string> > data;
     loadtxt<string>(file, 4, data);
@@ -47,6 +48,7 @@ void SNEvent::readData(string file) {
     explosionMJD_ = min<double>(mjd_);
 }
 
+
 void SNEvent::restoreCompleteLC() {
 	mjd_ = completeMJD_;
     flux_ = completeFlux_; 
@@ -54,12 +56,14 @@ void SNEvent::restoreCompleteLC() {
     filter_ = completeFilter_;
 }
 
+
 void SNEvent::setFilterList() {
     vector<string> list;
     unique_copy(filter_.begin(), filter_.end(), back_inserter(list), compareStrings);
 
     filterList_ = list;
 }
+
 
 void SNEvent::verifyFilters() {
     for (int i = 0; i < filterList_.size(); ++i) {
@@ -71,6 +75,7 @@ void SNEvent::verifyFilters() {
         }
     }
 }
+
 
 void SNEvent::setFilterRange() {
     int ID;
@@ -97,6 +102,7 @@ void SNEvent::setFilterRange() {
     snmodel_->setWavelength();
 }
 
+
 void SNEvent::removeData(double start, double end) {
     vector<double>::iterator mjd_it = mjd_.begin();
     vector<double>::iterator flux_it = flux_.begin();
@@ -117,6 +123,7 @@ void SNEvent::removeData(double start, double end) {
         }     
     }
 }
+
 
 void SNEvent::removeData(string filter) {
     vector<double>::iterator mjd_it = mjd_.begin();
