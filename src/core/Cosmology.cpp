@@ -25,36 +25,26 @@ using namespace std;
 using namespace vmath;
 
 
-Cosmology::Cosmology() {
-    z_ = -1;
-    a_ = -1;
-    comDis_ = -1;
-    comVol_ = -1;
-    lumDis_ = -1;
-}
-
-
-Cosmology::Cosmology(double z, bool init) {
-    if (init == true) { 
-        set(z);
-    } else {
-        z_ = z;
-        a_ = 1/(1+z);
-        comDis_ = -1;
-        comVol_ = -1;
-        lumDis_ = -1;
-        lumDisCGS_ = -1;
-    }
-
+Cosmology::Cosmology(double z) {
+    set(z);
 }
 
 
 void Cosmology::set(double z) {
-    z_ = z;
-    a_ = 1.0/(1.0+z);
-    comDis_ = findComDis(z);
-    lumDis_ = findLumDis(z);
-    comVol_ = findComVol(z);
+    if (z > 0) {
+        z_ = z;
+        a_ = 1.0/(1.0+z);
+        comDis_ = findComDis(z);
+        lumDis_ = findLumDis(z);
+        comVol_ = findComVol(z);
+    } else {
+        z_ = 0;
+        a_ = 1.0;
+        comDis_ = 1.0e-5;
+        lumDis_ = 1.0e-5;
+        comVol_ = 4.1888e-24;
+    }
+
     lumDisCGS_ = lumDis_ * 3.08568e24;
 }
 
