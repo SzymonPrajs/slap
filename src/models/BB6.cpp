@@ -30,10 +30,12 @@ BB6::BB6(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel
     modelParam_.resize(5);
 }
 
+
 void BB6::calcSEDParams(double t) { 
     SEDParams_[0] = (modelParam_[0] * 1e14 * t) + (modelParam_[1] * 1e14 * t * t);
     SEDParams_[1] = modelParam_[2] + (modelParam_[3] * t) + (modelParam_[4] * t * t);
 }
+
     
 vector<double> BB6::calcSED(double t) {
     calcSEDParams(t);

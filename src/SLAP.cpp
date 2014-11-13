@@ -29,7 +29,6 @@
 #include "models/BB6.h"
 #include "func/fit.h"
 
-
 using namespace std;
 
 

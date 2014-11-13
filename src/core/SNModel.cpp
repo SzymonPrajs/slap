@@ -31,17 +31,20 @@ SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
     setWavelength();
 }
 
+
 SNModel::SNModel(shared_ptr<Filters> filters) {
     cosmology_ = shared_ptr<Cosmology>(new Cosmology(0));
     filters_ = filters;
     setWavelength();
 }
 
+
 double SNModel::flux(double t, string filterName) {
     vector<double> sed = calcSED(t * cosmology_->a_);
     sed = mult<double>(sed, cosmology_->a_);
     return filters_->flux(sed, filterName);
 }
+
 
 void SNModel::setWavelength() {
     obsWavelength_ = filters_->masterWavelength_;

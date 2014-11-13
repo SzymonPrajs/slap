@@ -30,11 +30,13 @@ BB4::BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel
     modelParam_.resize(3);
 }
 
+
 void BB4::calcSEDParams(double t) {
     SEDParams_[0] = modelParam_[0] * 1e14 * t;
     SEDParams_[1] = modelParam_[1] + (modelParam_[2] * t);
 }
-    
+   
+ 
 vector<double> BB4::calcSED(double t) {
     calcSEDParams(t);
     vector<double> sed(restWavelength_.size(), 0);
