@@ -44,19 +44,25 @@ private:
     vector<string> completeFilter_;
 
 public:
+    shared_ptr<Cosmology> cosmology_;
+    shared_ptr<Filters> filters_;
+    shared_ptr<SNModel> snmodel_;
+
     vector<double> mjd_;
     vector<double> flux_;    
     vector<double> fluxErr_;
     vector<string> filter_;
     double explosionMJD_;
-    shared_ptr<SNModel> snmodel_;
     vector<string> filterList_;
     
     SNEvent(string, shared_ptr<SNModel>);
 	void readData(string);
     void restoreCompleteLC();
     void setFilterList();
+    void verifyFilters();
     void setFilterRange();
+    void removeData(double, double);
+    void removeData(string);
 };
 
 #endif

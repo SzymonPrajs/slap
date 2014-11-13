@@ -25,10 +25,12 @@ using namespace std;
 using namespace vmath;
 
 
-SNEvent::SNEvent(string file, shared_ptr<SNModel> model) {
-    snmodel_ = model;
+SNEvent::SNEvent(string file, shared_ptr<SNModel> model) : snmodel_(model) {
+    cosmology_ = snmodel_->cosmology_;
+    filters_ = snmodel_->filters_;
     readData(file);
     setFilterList();
+    verifyFilters();
     setFilterRange();
 }
 
@@ -59,8 +61,18 @@ void SNEvent::setFilterList() {
     filterList_ = list;
 }
 
+void SNEvent::verifyFilters() {
+    for (int i = 0; i < filterList_.size(); ++i) {
+        if(filters_->filterID_.find(filterList_[i]) == filters_->filterID_.end()) {
+            cout << "WARNING! No filter responce data found for filter '" << filterList_[i] << "'\n";
+            cout << "Lightcurve points for this filter will now be removed and the program continues normal execution." << endl;
+
+            removeData(filterList_[i]);
+        }
+    }
+}
+
 void SNEvent::setFilterRange() {
-    setFilterList();
     int ID;
     double start = 999999; 
     double end = 0;
@@ -68,20 +80,61 @@ void SNEvent::setFilterRange() {
 
 
     for (int i = 0; i < filterList_.size(); ++i) {
-        ID = snmodel_->filters_->filterID_[filterList_[i]];
+        ID = filters_->filterID_[filterList_[i]];
 
-        if (snmodel_->filters_->filters_[ID].inputWavelength_.front() < start) {
-            start = snmodel_->filters_->filters_[ID].inputWavelength_.front();
+        if (filters_->filters_[ID].inputWavelength_.front() < start) {
+            start = filters_->filters_[ID].inputWavelength_.front();
         }
-        if (snmodel_->filters_->filters_[ID].inputWavelength_.back() > end) {
-            end = snmodel_->filters_->filters_[ID].inputWavelength_.back();
+        if (filters_->filters_[ID].inputWavelength_.back() > end) {
+            end = filters_->filters_[ID].inputWavelength_.back();
         }
-        if ((snmodel_->filters_->filters_[ID].inputWavelength_[1] - snmodel_->filters_->filters_[ID].inputWavelength_[0]) < step) {
-            step = snmodel_->filters_->filters_[ID].inputWavelength_[1] - snmodel_->filters_->filters_[ID].inputWavelength_[0];
+        if ((filters_->filters_[ID].inputWavelength_[1] - filters_->filters_[ID].inputWavelength_[0]) < step) {
+            step = filters_->filters_[ID].inputWavelength_[1] - filters_->filters_[ID].inputWavelength_[0];
         }
     }
 
-    snmodel_->filters_->rescale(start, end, step);
+    filters_->rescale(start, end, step);
     snmodel_->setWavelength();
-    cout << snmodel_->filters_->masterWavelength_.front() << " " << snmodel_->filters_->masterWavelength_.back() << endl;
+}
+
+void SNEvent::removeData(double start, double end) {
+    vector<double>::iterator mjd_it = mjd_.begin();
+    vector<double>::iterator flux_it = flux_.begin();
+    vector<double>::iterator fluxErr_it = fluxErr_.begin();
+    vector<string>::iterator filter_it = filter_.begin();
+
+    for (; mjd_it != mjd_.end(); ) {
+        if (*mjd_it < start || *mjd_it > end) {
+            mjd_it = mjd_.erase(mjd_it);
+            flux_it = flux_.erase(flux_it);
+            fluxErr_it = fluxErr_.erase(fluxErr_it);
+            filter_it = filter_.erase(filter_it);
+        } else {
+            mjd_it++;
+            flux_it++;
+            fluxErr_it++;
+            filter_it++;
+        }     
+    }
+}
+
+void SNEvent::removeData(string filter) {
+    vector<double>::iterator mjd_it = mjd_.begin();
+    vector<double>::iterator flux_it = flux_.begin();
+    vector<double>::iterator fluxErr_it = fluxErr_.begin();
+    vector<string>::iterator filter_it = filter_.begin();
+
+    for (; filter_it != filter_.end(); ) {
+        if (*filter_it == filter) {
+            mjd_it = mjd_.erase(mjd_it);
+            flux_it = flux_.erase(flux_it);
+            fluxErr_it = fluxErr_.erase(fluxErr_it);
+            filter_it = filter_.erase(filter_it);
+        } else {
+            mjd_it++;
+            flux_it++;
+            fluxErr_it++;
+            filter_it++;
+        }     
+    }
 }
