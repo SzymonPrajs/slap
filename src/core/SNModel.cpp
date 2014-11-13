@@ -28,14 +28,16 @@ using namespace vmath;
 SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
     cosmology_ = cosmology;
     filters_ = filters;
-    setWavelength(1000,10000,5);
+    setWavelength();
 }
+
 
 SNModel::SNModel(shared_ptr<Filters> filters) {
     cosmology_ = shared_ptr<Cosmology>(new Cosmology(0));
     filters_ = filters;
-    setWavelength(1000,10000,5);
+    setWavelength();
 }
+
 
 double SNModel::flux(double t, string filterName) {
     vector<double> sed = calcSED(t * cosmology_->a_);
@@ -43,8 +45,9 @@ double SNModel::flux(double t, string filterName) {
     return filters_->flux(sed, filterName);
 }
 
-void SNModel::setWavelength(double start, double end, double step) {
-    range<double>(start, end, step, obsWavelength_);
+
+void SNModel::setWavelength() {
+    obsWavelength_ = filters_->masterWavelength_;
     restWavelength_ = mult<double>(obsWavelength_,cosmology_->a_);
 }
 

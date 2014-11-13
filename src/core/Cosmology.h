@@ -28,7 +28,6 @@
 #include "../vmath/integrate.h"
 
 using namespace std;
-// using namespace vmath;
 
 const double SI_C = 299792458;
 const double CGS_C = 29979245800;
@@ -53,8 +52,7 @@ public:
     double lumDisCGS_;
 
     // Constructor
-    Cosmology();
-    Cosmology(double,bool init=true);
+    Cosmology(double z = 0);
 
     // Functions
     void set(double);

@@ -23,9 +23,11 @@
 #define SLAP_CORE_SNEVENT_H_
 
 #include <memory>
+#include <algorithm>
 #include "Cosmology.h"
 #include "SNModel.h"
 #include "Filters.h"
+#include "../utils/utils.h"
 #include "../vmath/loadtxt.h"
 #include "../vmath/convert.h"
 #include "../vmath/stat.h"
@@ -42,16 +44,25 @@ private:
     vector<string> completeFilter_;
 
 public:
+    shared_ptr<Cosmology> cosmology_;
+    shared_ptr<Filters> filters_;
+    shared_ptr<SNModel> snmodel_;
+
     vector<double> mjd_;
     vector<double> flux_;    
     vector<double> fluxErr_;
     vector<string> filter_;
-    double firstObs_;
-    shared_ptr<SNModel> snmodel_;
-
+    double explosionMJD_;
+    vector<string> filterList_;
+    
     SNEvent(string, shared_ptr<SNModel>);
 	void readData(string);
     void restoreCompleteLC();
+    void setFilterList();
+    void verifyFilters();
+    void setFilterRange();
+    void removeData(double, double);
+    void removeData(string);
 };
 
 #endif

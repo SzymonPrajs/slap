@@ -29,7 +29,6 @@
 #include "models/BB6.h"
 #include "func/fit.h"
 
-
 using namespace std;
 
 
@@ -46,20 +45,21 @@ int main(int argc, char *argv[]) {
     if (model == "BB4") {
         shared_ptr<BB4> bb4(new BB4(cosmology, filters));
         snmodel = bb4;
-        par = {1.0, 10000, -100, 20};
+        par = {1.0, 10000, -100, 0};
     } else if (model == "BB6") {
         shared_ptr<BB6> bb6(new BB6(cosmology, filters));
         snmodel = bb6;
-        par = {1.0, 0.1, 10000, -100, 10, 20};
+        par = {1.0, 0.1, 10000, -100, 10, 0};
     } else {
         cout << "No other model implemented yet. Using BB4 instead ..." << endl;
         shared_ptr<BB4> bb4(new BB4(cosmology, filters));
         snmodel = bb4;
-        par = {1.0, 10000, -100, 20};
+        par = {1.0, 10000, -100, 0};
     }
 
     shared_ptr<SNEvent> sn(new SNEvent(file, snmodel));
     
+    par.back() = sn->explosionMJD_;     
     fitLC(sn, par);
 
     return 0;

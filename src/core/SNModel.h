@@ -51,7 +51,7 @@ public:
     virtual void calcSEDParams(double) = 0;
 
     double flux(double, string);
-    void setWavelength(double, double, double);
+    void setWavelength();
 };
 
 #endif
