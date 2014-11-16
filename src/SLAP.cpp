@@ -27,6 +27,7 @@
 #include "core/SNEvent.h"
 #include "models/BB4.h"
 #include "models/BB6.h"
+#include "models/Magnetar.h"
 #include "func/fit.h"
 
 using namespace std;
@@ -50,6 +51,10 @@ int main(int argc, char *argv[]) {
         shared_ptr<BB6> bb6(new BB6(cosmology, filters));
         snmodel = bb6;
         par = {1.0, 0.1, 10000, -100, 10, 0};
+    } else if (model == "Magnetar") {
+        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology, filters));
+        snmodel = magnetar;
+        par = {30.0, 7.0, 2.0, 0};
     } else {
         cout << "No other model implemented yet. Using BB4 instead ..." << endl;
         shared_ptr<BB4> bb4(new BB4(cosmology, filters));
