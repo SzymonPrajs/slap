@@ -75,30 +75,29 @@ double Magnetar::lumSN(double t) {
 }
 
 
-double Magnetar::energy(double t) {
-    vector<double> arr(int(t+1));
+double Magnetar::radius(double t) {
+    double radiusCore = velocityCore_ * t;
+    double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
+    double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
-    for (int i = 0; i < int(t+1); ++i) {
-        arr[i] = lumSN(i);
-    }
-    
-    return trapz<double>(arr, 86400); 
+    double rad19 = radiusCore * pow(alpha_ - 1 / tauCore, 1 / (1 - alpha_)); 
+    double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
+
+    return rad20;
 }
+
+
+double Magnetar::temperature(double t) {
+    return pow(lumSN(t) / (CGS_SIGMA * 4 * M_PI * pow(radius(t), 2)), 0.25);
+}
+
 
 void Magnetar::calcSEDParams(double t) {
     calcDerivedParams();
-    /*
-     *Approximating Vphot as Vcore for the time being
-     *TODO: Take into the account the expansion of the photosphere
-     */
-    SEDParams_[0] = velocityCore_ * t;
-    /*
-     *Approximating E ~ E(t)
-     *TODO: Integrate L(t) to obtain correct E(t)
-     */
-    SEDParams_[1] = 1.0e5 * pow(energy(t) / 1e51, -0.125) * pow(ejectedMass_, 0.375) * pow(t / 10, -0.75);
 
-    cout << SEDParams_[0] << " " << SEDParams_[1] << endl;
+    SEDParams_[0] = radius(t);
+    /* TODO: This is an incorrect equation! */
+    SEDParams_[1] = temperature(t);
 }
    
  

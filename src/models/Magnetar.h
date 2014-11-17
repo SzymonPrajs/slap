@@ -56,7 +56,8 @@ public:
 
     double lumMagnetar(double);
     double lumSN(double);
-    double energy(double);
+    double radius(double);
+    double temperature(double);
 };
 
 #endif

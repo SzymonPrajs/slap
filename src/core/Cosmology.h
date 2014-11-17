@@ -33,6 +33,7 @@ const double SI_C = 299792458;
 const double CGS_C = 29979245800;
 const double CGS_H = 6.62606957e-27;
 const double CGS_K = 1.3806488e-16;
+const double CGS_SIGMA = 5.67e-5;
 
 class Cosmology {
 public:
