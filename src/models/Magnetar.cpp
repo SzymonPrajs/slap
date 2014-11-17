@@ -31,43 +31,72 @@ Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters)
 }
 
 
-void Magnetar::calcSpinDownTimescale() {
+void Magnetar::calcDerivedParams() {
+    double temp;
+    /* Constant quantities */
+    opacity_ = 0.1;
+    energyRadiation_ = 0;
+    alpha_ = 10;
+
+    /* Magnetar spin down timescale */
     tauP_ = 4.7 * pow(modelParam_[1], -2.0) * pow(modelParam_[2], 2.0);
-}
-
-
-void Magnetar::calcMagnetarEnergy() {
-    calcSpinDownTimescale();
-    energyMagnetar_ = 4.9e46 * pow(modelParam_[1], 2.0) * pow(modelParam_[2], -4.0) * tauP_ * 3600 * 24;
-}
-
-
-void Magnetar::calcKineticEnergy() {
-    calcMagnetarEnergy();
+    
+    /* Energy produced by the spin down of a magnetar */ 
+    energyMagnetar_ = 4.9e46 * pow(modelParam_[1], 2.0) * pow(modelParam_[2], -4.0) * tauP_ * 86400;
+    
+    /* Kinetic energy of the system */
     energyKinetic_ = 1.0e51 + 0.5 * (energyMagnetar_ - energyRadiation_);
+    
+    /* Mass ejected in the explosion */
+    temp = 10 * pow(energyKinetic_ / 1.0e51, -0.25) * pow(opacity_ / 0.1, 0.5);
+    ejectedMass_ = pow(modelParam_[0] / temp, 4.0/3.0);
+
+    /* core velocity */
+    temp = energyKinetic_ * 10.0 / (3.0 * ejectedMass_ * 2.0e33); 
+    velocityCore_ = sqrt(temp) * 86400;
 }
 
 
-void Magnetar::calcEjectedMass() {
-    calcKineticEnergy();
-    double rhs = 10 * pow(energyKinetic_ / 1.0e51, -0.25) * pow(opacity_ / 0.1, 0.5);
-    ejectedMass_ = pow(modelParam_[0] / rhs, 4.0/3.0);
+double Magnetar::lumMagnetar(double t) {
+    return 4.9e46 * pow(modelParam_[1], 2.0) * pow(modelParam_[2], -4.0) / pow(1 + t / tauP_, 2.0);
 }
 
+
+double Magnetar::lumSN(double t) {
+    double res = 2 * exp(-1 * pow(t / modelParam_[0], 2.0));
+
+    vector<double> arr(int(t+1));
+    for (int i = 0; i < int(t+1); ++i) {
+        arr[i] = lumMagnetar(i) * i * exp(pow(i / modelParam_[0], 2)) / modelParam_[0];
+    }
+    res *= trapz<double>(arr,1);
+
+    return res;
+}
+
+
+double Magnetar::energy(double t) {
+    vector<double> arr(int(t+1));
+
+    for (int i = 0; i < int(t+1); ++i) {
+        arr[i] = lumSN(i);
+    }
+    
+    return trapz<double>(arr, 86400); 
+}
 
 void Magnetar::calcSEDParams(double t) {
-    calcEjectedMass();
+    calcDerivedParams();
     /*
      *Approximating Vphot as Vcore for the time being
      *TODO: Take into the account the expansion of the photosphere
      */
-    double rhs = energyKinetic_ * 10 / (3.0 * ejectedMass_ * 2.0e33); 
-    SEDParams_[0] = t * sqrt(rhs) * 3600 * 24;
+    SEDParams_[0] = velocityCore_ * t;
     /*
      *Approximating E ~ E(t)
      *TODO: Integrate L(t) to obtain correct E(t)
      */
-    SEDParams_[1] = 1.0e5 * pow(energyKinetic_ / 1e51, -0.125) * pow(ejectedMass_, 0.375) * pow(t / 10, -0.75);
+    SEDParams_[1] = 1.0e5 * pow(energy(t) / 1e51, -0.125) * pow(ejectedMass_, 0.375) * pow(t / 10, -0.75);
 
     cout << SEDParams_[0] << " " << SEDParams_[1] << endl;
 }

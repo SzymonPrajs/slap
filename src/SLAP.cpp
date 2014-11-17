@@ -67,5 +67,13 @@ int main(int argc, char *argv[]) {
     par.back() = sn->explosionMJD_;     
     fitLC(sn, par);
 
+    Magnetar test(cosmology, filters);
+    test.modelParam_ = {32, 7, 2};
+    test.calcDerivedParams();
+    cout << test.energy(10) << endl;
+    // cout << test.energy(30) << endl;
+    // cout << test.energy(60) << endl;
+    // cout << test.energy(100) << endl;
+
     return 0;
 }

@@ -25,6 +25,7 @@
 #include <vector>
 #include <memory>
 #include <math.h>
+#include "../vmath/integrate.h"
 #include "../core/Cosmology.h"
 #include "../core/Filters.h"
 #include "../core/SNModel.h"
@@ -38,23 +39,24 @@ class Magnetar : public SNModel {
  */
 private:
     double tauP_;
+    double energyMagnetar_;
     double energyKinetic_;
-    const double energyRadiation_ = 0;
-    const double opacity_ = 0.1;
-
-    void calcSpinDownTimescale();
-    void calcKineticEnergy();
+    double energyRadiation_;
+    double opacity_;
+    double ejectedMass_;
+    double velocityCore_;
+    double alpha_;
 
 public:
     Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
+    void calcDerivedParams();
     vector<double> calcSED(double);
     void calcSEDParams(double);
 
-    double energyMagnetar_;
-    void calcMagnetarEnergy();
-    double ejectedMass_;
-    void calcEjectedMass();
+    double lumMagnetar(double);
+    double lumSN(double);
+    double energy(double);
 };
 
 #endif
