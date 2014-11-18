@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     if (model == "BB4") {
         shared_ptr<BB4> bb4(new BB4(cosmology, filters));
         snmodel = bb4;
-        par = {1.0, 10000, -100, 55170};
+        par = {1.0, 10000, -100, 0};
     } else if (model == "BB6") {
         shared_ptr<BB6> bb6(new BB6(cosmology, filters));
         snmodel = bb6;
@@ -54,18 +54,18 @@ int main(int argc, char *argv[]) {
     } else if (model == "Magnetar") {
         shared_ptr<Magnetar> magnetar(new Magnetar(cosmology, filters));
         snmodel = magnetar;
-        par = {30.0, 7.0, 2.0, 55170};
+        par = {30.0, 7.0, 2.0, 0};
     } else {
         cout << "No other model implemented yet. Using BB4 instead ..." << endl;
         shared_ptr<BB4> bb4(new BB4(cosmology, filters));
         snmodel = bb4;
-        par = {1.0, 10000, -100, 55170};
+        par = {1.0, 10000, -100, 0};
     }
 
     shared_ptr<SNEvent> sn(new SNEvent(file, snmodel));
-    
-    // par.back() = sn->explosionmJD_;     
+    // par.back() = sn->explosionMJD_;
+    par.back() = 55170;
     fitLC(sn, par);
-    
+
     return 0;
 }

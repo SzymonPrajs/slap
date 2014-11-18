@@ -80,10 +80,14 @@ double Magnetar::radius(double t) {
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
     double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
-    double rad19 = radiusCore * pow(alpha_ - 1 / tauCore, 1 / (1 - alpha_)); 
+    double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
     double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
-    return rad20;
+    if (rad19 > radiusCore) {
+        return rad19;
+    } else {
+        return rad20;
+    }
 }
 
 
