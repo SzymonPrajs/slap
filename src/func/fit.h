@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <iomanip>
+#include <cstring>
 #include "../utils/mpfit.h"
 #include "../core/SNEvent.h"
 

@@ -93,10 +93,7 @@ double Magnetar::temperature(double t) {
 
 
 void Magnetar::calcSEDParams(double t) {
-    calcDerivedParams();
-
     SEDParams_[0] = radius(t);
-    /* TODO: This is an incorrect equation! */
     SEDParams_[1] = temperature(t);
 }
    

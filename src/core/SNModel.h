@@ -49,6 +49,7 @@ public:
     SNModel(shared_ptr<Filters> filters);
     virtual vector<double> calcSED(double) = 0;
     virtual void calcSEDParams(double) = 0;
+    virtual void calcDerivedParams() {};
 
     double flux(double, string);
     void setWavelength();
