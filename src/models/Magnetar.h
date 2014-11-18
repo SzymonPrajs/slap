@@ -19,40 +19,45 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_CORE_SNMODEL_H_
-#define SLAP_CORE_SNMODEL_H_
+#ifndef SLAP_MODEL_MAGNETAR_H_
+#define SLAP_MODEL_MAGNETAR_H_
 
-#include <math.h>
 #include <vector>
 #include <memory>
-#include "Cosmology.h"
-#include "Filters.h"
-#include "../vmath/range.h"
-#include "../vmath/algebra.h"
+#include <math.h>
+#include "../vmath/integrate.h"
+#include "../core/Cosmology.h"
+#include "../core/Filters.h"
+#include "../core/SNModel.h"
 
 using namespace std;
 using namespace vmath;
 
-class SNModel {
-protected:
-    double z_;
-    vector<double> SEDParams_;
-    vector<double> restWavelength_;
-    vector<double> obsWavelength_;
+class Magnetar : public SNModel {
+/*
+ * modelParam_ = {tauM, B, P}
+ */
+private:
+    double tauP_;
+    double energyMagnetar_;
+    double energyKinetic_;
+    double energyRadiation_;
+    double opacity_;
+    double ejectedMass_;
+    double velocityCore_;
+    double alpha_;
 
 public:
-    shared_ptr<Cosmology> cosmology_;
-    shared_ptr<Filters> filters_;
-    vector<double> modelParam_;
+    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
-    SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);    
-    SNModel(shared_ptr<Filters> filters);
-    virtual vector<double> calcSED(double) = 0;
-    virtual void calcSEDParams(double) = 0;
-    virtual void calcDerivedParams() {};
+    void calcDerivedParams();
+    vector<double> calcSED(double);
+    void calcSEDParams(double);
 
-    double flux(double, string);
-    void setWavelength();
+    double lumMagnetar(double);
+    double lumSN(double);
+    double radius(double);
+    double temperature(double);
 };
 
 #endif
