@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_FIT_H_
-#define SLAP_FUNC_FIT_H_
+#ifndef SLAP_FUNC_MODEL_H_
+#define SLAP_FUNC_MODEL_H_
 
 #include <memory>
 #include <iomanip>
@@ -37,9 +37,6 @@
 
 using namespace std;
 
-
-int resFunc(int, int, double*, double*, double**, void*);
-void fit(string, double, string);
-void fitLC(shared_ptr<SNEvent>, vector<double>&);
+void modelLC(string, double, vector<double>&, vector<string>&);
 
 #endif

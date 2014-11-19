@@ -29,43 +29,54 @@
 #include "models/BB6.h"
 #include "models/Magnetar.h"
 #include "func/fit.h"
+#include "func/model.h"
 
 using namespace std;
 
 
 int main(int argc, char *argv[]) {  
-	string file = argv[1];
-	double z = atof(argv[2]);
-    string model = argv[3];
+    argc--;
 
-    shared_ptr<Filters> filters(new Filters("data/filters"));
-    shared_ptr<Cosmology> cosmology(new Cosmology(z));
-    shared_ptr<SNModel> snmodel;
-    vector<double> par;
+    string function = argv[1];
+    argc--;
 
-    if (model == "BB4") {
-        shared_ptr<BB4> bb4(new BB4(cosmology, filters));
-        snmodel = bb4;
-        par = {1.0, 10000, -100, 0};
-    } else if (model == "BB6") {
-        shared_ptr<BB6> bb6(new BB6(cosmology, filters));
-        snmodel = bb6;
-        par = {1.0, 0.1, 10000, -100, 10, 0};
-    } else if (model == "Magnetar") {
-        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology, filters));
-        snmodel = magnetar;
-        par = {30.0, 7.0, 2.0, 0};
+    if (function == "fit") {
+        if (argc == 3) {
+            string file = argv[2];
+            double z = atof(argv[3]);
+            string model = argv[4];
+
+
+            fit(file, z, model);
+
+        } else {
+            cout << "incorrect number of parameter" << endl;
+        } 
+
+    } else if (function == "model") {
+        if (argc >= 5) {
+            vector<double> par;
+            vector<string> flt = {"g"};
+            string model = argv[2];
+            double z = atof(argv[3]);
+            argc -= 2;
+            int pos = 4;
+
+            while (argc > 0) {
+                par.push_back(atof(argv[pos]));
+                argc--;
+                pos++;
+            }
+
+            modelLC(model, z, par, flt);
+
+        } else {
+            cout << "incorrect number of parameter" << endl;
+        }
+    
     } else {
-        cout << "No other model implemented yet. Using BB4 instead ..." << endl;
-        shared_ptr<BB4> bb4(new BB4(cosmology, filters));
-        snmodel = bb4;
-        par = {1.0, 10000, -100, 0};
-    }
-
-    shared_ptr<SNEvent> sn(new SNEvent(file, snmodel));
-    par.back() = sn->explosionMJD_ - 10;
-    fitLC(sn, par);
-    sn->snmodel_->printDerivedVariables();
+        cout << "No fucntion '" << function << "' found" << endl;
+    } 
 
     return 0;
 }
