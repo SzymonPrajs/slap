@@ -65,11 +65,11 @@ double Magnetar::lumMagnetar(double t) {
 double Magnetar::lumSN(double t) {
     double res = exp(-1 * pow(t / modelParam_[0], 2.0));
 
-    vector<double> arr(int(t+1));
-    for (int i = 0; i < int(t+1); ++i) {
-        arr[i] = 2 * 0.03 * lumMagnetar(i) * i * exp(pow(i / modelParam_[0], 2)) / modelParam_[0];
+    vector<double> arr(int(t+1)*100);
+    for (double i = 0; i < int(t+1); i+=0.01) {
+        arr[int(i*100)] = 2 * lumMagnetar(i) * i * exp(pow(i / modelParam_[0], 2)) / pow(modelParam_[0], 2);
     }
-    res *= trapz<double>(arr,1);
+    res *= trapz<double>(arr,0.01);
 
     return res;
 }
@@ -94,21 +94,12 @@ double Magnetar::radius(double t) {
     double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
     double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
-    // if (rad19 > radiusCore) {
-    //     return rad19;
-    // } else {
-    //     return rad20;
-    // }
-    return rad19;
+    if (rad19 > radiusCore) {
+        return rad20;
+    } else {
+        return rad20;
+    }
 
-}
-
-
-double Magnetar::deposition(double t) {
-    double tau = (0.1 / opacity_) * (0.25 * pow(modelParam_[0], 2) / pow(8.8, 2)) * (5.53e10 / ((radius(t) / t) * pow(0.1 + t / 8.8, 2)));
-    double G = tau / (tau + 1.6);
-    double dep = G * (1 + 2 * G * (1 - G) * (1 - 0.75 * G));
-    return dep;
 }
 
 

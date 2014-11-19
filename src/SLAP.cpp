@@ -63,18 +63,9 @@ int main(int argc, char *argv[]) {
     }
 
     shared_ptr<SNEvent> sn(new SNEvent(file, snmodel));
-    par.back() = sn->explosionMJD_;
-    par.back() = 55250;
+    par.back() = sn->explosionMJD_ - 10;
     fitLC(sn, par);
     sn->snmodel_->printDerivedVariables();
 
-    Magnetar test(cosmology, filters);
-    test.modelParam_ = {32.4, 7.4, 2.0, 0};
-    test.calcDerivedParams();
-    test.printDerivedVariables();
-
-    for (int i = 0; i < 300; ++i) {
-        cout << i << " " << test.radius(i) << endl;
-    }
     return 0;
 }
