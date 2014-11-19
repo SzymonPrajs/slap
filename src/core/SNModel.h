@@ -50,7 +50,8 @@ public:
     virtual vector<double> calcSED(double) = 0;
     virtual void calcSEDParams(double) = 0;
     virtual void calcDerivedParams() {};
-
+    virtual void printDerivedVariables() {};
+    
     double flux(double, string);
     void setWavelength();
 };

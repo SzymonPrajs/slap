@@ -56,8 +56,11 @@ public:
 
     double lumMagnetar(double);
     double lumSN(double);
+    double energy(double);
+    double deposition(double);
     double radius(double);
     double temperature(double);
+    void printDerivedVariables();
 };
 
 #endif

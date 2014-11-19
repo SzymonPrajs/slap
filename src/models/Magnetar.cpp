@@ -63,15 +63,26 @@ double Magnetar::lumMagnetar(double t) {
 
 
 double Magnetar::lumSN(double t) {
-    double res = 2 * exp(-1 * pow(t / modelParam_[0], 2.0));
+    double res = exp(-1 * pow(t / modelParam_[0], 2.0));
 
     vector<double> arr(int(t+1));
     for (int i = 0; i < int(t+1); ++i) {
-        arr[i] = lumMagnetar(i) * i * exp(pow(i / modelParam_[0], 2)) / modelParam_[0];
+        arr[i] = 2 * 0.03 * lumMagnetar(i) * i * exp(pow(i / modelParam_[0], 2)) / modelParam_[0];
     }
     res *= trapz<double>(arr,1);
 
     return res;
+}
+
+
+double Magnetar::energy(double t) {
+    vector<double> arr(int(t+1));
+
+    for (int i = 0; i < int(t+1); ++i) {
+        arr[i] = lumSN(i);
+    }
+    
+    return trapz<double>(arr, 86400); 
 }
 
 
@@ -83,16 +94,34 @@ double Magnetar::radius(double t) {
     double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
     double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
-    if (rad19 > radiusCore) {
-        return rad19;
-    } else {
-        return rad20;
-    }
+    // if (rad19 > radiusCore) {
+    //     return rad19;
+    // } else {
+    //     return rad20;
+    // }
+    return rad19;
+
+}
+
+
+double Magnetar::deposition(double t) {
+    double tau = (0.1 / opacity_) * (0.25 * pow(modelParam_[0], 2) / pow(8.8, 2)) * (5.53e10 / ((radius(t) / t) * pow(0.1 + t / 8.8, 2)));
+    double G = tau / (tau + 1.6);
+    double dep = G * (1 + 2 * G * (1 - G) * (1 - 0.75 * G));
+    return dep;
 }
 
 
 double Magnetar::temperature(double t) {
     return pow(lumSN(t) / (CGS_SIGMA * 4 * M_PI * pow(radius(t), 2)), 0.25);
+}
+
+
+void Magnetar::printDerivedVariables() {
+    cout << "Magnetar: " << energyMagnetar_ << endl;
+    cout << "Kinetic: " << energyKinetic_ << endl;
+    cout << "Mass: " << ejectedMass_ << endl;
+    cout << "Velocity: " << velocityCore_ << endl;
 }
 
 
