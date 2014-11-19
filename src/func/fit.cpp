@@ -33,6 +33,7 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
         sn->snmodel_->modelParam_[i] = p[i];
     }
 
+    sn->snmodel_->calcDerivedParams();
     for (int i = 0; i < sn->mjd_.size(); ++i) {
         if (sn->mjd_[i] >= sn->explosionMJD_) {
             t = sn->mjd_[i] - sn->explosionMJD_;

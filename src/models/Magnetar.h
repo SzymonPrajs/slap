@@ -19,50 +19,47 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_CORE_COSMOLOGY_H_
-#define SLAP_CORE_COSMOLOGY_H_
+#ifndef SLAP_MODEL_MAGNETAR_H_
+#define SLAP_MODEL_MAGNETAR_H_
 
-#include <math.h>
 #include <vector>
 #include <memory>
+#include <math.h>
 #include "../vmath/integrate.h"
+#include "../core/Cosmology.h"
+#include "../core/Filters.h"
+#include "../core/SNModel.h"
 
 using namespace std;
+using namespace vmath;
 
-const double SI_C = 299792458;
-const double CGS_C = 29979245800;
-const double CGS_H = 6.62606957e-27;
-const double CGS_K = 1.3806488e-16;
-const double CGS_SIGMA = 5.67e-5;
+class Magnetar : public SNModel {
+/*
+ * modelParam_ = {tauM, B, P}
+ */
+private:
+    double tauP_;
+    double energyMagnetar_;
+    double energyKinetic_;
+    double energyRadiation_;
+    double opacity_;
+    double ejectedMass_;
+    double velocityCore_;
+    double alpha_;
 
-class Cosmology {
 public:
-    // input 
-    double z_;
-    double a_;
+    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
-    // required variables 
-    const double H0_ = 70;
-    const double WM_ = 0.3;
-    const double WV_ = 0.7;
-    
-    // results
-    double comDis_;
-    double comVol_;
-    double lumDis_;
-    double lumDisCGS_;
+    void calcDerivedParams();
+    vector<double> calcSED(double);
+    void calcSEDParams(double);
 
-    // Constructor
-    Cosmology(double z = 0);
-
-    // Functions
-    void set(double);
-    double E(double);
-    double findComDis(double);
-    double findLumDis(double);
-    double findComVol(double);
-    vector<double> findDZ(double);
-    vector<double> findDV(vector<double>&);
+    double lumMagnetar(double);
+    double lumSN(double);
+    double energy(double);
+    double radius(double);
+    double temperature(double);
+    void printDerivedVariables();
 };
 
 #endif
