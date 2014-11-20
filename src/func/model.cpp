@@ -49,7 +49,9 @@ void modelLC (string model, double z, vector<double> &par, vector<string> &filte
     snmodel->modelParam_ = par;
     snmodel->calcDerivedParams();
 
-    for (int i = 0; i < 100; ++i) {
-        cout << i << " " << snmodel->flux(i, "g") << endl;
+    for (int j = 0; j < filterList.size(); ++j) {
+        for (int i = 0; i < 150; ++i) { 
+            cout << i + 55653.6 << " " << snmodel->flux(i, filterList[j]) << " " << filterList[j] << endl;
+        }
     }
 }

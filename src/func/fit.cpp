@@ -66,7 +66,7 @@ void fit (string file, double z, string model) {
     } else if (model == "Magnetar") {
         shared_ptr<Magnetar> magnetar(new Magnetar(cosmology, filters));
         snmodel = magnetar;
-        par = {30.0, 7.0, 2.0, 0};
+        par = {30.0, 7.0, 2.0, 20, 0};
 
     } else {
         cout << "Model '" << model << "' was found.\nExiting..." << endl;
@@ -84,13 +84,16 @@ void fit (string file, double z, string model) {
 void fitLC(shared_ptr<SNEvent> sn, vector<double> &par) {
     int status;
     mp_result result;
+    mp_config config;
     mp_par pars[par.size()];
-    vector<double> parErr(par.size());
-    memset(&result,0,sizeof(result));
+    memset(&config, 0, sizeof(config));
+    memset(&result, 0, sizeof(result));
     memset(&pars,0,sizeof(pars));
+    vector<double> parErr(par.size());
     result.xerror = parErr.data();
 
-    status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, 0, (void*) sn.get(), &result);
+    config.maxiter = 2000;
+    status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, &config, (void*) sn.get(), &result);
 
     for (int i = 0; i < par.size(); ++i) {
         cout << setw(10) << par[i] << setw(8) << " +/- " << setw(10) << parErr[i] << endl;

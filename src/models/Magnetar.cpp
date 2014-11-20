@@ -27,7 +27,7 @@ using namespace vmath;
 
 Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     SEDParams_.resize(2);
-    modelParam_.resize(3);
+    modelParam_.resize(4);
 }
 
 
@@ -87,7 +87,7 @@ double Magnetar::energy(double t) {
 
 
 double Magnetar::radius(double t) {
-    double radiusCore = velocityCore_ * t;
+    double radiusCore = modelParam_[3] * 1e14 + velocityCore_ * t;
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
     double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
@@ -130,7 +130,7 @@ vector<double> Magnetar::calcSED(double t) {
     for(int i = 0; i < restWavelength_.size (); ++i) {
         res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8,5);
         res /= exp(CGS_H * CGS_C / (restWavelength_[i] * 1e-8 * CGS_K * SEDParams_[1])) - 1.0;
-        res *= pow(SEDParams_[0]/cosmology_->lumDisCGS_,2);
+        res *= 4 * M_PI * pow(SEDParams_[0],2);
         res *= 1e-8;
         sed[i] = res;
     }

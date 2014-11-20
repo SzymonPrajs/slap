@@ -9,7 +9,7 @@ EXECUTABLE = slap
 CXXSOURCES = src/SLAP.cpp
 MPFIT = src/utils/mpfit.c
 MODELS = src/models/BB4.cpp src/models/BB6.cpp src/models/Magnetar.cpp
-CORE = src/core/Cosmology.cpp src/core/Filters.cpp src/core/SNModel.cpp src/core/SNEvent.cpp
+CORE = src/core/Cosmology.cpp src/core/Filters.cpp src/core/SNModel.cpp src/core/SNEvent.cpp src/core/Workspace.cpp
 UTILS = src/utils/utils.cpp
 FUNC = src/func/fit.cpp src/func/model.cpp
 

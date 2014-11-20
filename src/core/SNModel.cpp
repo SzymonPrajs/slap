@@ -41,7 +41,7 @@ SNModel::SNModel(shared_ptr<Filters> filters) {
 
 double SNModel::flux(double t, string filterName) {
     vector<double> sed = calcSED(t * cosmology_->a_);
-    sed = mult<double>(sed, cosmology_->a_);
+    sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
     return filters_->flux(sed, filterName);
 }
 

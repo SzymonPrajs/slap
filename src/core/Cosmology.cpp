@@ -37,6 +37,7 @@ void Cosmology::set(double z) {
         comDis_ = findComDis(z);
         lumDis_ = findLumDis(z);
         comVol_ = findComVol(z);
+
     } else {
         z_ = 0;
         a_ = 1.0;
