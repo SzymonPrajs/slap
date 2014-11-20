@@ -31,4 +31,4 @@ slap
 
 # Unnecessary folders
 .DS_Store
-data/test
+test

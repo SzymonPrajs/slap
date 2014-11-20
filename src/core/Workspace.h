@@ -27,6 +27,7 @@
 #include "Cosmology.h"
 #include "SNModel.h"
 #include "Filters.h"
+#include "SNEvent.h"
 #include "../models/BB4.h"
 #include "../models/BB6.h"
 #include "../models/Magnetar.h"
@@ -40,19 +41,24 @@ public:
     string filterFolder_;
     string model_;
     string currentFunction_;
-
-    bool interactiveMode;
-    map<string,int> functionList_ = {{"quit", 0}, {"fit", 1}, {"plot", 2}, {"addplot", 3}, {"makeplot", 4}};
+    string LCFile_;
+    string rawParam_;
+    string rawFilter_;
 
     shared_ptr<Cosmology> cosmology_;
     shared_ptr<Filters> filters_;
     shared_ptr<SNModel> snmodel_;
+    shared_ptr<SNEvent> snevent_;
+
+    bool interactiveMode;
+    map<string,int> functionList_ = {{"idle", 0}, {"quit", 1}, {"fit", 2}, {"plot", 3}, {"addplot", 4}, {"makeplot", 5}};
     
     Workspace();
     void restoreDefault();
     void initCosmology();
     void initFilters();
     void initModel();
+    void initEvent();
     void init();
 };
 

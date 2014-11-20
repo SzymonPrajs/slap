@@ -33,6 +33,7 @@ void Workspace::restoreDefault() {
     z_ = 0;
     filterFolder_ = "data/filters";
     model_ = "BB4";
+    LCFile_ = "data/sample/SN2010gx.dat";
 
     interactiveMode = false;
 }
@@ -71,9 +72,16 @@ void Workspace::initModel() {
 }
 
 
+void Workspace::initEvent() {
+    shared_ptr<SNEvent> snevent(new SNEvent(LCFile_, snmodel_));
+    snevent_ = snevent;
+}
+
+
 void Workspace::init() {
     initCosmology();
     initFilters();
     initModel();
+    initEvent();
 }
 
