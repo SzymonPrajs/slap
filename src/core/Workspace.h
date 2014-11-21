@@ -31,34 +31,54 @@
 #include "../models/BB4.h"
 #include "../models/BB6.h"
 #include "../models/Magnetar.h"
+#include "../utils/utils.h"
 
 using namespace std;
 
 
 class Workspace {
 public:
+    /*SN and Model properties*/
     double z_;
-    string filterFolder_;
+    vector<double> params_;
+    vector<double> fitParam_;
+    vector<double> fitParamError_;
+    double explosionMJD_;
     string model_;
-    string currentFunction_;
+
+    /*LC and Filter*/
+    string filterFolder_;
     string LCFile_;
+
+    /*Program state*/
+    bool interactiveMode_;
     string rawParam_;
     string rawFilter_;
+    string currentFunction_;
+    map<string,int> functionList_ = {{"interactive", 0}, 
+                                     {"fit", 1}, 
+                                     {"plot", 2}, 
+                                     {"addplot", 3}, 
+                                     {"makeplot", 4}, 
+                                     {"quit", 99}};
 
+    /*Core classes*/
     shared_ptr<Cosmology> cosmology_;
     shared_ptr<Filters> filters_;
     shared_ptr<SNModel> snmodel_;
     shared_ptr<SNEvent> snevent_;
-
-    bool interactiveMode;
-    map<string,int> functionList_ = {{"idle", 0}, {"quit", 1}, {"fit", 2}, {"plot", 3}, {"addplot", 4}, {"makeplot", 5}};
     
+    /*Construtor*/
     Workspace();
+
+    /*Functions*/
     void restoreDefault();
     void initCosmology();
     void initFilters();
     void initModel();
     void initEvent();
+    void initMode();
+    void initRawParams();
     void init();
 };
 

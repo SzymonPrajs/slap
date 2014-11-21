@@ -29,13 +29,20 @@ Workspace::Workspace() {
 }
 
 
+/*
+ *Set defult parameters for the program.
+ *This is mainly to allow for initialisation to occur with no crashes
+ */
 void Workspace::restoreDefault() {
-    z_ = 0;
     filterFolder_ = "data/filters";
+    LCFile_ = "data/sample/06D4eu.dat";
+    z_ = 1.588;
     model_ = "BB4";
-    LCFile_ = "data/sample/SN2010gx.dat";
+    rawParam_ = "1.7,17000,-200";
 
-    interactiveMode = false;
+    /*Set interactive mode as the default behaviour*/
+    currentFunction_ = "interactive";
+    interactiveMode_ = false;
 }
 
 
@@ -61,6 +68,7 @@ void Workspace::initModel() {
         snmodel_ = bb6;
 
     } else if (model_ == "Magnetar") {
+        cout << "1" << endl;
         shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
         snmodel_ = magnetar;
 
@@ -78,10 +86,42 @@ void Workspace::initEvent() {
 }
 
 
+void Workspace::initMode() {
+    if (interactiveMode_ == false) {
+        if (currentFunction_ == "interactive") {
+            interactiveMode_ = true;
+        }
+    }
+}
+
+
+void Workspace::initRawParams() {
+    vector<string> params;
+    if (rawParam_ != "0") {
+        split(rawParam_, ',', params);
+        
+        /*if the params are not correct set to default for the model*/
+        if (params.size() != snmodel_->noModelParams_) {
+            params_ = snmodel_->defaultParams_;
+        
+        } else {
+            for (int i = 0; i < params.size(); ++i) {
+                params_[i] = atof(params[i].c_str());  /*TODO   -   BROKEN HERE!*/
+            }
+        }
+
+        /*Once the parameters have been dealt with set to 0 to ignore in the future*/
+        rawParam_ = "0";
+    }
+}
+
+
 void Workspace::init() {
     initCosmology();
     initFilters();
     initModel();
     initEvent();
+    initMode();
+    initRawParams();
 }
 

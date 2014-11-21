@@ -30,7 +30,7 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
     double t;
     sn->explosionMJD_ = p[n-1];
     for (int i = 0; i < n-1; ++i) {
-        sn->snmodel_->modelParam_[i] = p[i];
+        sn->snmodel_->modelParams_[i] = p[i];
     }
 
     sn->snmodel_->calcDerivedParams();
@@ -47,41 +47,12 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
 }
 
 
-void fit (string file, double z, string model) {
-    shared_ptr<Filters> filters(new Filters("data/filters"));
-    shared_ptr<Cosmology> cosmology(new Cosmology(z));
-    shared_ptr<SNModel> snmodel;
-    vector<double> par;
+void fit (shared_ptr<Workspace> &w) {
+    shared_ptr<SNEvent> sn = w->snevent_;
 
-    if (model == "BB4") {
-        shared_ptr<BB4> bb4(new BB4(cosmology, filters));
-        snmodel = bb4;
-        par = {1.0, 10000, -100, 0};
-
-    } else if (model == "BB6") {
-        shared_ptr<BB6> bb6(new BB6(cosmology, filters));
-        snmodel = bb6;
-        par = {1.0, 0.1, 10000, -100, 10, 0};
-
-    } else if (model == "Magnetar") {
-        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology, filters));
-        snmodel = magnetar;
-        par = {30.0, 7.0, 2.0, 20, 0};
-
-    } else {
-        cout << "Model '" << model << "' was found.\nExiting..." << endl;
-        /*TODO - send kill signal*/
-    }
-
-    shared_ptr<SNEvent> sn(new SNEvent(file, snmodel));
-    par.back() = sn->explosionMJD_ - 10;
+    vector<double> par = w->params_;
+    par.push_back(sn->explosionMJD_ - 10);
     
-    fitLC(sn, par);
-    sn->snmodel_->printDerivedVariables();
-}
-
-
-void fitLC(shared_ptr<SNEvent> sn, vector<double> &par) {
     int status;
     mp_result result;
     mp_config config;

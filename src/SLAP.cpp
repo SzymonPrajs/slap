@@ -48,14 +48,15 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
     vector<string> command;
     for (int i = 0; i < options.size(); ++i) {
         split(options[i], '=', command);
-        
+
         if (command.size() > 2) {
             cout << "'" << command[0] << "' is not a valid command." << endl;
             continue;
-        
+
         } else if (command.size() == 1) {
             if (w->functionList_.find(command[0]) == w->functionList_.end()) {
                 cout << "'" << command[0] << "' is not a valid function." << endl;
+                w->currentFunction_ = "quit";
 
             } else {
                 w->currentFunction_ = command[0];
@@ -71,7 +72,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             w->model_ = command[1];
 
         } else if (command[0] == "param") {
-            w->rawParam_ = command[1]; /*TODO - deal with the raw input during init()*/
+            w->rawParam_ = command[1];
 
         } else if (command[0] == "z") {
             w->z_ = atof(command[1].c_str());
@@ -79,6 +80,18 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
         }
+    }
+}
+
+
+void runCommand(shared_ptr<Workspace> w) {
+    if (w->currentFunction_ == "fit") {
+        fit(w);
+
+    } else if (w->currentFunction_ == "addplot") {
+
+    } else if (w->currentFunction_ == "makeplot") {
+
     }
 }
 
@@ -92,15 +105,18 @@ int main(int argc, char *argv[]) {
 
     w->init();
 
-    // if (function == "fit") {
-    //         fit(w);
+    if (w->interactiveMode_ == false) {
+        runCommand(w);
+    
+    } else {
+        string input;
 
-    // } else if (function == "plot") {
-    //     modelLC(w);
-
-    // } else {
-    //     cout << "No function '" << function << "' found" << endl;
-    // } 
+        while (w->currentFunction_ != "quit") {
+            cout << "SLAP> ";
+            getline(cin, input);
+            w->currentFunction_ = input;
+        }
+    }
 
     return 0;
 }

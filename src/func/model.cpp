@@ -46,7 +46,7 @@ void modelLC (string model, double z, vector<double> &par, vector<string> &filte
         /*TODO - send kill signal*/
     }
 
-    snmodel->modelParam_ = par;
+    snmodel->modelParams_ = par;
     snmodel->calcDerivedParams();
 
     for (int j = 0; j < filterList.size(); ++j) {

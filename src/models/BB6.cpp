@@ -26,14 +26,18 @@ using namespace vmath;
 
 
 BB6::BB6(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
-    SEDParams_.resize(2);
-    modelParam_.resize(5);
+    noSEDParams_ = 2;
+    noModelParams_ = 5;
+    defaultParams_ = {1.0, 0.01, 15000, -150, 1.5};
+    
+    modelParams_.resize(noModelParams_);
+    SEDParams_.resize(noSEDParams_);
 }
 
 
 void BB6::calcSEDParams(double t) { 
-    SEDParams_[0] = (modelParam_[0] * 1e14 * t) + (modelParam_[1] * 1e14 * t * t);
-    SEDParams_[1] = modelParam_[2] + (modelParam_[3] * t) + (modelParam_[4] * t * t);
+    SEDParams_[0] = (modelParams_[0] * 1e14 * t) + (modelParams_[1] * 1e14 * t * t);
+    SEDParams_[1] = modelParams_[2] + (modelParams_[3] * t) + (modelParams_[4] * t * t);
 }
 
     

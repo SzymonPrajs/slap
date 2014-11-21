@@ -26,20 +26,14 @@
 #include <iomanip>
 #include <cstring>
 #include <string>
-#include "../core/Cosmology.h"
-#include "../core/Filters.h"
-#include "../core/SNModel.h"
+#include "../core/Workspace.h"
 #include "../core/SNEvent.h"
-#include "../models/BB4.h"
-#include "../models/BB6.h"
-#include "../models/Magnetar.h"
 #include "../utils/mpfit.h"
 
 using namespace std;
 
 
 int resFunc(int, int, double*, double*, double**, void*);
-void fit(string, double, string);
-void fitLC(shared_ptr<SNEvent>, vector<double>&);
+void fit(shared_ptr<Workspace>&);
 
 #endif

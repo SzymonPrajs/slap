@@ -28,6 +28,7 @@ using namespace vmath;
 SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
     cosmology_ = cosmology;
     filters_ = filters;
+
     setWavelength();
 }
 
@@ -35,6 +36,7 @@ SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
 SNModel::SNModel(shared_ptr<Filters> filters) {
     cosmology_ = shared_ptr<Cosmology>(new Cosmology(0));
     filters_ = filters;
+
     setWavelength();
 }
 
