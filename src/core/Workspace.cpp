@@ -41,7 +41,7 @@ void Workspace::restoreDefault() {
     rawParam_ = "1.7,17000,-200";
 
     /*Set interactive mode as the default behaviour*/
-    currentFunction_ = "interactive";
+    currentFunction_ = "quit";
     interactiveMode_ = false;
 }
 

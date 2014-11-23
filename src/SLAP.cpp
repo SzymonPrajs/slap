@@ -63,7 +63,13 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command.size() == 1) {
             if (w->functionList_.find(command[0]) == w->functionList_.end()) {
                 cout << "'" << command[0] << "' is not a valid function." << endl;
-                
+                if (w->interactiveMode_ == true) {
+                    w->currentFunction_ = "interactive";
+
+                } else {
+                    w->currentFunction_ = "quit";
+                }
+
             } else {
                 w->currentFunction_ = command[0];
             }
