@@ -46,19 +46,19 @@ void Workspace::restoreDefault() {
 }
 
 
-void Workspace::initCosmology() {
+void Workspace::updateCosmology() {
     shared_ptr<Cosmology> cosmology(new Cosmology(z_));
     cosmology_ = cosmology;
 }
 
 
-void Workspace::initFilters() {
+void Workspace::updateFilters() {
     shared_ptr<Filters> filters(new Filters(filterFolder_));
     filters_ = filters;
 }
 
 
-void Workspace::initModel() {
+void Workspace::updateModel() {
     if (model_ == "BB4") {
         shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
         snmodel_ = bb4;
@@ -68,7 +68,6 @@ void Workspace::initModel() {
         snmodel_ = bb6;
 
     } else if (model_ == "Magnetar") {
-        cout << "1" << endl;
         shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
         snmodel_ = magnetar;
 
@@ -77,16 +76,18 @@ void Workspace::initModel() {
         shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
         snmodel_ = bb4;
     }
+
+    params_ = snmodel_->defaultParams_;
 }
 
 
-void Workspace::initEvent() {
+void Workspace::updateEvent() {
     shared_ptr<SNEvent> snevent(new SNEvent(LCFile_, snmodel_));
     snevent_ = snevent;
 }
 
 
-void Workspace::initMode() {
+void Workspace::updateMode() {
     if (interactiveMode_ == false) {
         if (currentFunction_ == "interactive") {
             interactiveMode_ = true;
@@ -95,18 +96,20 @@ void Workspace::initMode() {
 }
 
 
-void Workspace::initRawParams() {
+void Workspace::updateRawParams() {
     vector<string> params;
+
     if (rawParam_ != "0") {
         split(rawParam_, ',', params);
-        
+
         /*if the params are not correct set to default for the model*/
         if (params.size() != snmodel_->noModelParams_) {
             params_ = snmodel_->defaultParams_;
         
         } else {
             for (int i = 0; i < params.size(); ++i) {
-                params_[i] = atof(params[i].c_str());  /*TODO   -   BROKEN HERE!*/
+                params_[i] = atof(params[i].c_str());
+                
             }
         }
 
@@ -116,12 +119,18 @@ void Workspace::initRawParams() {
 }
 
 
-void Workspace::init() {
-    initCosmology();
-    initFilters();
-    initModel();
-    initEvent();
-    initMode();
-    initRawParams();
+void Workspace::updateRawFilters() {
+    filterList_ = snevent_->filterList_;
+}
+
+
+void Workspace::update() {    
+    updateCosmology();
+    updateFilters();
+    updateModel();
+    updateEvent();
+    updateMode();
+    updateRawParams();
+    updateRawFilters();
 }
 

@@ -43,8 +43,11 @@ public:
     vector<double> params_;
     vector<double> fitParam_;
     vector<double> fitParamError_;
+    double startMJD_;
     double explosionMJD_;
+    double endMJD_;
     string model_;
+    vector<string> filterList_;
 
     /*LC and Filter*/
     string filterFolder_;
@@ -73,13 +76,14 @@ public:
 
     /*Functions*/
     void restoreDefault();
-    void initCosmology();
-    void initFilters();
-    void initModel();
-    void initEvent();
-    void initMode();
-    void initRawParams();
-    void init();
+    void updateCosmology();
+    void updateFilters();
+    void updateModel();
+    void updateEvent();
+    void updateMode();
+    void updateRawParams();
+    void updateRawFilters();
+    void update();
 };
 
 #endif

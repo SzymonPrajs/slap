@@ -20,6 +20,11 @@
  */
 
 #include <memory>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <unistd.h>
+#include <stdio.h>
+
 #include "utils/utils.h"
 #include "core/Cosmology.h"
 #include "core/Filters.h"
@@ -30,7 +35,7 @@
 #include "models/BB6.h"
 #include "models/Magnetar.h"
 #include "func/fit.h"
-#include "func/model.h"
+#include "func/plot.h"
 
 using namespace std;
 
@@ -46,6 +51,8 @@ void getArgv(int argc, char **argv, vector<string> &options) {
 
 void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
     vector<string> command;
+    w->currentFunction_ = "interactive";
+
     for (int i = 0; i < options.size(); ++i) {
         split(options[i], '=', command);
 
@@ -56,13 +63,12 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command.size() == 1) {
             if (w->functionList_.find(command[0]) == w->functionList_.end()) {
                 cout << "'" << command[0] << "' is not a valid function." << endl;
-                w->currentFunction_ = "quit";
-
+                
             } else {
                 w->currentFunction_ = command[0];
             }
 
-        } else if (command[0] == "file") {
+        } else if (command[0] == "LC") {
             w->LCFile_ = command[1];
 
         } else if (command[0] == "filter") {
@@ -88,6 +94,9 @@ void runCommand(shared_ptr<Workspace> w) {
     if (w->currentFunction_ == "fit") {
         fit(w);
 
+    } else if (w->currentFunction_ == "plot") {
+        plot(w);    
+
     } else if (w->currentFunction_ == "addplot") {
 
     } else if (w->currentFunction_ == "makeplot") {
@@ -103,18 +112,32 @@ int main(int argc, char *argv[]) {
     shared_ptr<Workspace> w(new Workspace());
     applyOptions(options, w);
 
-    w->init();
+    w->update();
 
     if (w->interactiveMode_ == false) {
         runCommand(w);
     
     } else {
-        string input;
+        string sInput;
+        char* input, shell_prompt[1000];
 
         while (w->currentFunction_ != "quit") {
-            cout << "SLAP> ";
-            getline(cin, input);
-            w->currentFunction_ = input;
+            snprintf(shell_prompt, sizeof(shell_prompt), "SLAP> ");
+            input = readline(shell_prompt);
+ 
+            if (!input)
+                break;
+ 
+            add_history(input);
+     
+            sInput = input;
+            split(sInput, ' ', options);
+            applyOptions(options, w);
+            w->update();
+
+            runCommand(w);
+     
+            free(input);
         }
     }
 

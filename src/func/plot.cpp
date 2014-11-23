@@ -19,24 +19,18 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_MODEL_H_
-#define SLAP_FUNC_MODEL_H_
-
-#include <memory>
-#include <iomanip>
-#include <cstring>
-#include <string>
-#include "../core/Cosmology.h"
-#include "../core/Filters.h"
-#include "../core/SNModel.h"
-#include "../core/SNEvent.h"
-#include "../models/BB4.h"
-#include "../models/BB6.h"
-#include "../models/Magnetar.h"
-#include "../utils/mpfit.h"
+#include "plot.h"
 
 using namespace std;
 
-void modelLC(string, double, vector<double>&, vector<string>&);
 
-#endif
+void plot(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams();
+
+    for (int j = 0; j < w->filterList_.size(); ++j) {
+        for (int i = 0; i < 150; ++i) { 
+            cout << i + w->explosionMJD_ << " " << w->snmodel_->flux(i, w->filterList_[j]) << " " << w->filterList_[j] << endl;
+        }
+    }
+}
