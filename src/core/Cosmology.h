@@ -25,6 +25,7 @@
 #include <math.h>
 #include <vector>
 #include <memory>
+#include <iostream>
 #include "../vmath/integrate.h"
 
 using namespace std;

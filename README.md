@@ -1,4 +1,4 @@
-SLAP - v0.1.2
+SLAP - v0.2.0
 =============
 
 Supernova Lightcurve Analysis Package
@@ -18,11 +18,10 @@ Usage
 The interface is still under construction. For the purpose of testing use the following:
 
 ```
-./slap data/test/06D4eu.dat 1.588 BB4
+./slap fit LC=data/test/06D4eu.dat z=1.588 model=BB4
 ```
 
-Replace the arguments with your LC file, redshift and model of choice respectively.
-
+Future releases will introduce a full documentation.
 
 Models
 ------
@@ -34,16 +33,21 @@ Magnetar - [BETA] Magnetar model. Parameters: Diffusion timescale - tau_m (days)
 
 Releases
 --------
+**v0.2.0**: Major revamp to the interface. Still experimental.
+
 **v0.1.2**: Added the Magnetar model.
 
 **v0.1.1**: Minor performance and functionality enhancements.
 
 **v0.1.0**: Initial working version of the code.
 
+Future
+------
+Next release will most likely introduce the use of CERN's ROOT library replacing a lot of build in functionality with the library routines.
 
 Licence
 -------
-SLAP - Supernova Lightcurve Analysis Package v0.1.2
+SLAP - Supernova Lightcurve Analysis Package v0.2.0
 
 Copyright (C) 2014  Szymon Prajs
 

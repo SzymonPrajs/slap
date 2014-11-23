@@ -19,39 +19,20 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#include "SNModel.h"
+#ifndef SLAP_FUNC_MODEL_H_
+#define SLAP_FUNC_MODEL_H_
+
+#include <memory>
+#include <iomanip>
+#include <cstring>
+#include <string>
+#include "../core/Workspace.h"
+#include "../core/SNModel.h"
+#include "../core/SNEvent.h"
+#include "../utils/mpfit.h"
 
 using namespace std;
-using namespace vmath;
 
+void plot(shared_ptr<Workspace>&);
 
-SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
-    cosmology_ = cosmology;
-    filters_ = filters;
-
-    setWavelength();
-}
-
-
-SNModel::SNModel(shared_ptr<Filters> filters) {
-    cosmology_ = shared_ptr<Cosmology>(new Cosmology(0));
-    filters_ = filters;
-
-    setWavelength();
-}
-
-
-double SNModel::flux(double t, string filterName) {
-    vector<double> sed = calcSED(t * cosmology_->a_);
-    sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
-    return filters_->flux(sed, filterName);
-}
-
-
-void SNModel::setWavelength() {
-    obsWavelength_ = filters_->masterWavelength_;
-    restWavelength_ = mult<double>(obsWavelength_,cosmology_->a_);
-}
-
-
-
+#endif

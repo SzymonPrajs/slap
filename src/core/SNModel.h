@@ -35,16 +35,20 @@ using namespace vmath;
 
 class SNModel {
 protected:
-    double z_;
-    vector<double> SEDParams_;
+    double z_; /*IS THIS NEEDED?*/
     vector<double> restWavelength_;
     vector<double> obsWavelength_;
 
 public:
+    int noModelParams_;
+    int noSEDParams_;
+    vector<double> SEDParams_;
+    vector<double> modelParams_;
+    vector<double> defaultParams_;
+
     shared_ptr<Cosmology> cosmology_;
     shared_ptr<Filters> filters_;
-    vector<double> modelParam_;
-
+    
     SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);    
     SNModel(shared_ptr<Filters> filters);
     virtual vector<double> calcSED(double) = 0;

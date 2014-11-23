@@ -56,7 +56,9 @@ void SNEvent::restoreCompleteLC() {
     filter_ = completeFilter_;
 }
 
-
+/*
+ *Check entire filter array and select all unique filters. MUST BE SORTED BY FILTERS!s
+ */
 void SNEvent::setFilterList() {
     vector<string> list;
     unique_copy(filter_.begin(), filter_.end(), back_inserter(list), compareStrings);
@@ -103,6 +105,9 @@ void SNEvent::setFilterRange() {
 }
 
 
+/*
+ *TODO - Test for real data
+ */
 void SNEvent::removeData(double start, double end) {
     vector<double>::iterator mjd_it = mjd_.begin();
     vector<double>::iterator flux_it = flux_.begin();

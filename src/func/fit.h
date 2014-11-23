@@ -25,12 +25,15 @@
 #include <memory>
 #include <iomanip>
 #include <cstring>
-#include "../utils/mpfit.h"
+#include <string>
+#include "../core/Workspace.h"
 #include "../core/SNEvent.h"
+#include "../utils/mpfit.h"
 
 using namespace std;
 
+
 int resFunc(int, int, double*, double*, double**, void*);
-void fitLC(shared_ptr<SNEvent>, vector<double>&);
+void fit(shared_ptr<Workspace>&);
 
 #endif

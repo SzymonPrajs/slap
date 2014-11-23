@@ -30,7 +30,7 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
     double t;
     sn->explosionMJD_ = p[n-1];
     for (int i = 0; i < n-1; ++i) {
-        sn->snmodel_->modelParam_[i] = p[i];
+        sn->snmodel_->modelParams_[i] = p[i];
     }
 
     sn->snmodel_->calcDerivedParams();
@@ -47,21 +47,35 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
 }
 
 
-void fitLC(shared_ptr<SNEvent> sn, vector<double> &par) {
+void fit (shared_ptr<Workspace> &w) {
+    shared_ptr<SNEvent> sn = w->snevent_;
+
+    vector<double> par = w->params_;
+    par.push_back(sn->explosionMJD_ - 10);
+    
     int status;
     mp_result result;
+    mp_config config;
     mp_par pars[par.size()];
-    double perror[par.size()];
-    memset(&result,0,sizeof(result));
+    memset(&config, 0, sizeof(config));
+    memset(&result, 0, sizeof(result));
     memset(&pars,0,sizeof(pars));
-    result.xerror = perror;
+    vector<double> parErr(par.size());
+    result.xerror = parErr.data();
 
-    status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, 0, (void*) sn.get(), &result);
+    config.maxiter = 2000;
+    status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, &config, (void*) sn.get(), &result);
 
     for (int i = 0; i < par.size(); ++i) {
-        cout << setw(10) << par[i] << setw(8) << " +/- " << setw(10) << result.xerror[i] << endl;
+        cout << setw(10) << par[i] << setw(8) << " +/- " << setw(10) << parErr[i] << endl;
     }
 
     cout << setw(11) << "Chi^2 " << setw(17) << result.bestnorm <<  endl;
     cout << setw(11) << "RedChi^2 " << setw(17) << result.bestnorm / sn->mjd_.size() << endl;
+
+    w->fitParam_ = par;
+    w->fitParamError_ = parErr;
+    w->explosionMJD_ = par.back();
+    par.pop_back();
+    w->params_ = par;
 }

@@ -26,14 +26,18 @@ using namespace vmath;
 
 
 BB4::BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
-    SEDParams_.resize(2);
-    modelParam_.resize(3);
+    noSEDParams_ = 2;
+    noModelParams_ = 3;
+    defaultParams_ = {1.0, 15000, -150};
+
+    modelParams_.resize(noModelParams_);
+    SEDParams_.resize(noSEDParams_);
 }
 
 
 void BB4::calcSEDParams(double t) {
-    SEDParams_[0] = modelParam_[0] * 1e14 * t;
-    SEDParams_[1] = modelParam_[1] + (modelParam_[2] * t);
+    SEDParams_[0] = modelParams_[0] * 1e14 * t;
+    SEDParams_[1] = modelParams_[1] + (modelParams_[2] * t);
 }
    
  
@@ -45,7 +49,7 @@ vector<double> BB4::calcSED(double t) {
     for(int i = 0; i < restWavelength_.size (); ++i) {
         res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8,5);
         res /= exp(CGS_H * CGS_C / (restWavelength_[i] * 1e-8 * CGS_K * SEDParams_[1])) - 1.0;
-        res *= pow(SEDParams_[0]/cosmology_->lumDisCGS_,2);
+        res *= 4 * M_PI * pow(SEDParams_[0], 2);
         res *= 1e-8;
         sed[i] = res;
     }

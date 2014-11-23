@@ -19,39 +19,18 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#include "SNModel.h"
+#include "plot.h"
 
 using namespace std;
-using namespace vmath;
 
 
-SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
-    cosmology_ = cosmology;
-    filters_ = filters;
+void plot(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams();
 
-    setWavelength();
+    for (int j = 0; j < w->filterList_.size(); ++j) {
+        for (int i = 0; i < 150; ++i) { 
+            cout << i + w->explosionMJD_ << " " << w->snmodel_->flux(i, w->filterList_[j]) << " " << w->filterList_[j] << endl;
+        }
+    }
 }
-
-
-SNModel::SNModel(shared_ptr<Filters> filters) {
-    cosmology_ = shared_ptr<Cosmology>(new Cosmology(0));
-    filters_ = filters;
-
-    setWavelength();
-}
-
-
-double SNModel::flux(double t, string filterName) {
-    vector<double> sed = calcSED(t * cosmology_->a_);
-    sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
-    return filters_->flux(sed, filterName);
-}
-
-
-void SNModel::setWavelength() {
-    obsWavelength_ = filters_->masterWavelength_;
-    restWavelength_ = mult<double>(obsWavelength_,cosmology_->a_);
-}
-
-
-
