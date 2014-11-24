@@ -82,6 +82,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
         } else if (command[0] == "model") {
             w->model_ = command[1];
+            w->updateParam_ = true;
 
         } else if (command[0] == "param") {
             w->rawParam_ = command[1];
@@ -107,6 +108,22 @@ void runCommand(shared_ptr<Workspace> w) {
 
     } else if (w->currentFunction_ == "makeplot") {
 
+    } else if (w->currentFunction_ == "exit") {
+        w->currentFunction_ = "quit";
+    }
+}
+
+
+void test() {
+    shared_ptr<Cosmology> cosmology(new Cosmology(0.23));
+    shared_ptr<Filters> filters(new Filters("data/filters"));
+
+    Magnetar mag(cosmology, filters);
+    mag.modelParams_ = {32.4, 7.2, 2.0, 0};
+    mag.calcDerivedParams();
+    
+    for (double i = 0; i < 100; ++i) {
+        cout << mag.lumSN(i) << endl;
     }
 }
 
@@ -147,5 +164,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // test();
     return 0;
 }

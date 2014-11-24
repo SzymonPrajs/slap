@@ -27,10 +27,12 @@ using namespace std;
 void plot(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
+    double t = 0;
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (int i = 0; i < 150; ++i) { 
-            cout << i + w->explosionMJD_ << " " << w->snmodel_->flux(i, w->filterList_[j]) << " " << w->filterList_[j] << endl;
+        for (double mjd = explosionMJD_; mjd < endMJD_; ++mjd) { 
+            t = endMJD_ - explosionMJD_;
+            cout << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << endl;
         }
     }
 }

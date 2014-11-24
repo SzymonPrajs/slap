@@ -43,6 +43,7 @@ void Workspace::restoreDefault() {
     /*Set interactive mode as the default behaviour*/
     currentFunction_ = "quit";
     interactiveMode_ = false;
+    updateParam_ = true;
 }
 
 
@@ -76,8 +77,10 @@ void Workspace::updateModel() {
         shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
         snmodel_ = bb4;
     }
-
-    params_ = snmodel_->defaultParams_;
+    if (updateParam_ == true) {
+        params_ = snmodel_->defaultParams_;
+        updateParam_ = false;
+    }
 }
 
 

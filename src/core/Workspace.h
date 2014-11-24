@@ -55,6 +55,7 @@ public:
 
     /*Program state*/
     bool interactiveMode_;
+    bool updateParam_;
     string rawParam_;
     string rawFilter_;
     string currentFunction_;
@@ -62,7 +63,8 @@ public:
                                      {"fit", 1}, 
                                      {"plot", 2}, 
                                      {"addplot", 3}, 
-                                     {"makeplot", 4}, 
+                                     {"makeplot", 4},
+                                     {"exit", 98}, 
                                      {"quit", 99}};
 
     /*Core classes*/
@@ -80,6 +82,7 @@ public:
     void updateFilters();
     void updateModel();
     void updateEvent();
+    void updateMJDBounds();
     void updateMode();
     void updateRawParams();
     void updateRawFilters();
