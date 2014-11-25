@@ -105,7 +105,8 @@ void runCommand(shared_ptr<Workspace> w) {
         plot(w);    
 
     } else if (w->currentFunction_ == "addplot") {
-
+        addplot(w);
+        
     } else if (w->currentFunction_ == "makeplot") {
 
     } else if (w->currentFunction_ == "exit") {

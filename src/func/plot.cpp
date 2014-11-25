@@ -24,14 +24,31 @@
 using namespace std;
 
 
+void addplot(shared_ptr<Workspace> &w) {
+	int status = mkdir("plottmp", 0777);
+	ofstream fhandle;
+	if (status == 0) {
+		fhandle.open("plottmp/info.dat");
+		fhandle << "SNname=" << w->SNname_ << "\n";
+		fhandle << "z=" << w->z_ << "\n";
+		fhandle.close();
+	}
+}
+
+
+void makeplot(shared_ptr<Workspace> &w) {
+	
+}
+
+
 void plot(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
     double t = 0;
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (double mjd = explosionMJD_; mjd < endMJD_; ++mjd) { 
-            t = endMJD_ - explosionMJD_;
+        for (double mjd = w->explosionMJD_; mjd < w->endMJD_; ++mjd) { 
+            t = w->endMJD_ - w->explosionMJD_;
             cout << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << endl;
         }
     }

@@ -39,6 +39,7 @@ using namespace std;
 class Workspace {
 public:
     /*SN and Model properties*/
+    string SNname_;
     double z_;
     vector<double> params_;
     vector<double> fitParam_;

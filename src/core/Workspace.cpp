@@ -34,6 +34,7 @@ Workspace::Workspace() {
  *This is mainly to allow for initialisation to occur with no crashes
  */
 void Workspace::restoreDefault() {
+    SNname_ = "06D4eu";
     filterFolder_ = "data/filters";
     LCFile_ = "data/sample/06D4eu.dat";
     z_ = 1.588;
