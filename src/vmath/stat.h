@@ -31,50 +31,41 @@ namespace vmath {  // NAMESPACE vmath
 
 template<typename T>
 T max(const vector<T> &vec) {
-    T res = vec[0];
-    for (int i = 1; i < vec.size(); ++i) {
-        if (vec[i] > res) {
-            res = vec[i];
-        }
-    }
+    return *max_element(vec.begin(), vec.end());
+}
 
-    return res;
+
+
+template <typename T>
+T sum(vector<T> &vec) {
+    return accumulate(vec.begin(), vec.end(), 0.0);
 }
 
 
 template <typename T>
-T mean(const vector<T> &data) {
-    T ret = 0;
-    for (int i = 0; i < data.size(); i++) {
-        ret += data[i];
-    }
-    
-    return ret/data.size();
+T mean(const vector<T> &vec) {
+    return sum<T>(vec) / vec.size();
 }
 
 
 template<typename T>
 T min(const vector<T> &vec) {
-    T res = vec[0];
-    for (int i = 1; i < vec.size(); ++i) {
-        if (vec[i] < res) {
-            res = vec[i];
-        }
-    }
-
-    return res;
+    return *min_element(vec.begin(), vec.end());
 }
 
 
-template <typename T>
-T sum(vector<T> &vec) {
-    T res = 0;
-    for (int i = 0; i < vec.size(); ++i) {
-        res += vec[i];
-    }
+template<typename T>
+T standardDiv(const vector<T> &vec) {
+    T res = 0.0;
+    T m = mean<T>(vec);
 
-    return res;
+    for_each(vec.begin(), vec.end(), [&](const T d) {
+        res += pow(d - m, 2);
+    });
+
+    return sqrt(res / (vec.size() - 1));
 }
+
 
 } //NAMESPACE vmath
 

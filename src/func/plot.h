@@ -26,9 +26,7 @@
 #include <iomanip>
 #include <cstring>
 #include <string>
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <boost/filesystem.hpp>
 #include "../core/Workspace.h"
 #include "../core/SNModel.h"
 #include "../core/SNEvent.h"
@@ -38,6 +36,7 @@ using namespace std;
 
 void addplot(shared_ptr<Workspace>&);
 void makeplot(shared_ptr<Workspace>&);
-void plot(shared_ptr<Workspace>&);
+void clearplot(shared_ptr<Workspace>&);
+void plotModel(shared_ptr<Workspace>&);
 
 #endif

@@ -32,3 +32,6 @@ slap
 # Unnecessary folders
 .DS_Store
 test
+
+plot
+info.txt

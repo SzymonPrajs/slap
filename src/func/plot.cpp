@@ -25,23 +25,57 @@ using namespace std;
 
 
 void addplot(shared_ptr<Workspace> &w) {
-	int status = mkdir("plottmp", 0777);
 	ofstream fhandle;
-	if (status == 0) {
-		fhandle.open("plottmp/info.dat");
-		fhandle << "SNname=" << w->SNname_ << "\n";
+
+	if (w->plotCount_ == 0) {
+		boost::filesystem::create_directories(w->plotDir_);
+		fhandle.open(w->plotDir_ + "/info.dat");
+		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
 		fhandle.close();
+	} else if (w->plotCount_ < 0) {
+		cout << "Something went wrong! Cannot create a temporary folder" << endl;
+	}
+
+	if (boost::filesystem::exists(w->plotDir_ + "/info.dat")) {
+		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
+		
+		if (w->plotType_ == "data") {
+			boost::filesystem::path s = w->currentDir_;
+			boost::filesystem::path d = w->plotDir_;
+			s.append(w->LCFile_);
+			d.append("test.dat"); /*Make this a proper path and then tae the file name through Boost*/
+
+			if (!boost::filesystem::exists(d)) {
+				boost::filesystem::copy_file(s, d);
+			}
+			
+			fhandle << w->plotCount_;
+			fhandle << " type=data";
+			fhandle << " filters=" << makeString<string>(w->filterList_, ',');
+			fhandle << " file=" << (d.append("test.dat")).string();
+			fhandle << "\n"; 
+		}
+
+		fhandle.close();
+		w->plotCount_++;
+
+	} else {
+		cout << "Something went wrong! Cannot create a new plot" << endl;
 	}
 }
 
 
 void makeplot(shared_ptr<Workspace> &w) {
-	
+
+}
+
+void clearplot(shared_ptr<Workspace> &w) {
+	boost::filesystem::remove_all(w->plotDir_);
 }
 
 
-void plot(shared_ptr<Workspace> &w) {
+void plotModel(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
     double t = 0;

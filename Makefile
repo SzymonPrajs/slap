@@ -2,7 +2,7 @@ CXX = clang++
 C = clang
 CPPFLAGS = -c -O3 -std=c++11
 CFLAGS = -c -O3
-LDFLAGS = -lreadline -lgsl
+LDFLAGS = -lreadline -lgsl -lboost_system -lboost_filesystem
 EXECUTABLE = slap
 
 
