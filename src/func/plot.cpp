@@ -24,13 +24,65 @@
 using namespace std;
 
 
-void plot(shared_ptr<Workspace> &w) {
+void addplot(shared_ptr<Workspace> &w) {
+	ofstream fhandle;
+
+	if (w->plotCount_ == 0) {
+		boost::filesystem::create_directories(w->plotDir_);
+		fhandle.open(w->plotDir_ + "/info.dat");
+		fhandle << "name=" << w->SNName_ << "\n";
+		fhandle << "z=" << w->z_ << "\n";
+		fhandle.close();
+	} else if (w->plotCount_ < 0) {
+		cout << "Something went wrong! Cannot create a temporary folder" << endl;
+	}
+
+	if (boost::filesystem::exists(w->plotDir_ + "/info.dat")) {
+		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
+		
+		if (w->plotType_ == "data") {
+			boost::filesystem::path s = w->LCPath_;
+			boost::filesystem::path d = w->plotDir_;
+			d.append((s.filename()).string());
+
+			if (!boost::filesystem::exists(d)) {
+				boost::filesystem::copy_file(s, d);
+			}
+
+			fhandle << w->plotCount_;
+			fhandle << " type=data";
+			fhandle << " filters=" << makeString<string>(w->filterList_, ',');
+			fhandle << " file=" << d.string();
+			fhandle << "\n"; 
+		}
+
+		fhandle.close();
+		w->plotCount_++;
+
+	} else {
+		cout << "Something went wrong! Cannot create a new plot" << endl;
+	}
+}
+
+
+void makeplot(shared_ptr<Workspace> &w) {
+
+}
+
+void clearplot(shared_ptr<Workspace> &w) {
+	boost::filesystem::remove_all(w->plotDir_);
+}
+
+
+void plotModel(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
+    double t = 0;
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (int i = 0; i < 150; ++i) { 
-            cout << i + w->explosionMJD_ << " " << w->snmodel_->flux(i, w->filterList_[j]) << " " << w->filterList_[j] << endl;
+        for (double mjd = w->explosionMJD_; mjd < w->endMJD_; ++mjd) { 
+            t = w->endMJD_ - w->explosionMJD_;
+            cout << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << endl;
         }
     }
 }

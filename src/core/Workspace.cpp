@@ -34,17 +34,36 @@ Workspace::Workspace() {
  *This is mainly to allow for initialisation to occur with no crashes
  */
 void Workspace::restoreDefault() {
-    filterFolder_ = "data/filters";
+    /*Settings for a default SN*/
+    SNName_ = "06D4eu";
     LCFile_ = "data/sample/06D4eu.dat";
     z_ = 1.588;
     model_ = "BB4";
     rawParam_ = "1.7,17000,-200";
 
-    /*Set interactive mode as the default behaviour*/
+    /*Default data locations*/
+    filterFolder_ = "data/filters";
+    plotDir_ = "/Users/szymon/Projects/slap/plot";
+    plotCount_ = 0;
+    plotType_ = "data";
+
+    /*Default behaviour*/
     currentFunction_ = "quit";
     interactiveMode_ = false;
+    updateParam_ = true;
 }
 
+
+void Workspace::updatePaths() {
+    currentDir_ = boost::filesystem::current_path();
+    LCPath_ = currentDir_;
+    LCPath_ /= LCFile_;
+    if (!boost::filesystem::exists(LCFile_)) {
+        cout << "Lightcurve file does not exist! Reverting to default." << endl;
+        LCPath_ = currentDir_;
+        LCPath_ /= LCFile_;
+    }
+}
 
 void Workspace::updateCosmology() {
     shared_ptr<Cosmology> cosmology(new Cosmology(z_));
@@ -67,7 +86,7 @@ void Workspace::updateModel() {
         shared_ptr<BB6> bb6(new BB6(cosmology_, filters_));
         snmodel_ = bb6;
 
-    } else if (model_ == "Magnetar") {
+    } else if (model_ == "Magnetar" || model_ == "magnetar") {
         shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
         snmodel_ = magnetar;
 
@@ -76,14 +95,20 @@ void Workspace::updateModel() {
         shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
         snmodel_ = bb4;
     }
-
-    params_ = snmodel_->defaultParams_;
+    if (updateParam_ == true) {
+        params_ = snmodel_->defaultParams_;
+        updateParam_ = false;
+    }
 }
 
 
 void Workspace::updateEvent() {
     shared_ptr<SNEvent> snevent(new SNEvent(LCFile_, snmodel_));
     snevent_ = snevent;
+
+    startMJD_ = min<double>(snevent_->mjd_);
+    explosionMJD_ = snevent_->explosionMJD_;
+    endMJD_ = max<double>(snevent_->mjd_);
 }
 
 
@@ -124,7 +149,8 @@ void Workspace::updateRawFilters() {
 }
 
 
-void Workspace::update() {    
+void Workspace::update() { 
+    updatePaths();
     updateCosmology();
     updateFilters();
     updateModel();

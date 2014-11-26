@@ -66,15 +66,36 @@ double Magnetar::lumMagnetar(double t) {
 }
 
 
+double integralLumSN(double t, void *param) {
+    double *par = (double *)param;
+    double tauP = par[0];
+    double modelParams0 = par[1];
+    double modelParams1 = par[2];
+    double modelParams2 = par[3];
+
+    double f = 4.9e46 * pow(modelParams1, 2.0) * pow(modelParams2, -4.0) / pow(1 + t / tauP, 2.0);
+    double res = 2 * f * t * exp(pow(t / modelParams0, 2)) / pow(modelParams0, 2);
+
+    return res;
+}
+
+
 double Magnetar::lumSN(double t) {
     double res = exp(-1 * pow(t / modelParams_[0], 2.0));
 
-    vector<double> arr(int(t+1)*100);
-    for (double i = 0; i < int(t+1); i+=0.01) {
-        arr[int(i*100)] = 2 * lumMagnetar(i) * i * exp(pow(i / modelParams_[0], 2)) / pow(modelParams_[0], 2);
-    }
-    res *= trapz<double>(arr,0.01);
+    gsl_integration_workspace *w = gsl_integration_workspace_alloc(1000);
+    double integ, error;
+    size_t neval;
+    double par[] = {tauP_, modelParams_[0], modelParams_[1], modelParams_[2]};
 
+    gsl_function F;
+    F.function = &integralLumSN;
+    F.params = &par;
+
+    gsl_integration_qags(&F, 0, t, 1e39, 1e-7, 1000, w, &integ, &error);
+    res *= integ;
+    
+    gsl_integration_workspace_free (w);
     return res;
 }
 

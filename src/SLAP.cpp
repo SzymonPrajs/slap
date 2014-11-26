@@ -74,20 +74,27 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
                 w->currentFunction_ = command[0];
             }
 
-        } else if (command[0] == "LC") {
+        } else if (command[0] == "LC" || command[0] == "lc" || command[0] == "file") {
             w->LCFile_ = command[1];
 
-        } else if (command[0] == "filter") {
+        } else if (command[0] == "filter" || command[0] == "filters") {
             w->rawFilter_ = command[1]; /*TODO - deal with the raw input during init()*/
 
         } else if (command[0] == "model") {
             w->model_ = command[1];
+            w->updateParam_ = true;
 
-        } else if (command[0] == "param") {
+        } else if (command[0] == "param" || command[0] == "params") {
             w->rawParam_ = command[1];
 
         } else if (command[0] == "z") {
             w->z_ = atof(command[1].c_str());
+
+        } else if (command[0] == "plottype") {
+            w->plotType_ = command[1];
+
+        } else if (command[0] == "snname") {
+            w->SNName_ = command[1];
 
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
@@ -101,12 +108,33 @@ void runCommand(shared_ptr<Workspace> w) {
         fit(w);
 
     } else if (w->currentFunction_ == "plot") {
-        plot(w);    
+        plotModel(w);    
 
     } else if (w->currentFunction_ == "addplot") {
+        addplot(w);
 
     } else if (w->currentFunction_ == "makeplot") {
+        makeplot(w);
 
+    } else if (w->currentFunction_ == "clearplot") {
+        clearplot(w);
+
+    } else if (w->currentFunction_ == "exit") {
+        w->currentFunction_ = "quit";
+    }
+}
+
+
+void test() {
+    shared_ptr<Cosmology> cosmology(new Cosmology(0.23));
+    shared_ptr<Filters> filters(new Filters("data/filters"));
+
+    Magnetar mag(cosmology, filters);
+    mag.modelParams_ = {32.4, 7.2, 2.0, 0};
+    mag.calcDerivedParams();
+    
+    for (double i = 0; i < 100; ++i) {
+        cout << mag.lumSN(i) << endl;
     }
 }
 
@@ -147,5 +175,6 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // test();
     return 0;
 }

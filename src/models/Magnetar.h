@@ -29,13 +29,14 @@
 #include "../core/Cosmology.h"
 #include "../core/Filters.h"
 #include "../core/SNModel.h"
+#include <gsl/gsl_integration.h>
 
 using namespace std;
 using namespace vmath;
 
 class Magnetar : public SNModel {
 /*
- * modelParam_ = {tauM, B, P}
+ * modelParam_ = {tauM, B, P, R0}
  */
 private:
     double tauP_;
