@@ -1,4 +1,4 @@
-SLAP - v0.2.0
+SLAP - v0.2.1
 =============
 
 Supernova Lightcurve Analysis Package
@@ -29,10 +29,12 @@ BB4 - dynamic BB model parametrised by dR/dt, T0, dT/dt and MJD_explosion
 
 BB6 - dynamic BB model parametrised by dR/dt, d2R/dt2, T0, dT/dt, d2T/dt2 and MJD_explosion 
 
-Magnetar - [BETA] Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magnetic field - B (1e14 G), Spin period - P (ms) and explosion MJD 
+Magnetar - Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magnetic field - B (1e14 G), Spin period - P (ms) , Initial Radius - R0 (1e14cm) and explosion MJD 
 
 Releases
 --------
+**v0.2.1**: Many bug fixes. Laying ground for the plotting function.
+
 **v0.2.0**: Major revamp to the interface. Still experimental.
 
 **v0.1.2**: Added the Magnetar model.
@@ -43,11 +45,12 @@ Releases
 
 Future
 ------
-Next release will most likely introduce the use of CERN's ROOT library replacing a lot of build in functionality with the library routines.
+In the near future the MPFIT will be replaced by Minuit2 as the fitting routine used. Boost and GSL will be used to replace all routines 
+implemented by me that find their, better, alternatives in these libraries. This is mainly for integrations, interpolations and filesystem. 
 
 Licence
 -------
-SLAP - Supernova Lightcurve Analysis Package v0.2.0
+SLAP - Supernova Lightcurve Analysis Package v0.2.1
 
 Copyright (C) 2014  Szymon Prajs
 
