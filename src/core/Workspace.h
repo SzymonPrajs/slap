@@ -60,6 +60,8 @@ public:
 
     /*Program state*/
     boost::filesystem::path currentDir_;
+    // boost::filesystem::path plotDir_;
+    boost::filesystem::path LCPath_;
     bool interactiveMode_;
     bool updateParam_;
     string rawParam_;
@@ -87,6 +89,7 @@ public:
 
     /*Functions*/
     void restoreDefault();
+    void updatePaths();
     void updateCosmology();
     void updateFilters();
     void updateModel();

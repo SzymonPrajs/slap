@@ -54,6 +54,17 @@ void Workspace::restoreDefault() {
 }
 
 
+void Workspace::updatePaths() {
+    currentDir_ = boost::filesystem::current_path();
+    LCPath_ = currentDir_;
+    LCPath_ /= LCFile_;
+    if (!boost::filesystem::exists(LCFile_)) {
+        cout << "Lightcurve file does not exist! Reverting to default." << endl;
+        LCPath_ = currentDir_;
+        LCPath_ /= LCFile_;
+    }
+}
+
 void Workspace::updateCosmology() {
     shared_ptr<Cosmology> cosmology(new Cosmology(z_));
     cosmology_ = cosmology;
@@ -139,7 +150,7 @@ void Workspace::updateRawFilters() {
 
 
 void Workspace::update() { 
-    currentDir_ = boost::filesystem::current_path();   
+    updatePaths();
     updateCosmology();
     updateFilters();
     updateModel();

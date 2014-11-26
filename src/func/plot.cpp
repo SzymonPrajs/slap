@@ -41,19 +41,18 @@ void addplot(shared_ptr<Workspace> &w) {
 		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
 		
 		if (w->plotType_ == "data") {
-			boost::filesystem::path s = w->currentDir_;
+			boost::filesystem::path s = w->LCPath_;
 			boost::filesystem::path d = w->plotDir_;
-			s.append(w->LCFile_);
-			d.append("test.dat"); /*Make this a proper path and then tae the file name through Boost*/
+			d.append((s.filename()).string());
 
 			if (!boost::filesystem::exists(d)) {
 				boost::filesystem::copy_file(s, d);
 			}
-			
+
 			fhandle << w->plotCount_;
 			fhandle << " type=data";
 			fhandle << " filters=" << makeString<string>(w->filterList_, ',');
-			fhandle << " file=" << (d.append("test.dat")).string();
+			fhandle << " file=" << d.string();
 			fhandle << "\n"; 
 		}
 
