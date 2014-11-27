@@ -51,7 +51,7 @@ void addplot(shared_ptr<Workspace> &w) {
 
 			fhandle << w->plotCount_;
 			fhandle << " type=data";
-			fhandle << " filters=" << makeString<string>(w->filterList_, ',');
+			fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
 			fhandle << " file=" << d.string();
 			fhandle << "\n"; 
 		}

@@ -44,19 +44,20 @@ vector<string> dirlist(const string&);
 
 bool compareStrings(string, string);
 
+
 template<typename T>
-string makeString(const vector<T> &vec, char delim) {
-	ostringstream oss;
+string joinStrings(const vector<T> &vec, char delim) {
+    ostringstream oss;
 
-	if (vec.size() > 1) {
-		copy(vec.begin(), vec.end() - 1, ostream_iterator<T>(oss, &delim));
-		oss << vec.back();
+    if (vec.size() > 1) {
+        copy(vec.begin(), vec.end() - 1, ostream_iterator<T>(oss, &delim));
+        oss << vec.back();
 
-	} else {
-		oss << vec[0];
-	}
+    } else {
+        oss << vec[0];
+    }
 
-	return oss.str();
+    return oss.str();
 }
 
 #endif

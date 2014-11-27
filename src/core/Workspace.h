@@ -64,8 +64,8 @@ public:
     boost::filesystem::path LCPath_;
     bool interactiveMode_;
     bool updateParam_;
-    string rawParam_;
-    string rawFilter_;
+    string rawParams_;
+    string rawFilters_;
     string currentFunction_;
     int plotCount_;
     string plotType_;

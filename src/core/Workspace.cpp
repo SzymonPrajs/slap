@@ -39,7 +39,8 @@ void Workspace::restoreDefault() {
     LCFile_ = "data/sample/06D4eu.dat";
     z_ = 1.588;
     model_ = "BB4";
-    rawParam_ = "1.7,17000,-200";
+    rawParams_ = "1.7,17000,-200";
+    rawFilters_ = "0";
 
     /*Default data locations*/
     filterFolder_ = "data/filters";
@@ -109,6 +110,8 @@ void Workspace::updateEvent() {
     startMJD_ = min<double>(snevent_->mjd_);
     explosionMJD_ = snevent_->explosionMJD_;
     endMJD_ = max<double>(snevent_->mjd_);
+
+    filterList_ = snevent_->filterList_;
 }
 
 
@@ -124,8 +127,8 @@ void Workspace::updateMode() {
 void Workspace::updateRawParams() {
     vector<string> params;
 
-    if (rawParam_ != "0") {
-        split(rawParam_, ',', params);
+    if (rawParams_ != "0") {
+        split(rawParams_, ',', params);
 
         /*if the params are not correct set to default for the model*/
         if (params.size() != snmodel_->noModelParams_) {
@@ -139,13 +142,18 @@ void Workspace::updateRawParams() {
         }
 
         /*Once the parameters have been dealt with set to 0 to ignore in the future*/
-        rawParam_ = "0";
+        rawParams_ = "0";
     }
 }
 
 
 void Workspace::updateRawFilters() {
-    filterList_ = snevent_->filterList_;
+    if (rawFilters_ != "0") {
+        filterList_ = split(rawFilters_, ',');
+
+        /*Once the filters have been dealt with set to 0 to ignore in the future*/
+        rawFilters_ = "0";
+    }
 }
 
 

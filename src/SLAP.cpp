@@ -78,14 +78,14 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             w->LCFile_ = command[1];
 
         } else if (command[0] == "filter" || command[0] == "filters") {
-            w->rawFilter_ = command[1]; /*TODO - deal with the raw input during init()*/
+            w->rawFilters_ = command[1]; /*TODO - deal with the raw input during init()*/
 
         } else if (command[0] == "model") {
             w->model_ = command[1];
             w->updateParam_ = true;
 
         } else if (command[0] == "param" || command[0] == "params") {
-            w->rawParam_ = command[1];
+            w->rawParams_ = command[1];
 
         } else if (command[0] == "z") {
             w->z_ = atof(command[1].c_str());
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
             if (!input)
                 break;
  
-            add_history(input);
+            add_history(input); /*Change not to add empty entries*/
      
             sInput = input;
             split(sInput, ' ', options);

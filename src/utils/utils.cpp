@@ -70,5 +70,5 @@ vector<string> dirlist(const string &path) {
 
 
 bool compareStrings(string i, string j) {
-  return (i==j);
+    return (i==j);
 }
