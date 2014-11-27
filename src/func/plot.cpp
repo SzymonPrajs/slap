@@ -42,19 +42,21 @@ void addplot(shared_ptr<Workspace> &w) {
 		
 		if (w->plotType_ == "data") {
 			boost::filesystem::path s = w->LCPath_;
-			boost::filesystem::path d = w->plotDir_;
-			d.append((s.filename()).string());
+			boost::filesystem::path d = w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
 
 			if (!boost::filesystem::exists(d)) {
 				boost::filesystem::copy_file(s, d);
 			}
-
-			fhandle << w->plotCount_;
-			fhandle << " type=data";
-			fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
-			fhandle << " file=" << d.string();
-			fhandle << "\n"; 
+		
+		} else if (w->plotType_ == "model") {
+			plotModel(w);
 		}
+
+		fhandle << w->plotCount_;
+		fhandle << " type=" + w->plotType_;
+		fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
+		fhandle << " file=" << w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+		fhandle << "\n";
 
 		fhandle.close();
 		w->plotCount_++;
@@ -66,11 +68,15 @@ void addplot(shared_ptr<Workspace> &w) {
 
 
 void makeplot(shared_ptr<Workspace> &w) {
-
+	/*
+	 *TODO: This function need to call the python script used for plotting.
+	 *This is perhapse a good idea to begin writting an installer for this
+	 */
 }
 
 void clearplot(shared_ptr<Workspace> &w) {
 	boost::filesystem::remove_all(w->plotDir_);
+	w->plotCount_ = 0;
 }
 
 
@@ -79,10 +85,15 @@ void plotModel(shared_ptr<Workspace> &w) {
     w->snmodel_->calcDerivedParams();
     double t = 0;
 
+	ofstream plotFile;
+	plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
+
     for (int j = 0; j < w->filterList_.size(); ++j) {
         for (double mjd = w->explosionMJD_; mjd < w->endMJD_; ++mjd) { 
-            t = w->endMJD_ - w->explosionMJD_;
-            cout << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << endl;
+            t = mjd - w->explosionMJD_;
+            plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << "\n";
         }
     }
+
+    plotFile.close();
 }

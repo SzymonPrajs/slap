@@ -108,7 +108,7 @@ void Workspace::updateEvent() {
     snevent_ = snevent;
 
     startMJD_ = min<double>(snevent_->mjd_);
-    explosionMJD_ = snevent_->explosionMJD_;
+    /*ExplosionMJD needs to be fixed!*/
     endMJD_ = max<double>(snevent_->mjd_);
 
     filterList_ = snevent_->filterList_;

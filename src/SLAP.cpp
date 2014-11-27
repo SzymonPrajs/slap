@@ -159,12 +159,15 @@ int main(int argc, char *argv[]) {
             snprintf(shell_prompt, sizeof(shell_prompt), "SLAP> ");
             input = readline(shell_prompt);
  
-            if (!input)
+            if (!input) {
                 break;
- 
-            add_history(input); /*Change not to add empty entries*/
+            }
+             
+            sInput = input;    
+            if (!sInput.empty()) {
+                add_history(input);
+            }
      
-            sInput = input;
             split(sInput, ' ', options);
             applyOptions(options, w);
             w->update();
