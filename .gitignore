@@ -29,9 +29,14 @@
 *.app
 slap
 
+# Images
+*.png
+*.eps
+*.ps
+*.pdf
+*.jpeg
+
 # Unnecessary folders
 .DS_Store
 test
-
 plot
-info.txt

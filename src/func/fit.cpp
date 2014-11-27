@@ -38,7 +38,7 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
         if (sn->mjd_[i] >= sn->explosionMJD_) {
             t = sn->mjd_[i] - sn->explosionMJD_;
             residual[i] = (sn->flux_[i] - sn->snmodel_->flux(t, sn->filter_[i])) / sn->fluxErr_[i];
-            // cout << i << "  -  " << sn->flux_[i] << "  -  " << sn->snmodel_->flux(t, sn->filter_[i]) << endl;
+
         } else {
             residual[i] = sn->flux_[i] / sn->fluxErr_[i];
         }
@@ -53,7 +53,6 @@ void fit (shared_ptr<Workspace> &w) {
 
     vector<double> par = w->params_;
     par.push_back(sn->explosionMJD_ - 10);
-    
     int status;
     mp_result result;
     mp_config config;
