@@ -90,11 +90,14 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "z") {
             w->z_ = atof(command[1].c_str());
 
-        } else if (command[0] == "plottype") {
+        } else if (command[0] == "ptype") {
             w->plotType_ = command[1];
 
         } else if (command[0] == "snname") {
             w->SNName_ = command[1];
+
+        } else if (command[0] == "expMJD") {
+            w->explosionMJD_ = atof(command[1].c_str());
 
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;

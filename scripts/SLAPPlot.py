@@ -77,7 +77,7 @@ class Plots:
         ID = params[0]
         LC = ""
         Type = ""
-        Filters = ""
+        Filter = ""
 
         for i in range(1, len(params)):
             param = params[i].split("=")
@@ -88,7 +88,7 @@ class Plots:
                     Type = param[1]
 
                 elif (param[0] == "filters"):
-                    Filters = param[1].split(",")
+                    Filter = param[1].split(",")
 
                 elif (param[0] == "file"):
                     LC = param[1] 
@@ -96,7 +96,7 @@ class Plots:
         self.dataPlots.append(self.readData(LC))
         self.Types.append(Type)
         self.Files.append(LC)
-        self.Filters.append(np.unique(plots.dataPlots[-1].flt))
+        self.Filters.append(Filter)
         self.UniqueFilters = np.append(self.UniqueFilters, self.Filters[-1])
         self.UniqueFilters = np.unique(self.UniqueFilters)
 
@@ -105,25 +105,39 @@ class Plots:
 class Canvas:
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
+    data = Plots()
+    fltColour = dict()
 
-    def __init__(self):
-        pass
+
+    def col(self, i):
+        colour = {0 : "#2ecc71", 1 : "#3498db", 2 : "#9b59b6", \
+                  3 : "#34495e", 4 : "#f1c40f", 5 : "#e67e22", \
+                  6 : "#e74c3c", 7 : "#1abc9c"}
+
+        return colour[i % 8]
 
 
-    def plotAll(self, data):
-        for f in data.UniqueFilters:
-            for i in range(len(data.dataPlots)):
-                if (data.Types[i] == "data"):
-                    idx = np.where(data.dataPlots[i].flt == f)
-                    self.ax1.scatter(data.dataPlots[i].mjd[idx], data.dataPlots[i].flux[idx])
-                    self.ax1.errorbar(data.dataPlots[i].mjd[idx], data.dataPlots[i].flux[idx], yerr=data.dataPlots[i].error[idx], fmt='o')
 
-                elif (data.Types[i] == "model"):
-                    idx = np.where(data.dataPlots[i].flt == f)
-                    self.ax1.plot(data.dataPlots[i].mjd[idx], data.dataPlots[i].flux[idx])
+    def __init__(self, data):
+        self.data = data
+        for i in range(len(self.data.UniqueFilters)):
+            self.fltColour.update({self.data.UniqueFilters[i] : self.col(i)})
+
+
+    def plotAll(self):
+        for i in range(len(self.data.dataPlots)):
+            for f in self.data.Filters[i]:
+                if (self.data.Types[i] == "data"):
+                    idx = np.where(self.data.dataPlots[i].flt == f)
+                    self.ax1.scatter(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f])
+                    self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], \
+                                      yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
+
+                elif (self.data.Types[i] == "model"):
+                    idx = np.where(self.data.dataPlots[i].flt == f)
+                    self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f])
 
         # TODO: The max value needs to be implemented
-        # TODO: Colours needs to be implemented
         plt.ylim(0, 1e-17) 
         plt.show()
 
@@ -151,8 +165,8 @@ if __name__ == "__main__":
             elif (len(INFOData[i]) > 1):
                 plots.addPlot(INFOData[i])
 
-        canvas = Canvas()
-        canvas.plotAll(plots)
+        canvas = Canvas(plots)
+        canvas.plotAll()
 
     else:
         print "ERROR! No INFO file found."
