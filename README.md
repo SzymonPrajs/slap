@@ -1,4 +1,4 @@
-SLAP - v0.2.1
+SLAP - v0.2.2
 =============
 
 Supernova Lightcurve Analysis Package
@@ -33,6 +33,8 @@ Magnetar - Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magne
 
 Releases
 --------
+**v0.2.2**: Introducing a plotting routine implemented in Matplotlib. Some small bug fixes.
+
 **v0.2.1**: Many bug fixes. Laying ground for the plotting function.
 
 **v0.2.0**: Major revamp to the interface. Still experimental.
@@ -50,7 +52,7 @@ implemented by me that find their, better, alternatives in these libraries. This
 
 Licence
 -------
-SLAP - Supernova Lightcurve Analysis Package v0.2.1
+SLAP - Supernova Lightcurve Analysis Package v0.2.2
 
 Copyright (C) 2014  Szymon Prajs
 
