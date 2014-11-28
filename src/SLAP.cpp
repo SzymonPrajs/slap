@@ -76,9 +76,11 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
         } else if (command[0] == "LC" || command[0] == "lc" || command[0] == "file") {
             w->LCFile_ = command[1];
+            w->updateEvent_ = true;
+
 
         } else if (command[0] == "filter" || command[0] == "filters") {
-            w->rawFilters_ = command[1]; /*TODO - deal with the raw input during init()*/
+            w->rawFilters_ = command[1];
 
         } else if (command[0] == "model") {
             w->model_ = command[1];

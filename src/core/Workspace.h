@@ -65,6 +65,7 @@ public:
     boost::filesystem::path LCPath_;
     bool interactiveMode_;
     bool updateParam_;
+    bool updateEvent_;
     string rawParams_;
     string rawFilters_;
     string currentFunction_;

@@ -52,6 +52,7 @@ void Workspace::restoreDefault() {
     currentFunction_ = "quit";
     interactiveMode_ = false;
     updateParam_ = true;
+    updateEvent_ = true;
 }
 
 
@@ -111,11 +112,15 @@ void Workspace::updateEvent() {
     shared_ptr<SNEvent> snevent(new SNEvent(LCFile_, snmodel_));
     snevent_ = snevent;
 
-    startMJD_ = min<double>(snevent_->mjd_);
-    /*ExplosionMJD needs to be fixed!*/
-    endMJD_ = max<double>(snevent_->mjd_);
+    if (updateEvent_ == true) {
+        startMJD_ = min<double>(snevent_->mjd_);
+        explosionMJD_ = min<double>(snevent_->mjd_);
+        endMJD_ = max<double>(snevent_->mjd_);
 
-    filterList_ = snevent_->filterList_;
+        filterList_ = snevent_->filterList_;
+
+        updateEvent_ = false;
+    }
 }
 
 
