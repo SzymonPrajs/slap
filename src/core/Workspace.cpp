@@ -91,6 +91,10 @@ void Workspace::updateModel() {
         shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
         snmodel_ = magnetar;
 
+    } else if (model_ == "MagnetarR" || model_ == "magnetarR") {
+        shared_ptr<MagnetarR> magnetarR(new MagnetarR(cosmology_, filters_));
+        snmodel_ = magnetarR;
+
     } else {
         cout << model_ << " is not a recognised model. Restoring default (BB4)" << endl;
         shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
