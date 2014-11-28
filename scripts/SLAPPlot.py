@@ -125,20 +125,26 @@ class Canvas:
 
 
     def plotAll(self):
+        ymax = -1000
         for i in range(len(self.data.dataPlots)):
+            if (ymax < self.data.dataPlots[i].flux.max()):
+                ymax = self.data.dataPlots[i].flux.max()
+
             for f in self.data.Filters[i]:
                 if (self.data.Types[i] == "data"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
-                    self.ax1.scatter(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f])
+                    self.ax1.scatter(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f], label="data - "+f)
                     self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], \
                                       yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
 
                 elif (self.data.Types[i] == "model"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
-                    self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f])
+                    self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f], label="model - "+f)
 
-        # TODO: The max value needs to be implemented
-        plt.ylim(0, 1e-17) 
+        plt.legend()
+        plt.xlabel("Time (MJD)")
+        plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)")
+        plt.ylim(-0.2*ymax, 1.2*ymax) 
         plt.show()
 
 
