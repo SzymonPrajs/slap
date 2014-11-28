@@ -176,11 +176,11 @@ int main(int argc, char *argv[]) {
             w->update();
 
             runCommand(w);
-     
+
             free(input);
         }
     }
 
-    // test();
+    clearplot(w);
     return 0;
 }

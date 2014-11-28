@@ -68,10 +68,7 @@ void addplot(shared_ptr<Workspace> &w) {
 
 
 void makeplot(shared_ptr<Workspace> &w) {
-	/*
-	 *TODO: This function need to call the python script used for plotting.
-	 *This is perhapse a good idea to begin writting an installer for this
-	 */
+	system("python scripts/SLAPPlot.py /Users/szymon/Projects/slap/plot");
 }
 
 void clearplot(shared_ptr<Workspace> &w) {
