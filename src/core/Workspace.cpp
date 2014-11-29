@@ -35,35 +35,43 @@ Workspace::Workspace() {
  */
 void Workspace::restoreDefault() {
     /*Settings for a default SN*/
-    SNName_ = "06D4eu";
-    LCFile_ = "data/sample/06D4eu.dat";
-    z_ = 1.588;
-    model_ = "BB4";
-    rawParams_ = "1.7,17000,-200";
-    rawFilters_ = "0";
+    LC_ = "data/sample/SN2010gx.dat";
+    model_ = "Magnetar";
+    rawParams_ = "default";
+    rawFilters_ = "LC";
+    rawStartMJD_ = "LC";
+    rawExplosionMJD_ = "LC";
+    rawEndMJD_ = "LC";
+    z_ = 0.23;
 
     /*Default data locations*/
     filterFolder_ = "data/filters";
     plotDir_ = "/Users/szymon/Projects/slap/plot";
-    plotCount_ = 0;
     plotType_ = "data";
+    plotCount_ = 0;
 
     /*Default behaviour*/
     currentFunction_ = "quit";
     interactiveMode_ = false;
     updateParam_ = true;
     updateEvent_ = true;
+
+    /*Default fit params*/
+    fitParam_ = {};
+    fitParamError_ = {};
+    fitExplosionMJD_ = -1;
 }
 
 
 void Workspace::updatePaths() {
     currentDir_ = boost::filesystem::current_path();
-    LCPath_ = currentDir_;
-    LCPath_ /= LCFile_;
-    if (!boost::filesystem::exists(LCFile_)) {
-        cout << "Lightcurve file does not exist! Reverting to default." << endl;
-        LCPath_ = currentDir_;
-        LCPath_ /= LCFile_;
+    boost::filesystem::path path(currentDir_);
+    path /= LC_;
+    if (boost::filesystem::exists(LC_)) {
+        LCPath_ = path;
+    
+    } else {
+        cout << "Lightcurve file does not exist! Reverting to previous value." << endl;
     }
 }
 
@@ -101,26 +109,38 @@ void Workspace::updateModel() {
         shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
         snmodel_ = bb4;
     }
-    if (updateParam_ == true) {
+  
+    if (rawParams_ == "default") {
         params_ = snmodel_->defaultParams_;
-        updateParam_ = false;
     }
 }
 
 
 void Workspace::updateEvent() {
-    shared_ptr<SNEvent> snevent(new SNEvent(LCFile_, snmodel_));
+    shared_ptr<SNEvent> snevent(new SNEvent(LC_, snmodel_));
     snevent_ = snevent;
+}
 
-    if (updateEvent_ == true) {
-        startMJD_ = min<double>(snevent_->mjd_);
+
+void Workspace::updateDates() {
+    if (rawExplosionMJD_ == "LC") {
         explosionMJD_ = min<double>(snevent_->mjd_);
-        endMJD_ = max<double>(snevent_->mjd_);
 
-        filterList_ = snevent_->filterList_;
+    } else if (rawExplosionMJD_ == "fit") {
+        if (fitExplosionMJD_ == -1) {
+            cout << "No fits have been performed yet. Restoring default." << endl;
 
-        updateEvent_ = false;
+        } else {
+            explosionMJD_ = fitExplosionMJD_;
+        }
+
+    } else {
+        explosionMJD_ = atof(rawExplosionMJD_.c_str());
     }
+
+    /*TODO: Implement the changes in start and end MJD - This includes resizing the LC*/
+    startMJD_ = min<double>(snevent_->mjd_);
+    endMJD_ = max<double>(snevent_->mjd_);
 }
 
 
@@ -134,35 +154,56 @@ void Workspace::updateMode() {
 
 
 void Workspace::updateRawParams() {
-    vector<string> params;
+    if (rawParams_ == "previous") {
+        /*retain previous parameters with no changes*/
 
-    if (rawParams_ != "0") {
+    } else if (rawParams_ == "default") {
+        params_ = snmodel_->defaultParams_;
+
+    } else if (rawParams_ == "fit") {
+        if (fitParam_.size() == 0) {
+            cout << "No fit parameters present. Restoring default." << endl;
+            params_ = snmodel_->defaultParams_;
+        
+        } else {
+            params_ = fitParam_;
+        }
+
+    } else {
+        vector<string> params;
         split(rawParams_, ',', params);
 
         /*if the params are not correct set to default for the model*/
         if (params.size() != snmodel_->noModelParams_) {
+            cout << "Wrong numbr of parameters. Restoring default." << endl;
             params_ = snmodel_->defaultParams_;
         
         } else {
             for (int i = 0; i < params.size(); ++i) {
                 params_[i] = atof(params[i].c_str());
-                
             }
         }
-
-        /*Once the parameters have been dealt with set to 0 to ignore in the future*/
-        rawParams_ = "0";
     }
+
+    /*Once the parameters have been dealt with set to 0 to ignore in the future*/
+    rawParams_ = "previous";
 }
 
 
 void Workspace::updateRawFilters() {
-    if (rawFilters_ != "0") {
-        filterList_ = split(rawFilters_, ',');
+    if (rawFilters_ == "previous") {
+        /*Retail previous settings*/
 
-        /*Once the filters have been dealt with set to 0 to ignore in the future*/
-        rawFilters_ = "0";
+    } else if (rawFilters_ == "LC") {
+        /*TODO: This needs to be looked up properly*/
+        filterList_ = snevent_->filterList_;
+
+    } else {
+        filterList_ = split(rawFilters_, ',');
     }
+
+    /*Once the filters have been dealt with set to 0 to ignore in the future*/
+    rawFilters_ = "0";
 }
 
 
@@ -172,6 +213,7 @@ void Workspace::update() {
     updateFilters();
     updateModel();
     updateEvent();
+    updateDates();
     updateMode();
     updateRawParams();
     updateRawFilters();

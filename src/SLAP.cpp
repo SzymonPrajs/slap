@@ -75,16 +75,13 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             }
 
         } else if (command[0] == "LC" || command[0] == "lc" || command[0] == "file") {
-            w->LCFile_ = command[1];
-            w->updateEvent_ = true;
-
+            w->LC_ = command[1];
 
         } else if (command[0] == "filter" || command[0] == "filters") {
             w->rawFilters_ = command[1];
 
         } else if (command[0] == "model") {
             w->model_ = command[1];
-            w->updateParam_ = true;
 
         } else if (command[0] == "param" || command[0] == "params") {
             w->rawParams_ = command[1];
@@ -99,7 +96,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             w->SNName_ = command[1];
 
         } else if (command[0] == "expMJD") {
-            w->explosionMJD_ = atof(command[1].c_str());
+            w->rawExplosionMJD_ = atof(command[1].c_str());
 
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
@@ -110,21 +107,27 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
 void runCommand(shared_ptr<Workspace> w) {
     if (w->currentFunction_ == "fit") {
+        w->update();
         fit(w);
 
     } else if (w->currentFunction_ == "plot") {
+        w->update();
         plotModel(w);    
 
     } else if (w->currentFunction_ == "addplot") {
+        w->update();
         addplot(w);
 
     } else if (w->currentFunction_ == "makeplot") {
+        w->update();
         makeplot(w);
 
     } else if (w->currentFunction_ == "clearplot") {
+        w->update();
         clearplot(w);
 
     } else if (w->currentFunction_ == "exit") {
+        w->update();
         w->currentFunction_ = "quit";
     }
 }
@@ -151,19 +154,17 @@ int main(int argc, char *argv[]) {
     shared_ptr<Workspace> w(new Workspace());
     applyOptions(options, w);
 
-    w->update();
-
     if (w->interactiveMode_ == false) {
+        w->update();
         runCommand(w);
     
     } else {
         string sInput;
         char* input, shell_prompt[1000];
-
         while (w->currentFunction_ != "quit") {
             snprintf(shell_prompt, sizeof(shell_prompt), "SLAP> ");
             input = readline(shell_prompt);
- 
+            cout << "f" << endl;
             if (!input) {
                 break;
             }
@@ -175,7 +176,6 @@ int main(int argc, char *argv[]) {
      
             split(sInput, ' ', options);
             applyOptions(options, w);
-            w->update();
 
             runCommand(w);
 

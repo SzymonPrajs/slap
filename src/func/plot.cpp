@@ -29,7 +29,7 @@ void addplot(shared_ptr<Workspace> &w) {
 
 	if (w->plotCount_ == 0) {
 		boost::filesystem::create_directories(w->plotDir_);
-		fhandle.open(w->plotDir_ + "/info.dat");
+		fhandle.open(w->plotDir_.string() + "/info.dat");
 		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
 		fhandle.close();
@@ -37,12 +37,12 @@ void addplot(shared_ptr<Workspace> &w) {
 		cout << "Something went wrong! Cannot create a temporary folder" << endl;
 	}
 
-	if (boost::filesystem::exists(w->plotDir_ + "/info.dat")) {
-		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
+	if (boost::filesystem::exists(w->plotDir_.string() + "/info.dat")) {
+		fhandle.open(w->plotDir_.string() + "/info.dat", ios::app);
 		
 		if (w->plotType_ == "data") {
-			boost::filesystem::path s = w->LCPath_;
-			boost::filesystem::path d = w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+			boost::filesystem::path s = w->LC_;
+			boost::filesystem::path d = w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat";
 
 			if (!boost::filesystem::exists(d)) {
 				boost::filesystem::copy_file(s, d);
@@ -55,7 +55,7 @@ void addplot(shared_ptr<Workspace> &w) {
 		fhandle << w->plotCount_;
 		fhandle << " type=" + w->plotType_;
 		fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
-		fhandle << " file=" << w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+		fhandle << " file=" << w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat";
 		fhandle << "\n";
 
 		fhandle.close();
@@ -83,7 +83,7 @@ void plotModel(shared_ptr<Workspace> &w) {
     double t = 0;
 
 	ofstream plotFile;
-	plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
+	plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
         for (double mjd = w->explosionMJD_; mjd < w->endMJD_; ++mjd) { 
