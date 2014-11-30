@@ -105,13 +105,9 @@ void Workspace::updateModel() {
         snmodel_ = magnetarR;
 
     } else {
-        cout << model_ << " is not a recognised model. Restoring default (BB4)" << endl;
-        shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
-        snmodel_ = bb4;
-    }
-  
-    if (rawParams_ == "default") {
-        params_ = snmodel_->defaultParams_;
+        cout << model_ << " is not a recognised model. Restoring default (Magnetar)" << endl;
+        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
+        snmodel_ = magnetar;
     }
 }
 
@@ -203,7 +199,7 @@ void Workspace::updateRawFilters() {
     }
 
     /*Once the filters have been dealt with set to 0 to ignore in the future*/
-    rawFilters_ = "0";
+    rawFilters_ = "previous";
 }
 
 

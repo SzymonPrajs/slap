@@ -73,9 +73,9 @@ void fit (shared_ptr<Workspace> &w) {
     cout << setw(11) << "Chi^2 " << setw(17) << result.bestnorm <<  endl;
     cout << setw(11) << "RedChi^2 " << setw(17) << result.bestnorm / sn->mjd_.size() << endl;
 
-    w->fitParam_ = par;
-    w->fitParamError_ = parErr;
     w->explosionMJD_ = par.back();
     par.pop_back();
-    w->params_ = par;
+    parErr.pop_back();
+    w->fitParam_ = par;
+    w->fitParamError_ = parErr;
 }

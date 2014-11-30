@@ -107,27 +107,21 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
 void runCommand(shared_ptr<Workspace> w) {
     if (w->currentFunction_ == "fit") {
-        w->update();
         fit(w);
 
     } else if (w->currentFunction_ == "plot") {
-        w->update();
         plotModel(w);    
 
     } else if (w->currentFunction_ == "addplot") {
-        w->update();
         addplot(w);
 
     } else if (w->currentFunction_ == "makeplot") {
-        w->update();
         makeplot(w);
 
     } else if (w->currentFunction_ == "clearplot") {
-        w->update();
         clearplot(w);
 
     } else if (w->currentFunction_ == "exit") {
-        w->update();
         w->currentFunction_ = "quit";
     }
 }
@@ -154,8 +148,9 @@ int main(int argc, char *argv[]) {
     shared_ptr<Workspace> w(new Workspace());
     applyOptions(options, w);
 
+    w->update();
+
     if (w->interactiveMode_ == false) {
-        w->update();
         runCommand(w);
     
     } else {
@@ -164,7 +159,7 @@ int main(int argc, char *argv[]) {
         while (w->currentFunction_ != "quit") {
             snprintf(shell_prompt, sizeof(shell_prompt), "SLAP> ");
             input = readline(shell_prompt);
-            cout << "f" << endl;
+
             if (!input) {
                 break;
             }
@@ -177,6 +172,7 @@ int main(int argc, char *argv[]) {
             split(sInput, ' ', options);
             applyOptions(options, w);
 
+            w->update();
             runCommand(w);
 
             free(input);

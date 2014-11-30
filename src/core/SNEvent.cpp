@@ -31,7 +31,7 @@ SNEvent::SNEvent(string file, shared_ptr<SNModel> model) : snmodel_(model) {
     readData(file);
     setFilterList();
     verifyFilters();
-    setFilterRange();
+    // setFilterRange();
 }
 
 
@@ -81,9 +81,9 @@ void SNEvent::verifyFilters() {
 
 void SNEvent::setFilterRange() {
     int ID;
-    double start = 999999; 
+    double start = 9999999; 
     double end = 0;
-    double step = 9999;
+    double step = 999999;
 
 
     for (int i = 0; i < filterList_.size(); ++i) {

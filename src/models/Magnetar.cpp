@@ -28,7 +28,7 @@ using namespace vmath;
 Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     noSEDParams_ = 2;
     noModelParams_ = 3;
-    defaultParams_ = {30, 3, 1.5};
+    defaultParams_ = {30.0, 3.0, 2.0};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);

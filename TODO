@@ -1,0 +1,6 @@
+- There is a bug where the Explosion MJD does not get carried over into the plotting code.
+- Implement ptype=fit
+- Add residuals for SLAPplot
+- Implement Analyse
+- Find Zero points
+- Calculate Absolute Magnitudes
