@@ -52,6 +52,9 @@ public:
 
     /*Parameters*/
     double fitExplosionMJD_;
+    double fitExplosionMJDError_;
+    double fitChi_;
+    double fitRedChi_;
     vector<double> params_;
     vector<double> fitParam_;
     vector<double> fitParamError_;

@@ -60,6 +60,7 @@ void Workspace::restoreDefault() {
     fitParam_ = {};
     fitParamError_ = {};
     fitExplosionMJD_ = -1;
+    fitExplosionMJDError_ = -1;
 }
 
 
@@ -119,7 +120,10 @@ void Workspace::updateEvent() {
 
 
 void Workspace::updateDates() {
-    if (rawExplosionMJD_ == "LC") {
+    if (rawExplosionMJD_ == "previous") {
+        /*No changes required*/
+
+    } else if (rawExplosionMJD_ == "LC") {
         explosionMJD_ = min<double>(snevent_->mjd_);
 
     } else if (rawExplosionMJD_ == "fit") {
@@ -133,6 +137,8 @@ void Workspace::updateDates() {
     } else {
         explosionMJD_ = atof(rawExplosionMJD_.c_str());
     }
+
+    rawExplosionMJD_ = "previous";
 
     /*TODO: Implement the changes in start and end MJD - This includes resizing the LC*/
     startMJD_ = min<double>(snevent_->mjd_);

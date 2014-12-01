@@ -96,7 +96,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             w->SNName_ = command[1];
 
         } else if (command[0] == "expMJD") {
-            w->rawExplosionMJD_ = atof(command[1].c_str());
+            w->rawExplosionMJD_ = command[1];
 
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;

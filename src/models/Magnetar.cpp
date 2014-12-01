@@ -134,10 +134,10 @@ double Magnetar::temperature(double t) {
 
 
 void Magnetar::printDerivedVariables() {
-    cout << "Magnetar: " << energyMagnetar_ << endl;
-    cout << "Kinetic: " << energyKinetic_ << endl;
-    cout << "Mass: " << ejectedMass_ << endl;
-    cout << "Velocity: " << velocityCore_ << endl;
+    cout << energyMagnetar_ << " ";
+    cout << energyKinetic_ << " ";
+    cout << ejectedMass_ << " ";
+    cout << velocityCore_ << endl;
 }
 
 
@@ -153,7 +153,7 @@ vector<double> Magnetar::calcSED(double t) {
 
     double res;
     for(int i = 0; i < restWavelength_.size (); ++i) {
-        res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8,5);
+        res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8, 5);
         res /= exp(CGS_H * CGS_C / (restWavelength_[i] * 1e-8 * CGS_K * SEDParams_[1])) - 1.0;
         res *= 4 * M_PI * pow(SEDParams_[0],2);
         res *= 1e-8;
