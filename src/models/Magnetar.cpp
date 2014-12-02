@@ -120,9 +120,11 @@ double Magnetar::radius(double t) {
     double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
     if (rad19 > radiusCore) {
+        return rad19;
+    } else if (rad20 > 0) {
         return rad20;
     } else {
-        return rad20;
+        return 0;
     }
 
 }
