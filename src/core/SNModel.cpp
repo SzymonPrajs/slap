@@ -44,6 +44,7 @@ SNModel::SNModel(shared_ptr<Filters> filters) {
 double SNModel::flux(double t, string filterName) {
     vector<double> sed = calcSED(t * cosmology_->a_);
     sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
+    sed = mult<double>(sed, absLines_);
     return filters_->flux(sed, filterName);
 }
 
@@ -51,6 +52,28 @@ double SNModel::flux(double t, string filterName) {
 void SNModel::setWavelength() {
     obsWavelength_ = filters_->masterWavelength_;
     restWavelength_ = mult<double>(obsWavelength_,cosmology_->a_);
+    absFilter();
+}
+
+
+void SNModel::absFilter() {
+    vector <vector<double> > data;
+    loadtxt<double>("/Users/szymon/Projects/slap/data/absFilter.dat", 2, data);
+    double min = data[0].front();
+    double max = data[0].back();
+    absLines_.resize(restWavelength_.size());
+
+    for (int i = 0; i < restWavelength_.size(); ++i) {
+        if (restWavelength_[i] < min) {
+            absLines_[i] = 0.2;
+        
+        } else if (restWavelength_[i] > max) {
+            absLines_[i] = 1.0;
+        
+        } else {
+            absLines_[i] = interp(restWavelength_[i], data[0], data[1]);
+        }
+    }
 }
 
 

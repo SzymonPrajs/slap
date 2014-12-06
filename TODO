@@ -1,3 +1,4 @@
+- Generalise where the absLines files comes from in Model
 - Implement ptype=fit
 - Add residuals for SLAPplot
 - Implement Analyse
