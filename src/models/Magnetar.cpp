@@ -28,7 +28,7 @@ using namespace vmath;
 Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     noSEDParams_ = 2;
     noModelParams_ = 3;
-    defaultParams_ = {30, 3, 1.5};
+    defaultParams_ = {30.0, 3.0, 2.0};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);
@@ -58,6 +58,8 @@ void Magnetar::calcDerivedParams() {
     /* core velocity */
     temp = energyKinetic_ * 10.0 / (3.0 * ejectedMass_ * 2.0e33); 
     velocityCore_ = sqrt(temp) * 86400;
+
+    derivedParams_ = {energyMagnetar_, energyKinetic_, ejectedMass_, velocityCore_};
 }
 
 
@@ -112,7 +114,7 @@ double Magnetar::energy(double t) {
 
 
 double Magnetar::radius(double t) {
-    double radiusCore = modelParams_[3] * 1e14 + velocityCore_ * t;
+    double radiusCore = velocityCore_ * t;
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
     double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
@@ -120,9 +122,11 @@ double Magnetar::radius(double t) {
     double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
     if (rad19 > radiusCore) {
+        return rad19;
+    } else if (rad20 > 0) {
         return rad20;
     } else {
-        return rad20;
+        return 0;
     }
 
 }
@@ -134,10 +138,10 @@ double Magnetar::temperature(double t) {
 
 
 void Magnetar::printDerivedVariables() {
-    cout << "Magnetar: " << energyMagnetar_ << endl;
-    cout << "Kinetic: " << energyKinetic_ << endl;
-    cout << "Mass: " << ejectedMass_ << endl;
-    cout << "Velocity: " << velocityCore_ << endl;
+    cout << energyMagnetar_ << " ";
+    cout << energyKinetic_ << " ";
+    cout << ejectedMass_ << " ";
+    cout << velocityCore_ << endl;
 }
 
 
@@ -153,7 +157,7 @@ vector<double> Magnetar::calcSED(double t) {
 
     double res;
     for(int i = 0; i < restWavelength_.size (); ++i) {
-        res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8,5);
+        res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8, 5);
         res /= exp(CGS_H * CGS_C / (restWavelength_[i] * 1e-8 * CGS_K * SEDParams_[1])) - 1.0;
         res *= 4 * M_PI * pow(SEDParams_[0],2);
         res *= 1e-8;

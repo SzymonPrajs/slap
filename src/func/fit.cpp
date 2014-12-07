@@ -48,7 +48,20 @@ int resFunc(int m, int n, double *p, double *residual, double **dvec, void *vars
 }
 
 
-void fit (shared_ptr<Workspace> &w) {
+void printParams(shared_ptr<Workspace> &w) {
+    cout << w->LCPath_.stem().string() << " " << w->z_ << " ";
+
+    for (int i = 0; i < w->fitParam_.size(); ++i) {
+        cout << w->fitParam_[i] << " " << w->fitParamError_[i] << " ";
+    }
+
+    cout << w->fitExplosionMJD_ << " " << w->fitExplosionMJDError_ << " ";
+    cout << w->fitChi_ << " " << w->fitRedChi_ << " ";
+    w->snmodel_->printDerivedVariables();
+}
+
+
+void fit(shared_ptr<Workspace> &w) {
     shared_ptr<SNEvent> sn = w->snevent_;
 
     vector<double> par = w->params_;
@@ -66,16 +79,13 @@ void fit (shared_ptr<Workspace> &w) {
     config.maxiter = 2000;
     status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, &config, (void*) sn.get(), &result);
 
-    for (int i = 0; i < par.size(); ++i) {
-        cout << setw(10) << par[i] << setw(8) << " +/- " << setw(10) << parErr[i] << endl;
-    }
-
-    cout << setw(11) << "Chi^2 " << setw(17) << result.bestnorm <<  endl;
-    cout << setw(11) << "RedChi^2 " << setw(17) << result.bestnorm / sn->mjd_.size() << endl;
-
+    w->fitExplosionMJD_ = par.back();
+    w->fitExplosionMJDError_ = parErr.back();
+    par.pop_back();
+    parErr.pop_back();
     w->fitParam_ = par;
     w->fitParamError_ = parErr;
-    w->explosionMJD_ = par.back();
-    par.pop_back();
-    w->params_ = par;
+    w->fitChi_ = result.bestnorm;
+    w->fitRedChi_ = result.bestnorm / (sn->mjd_.size() - par.size());
+    printParams(w);
 }

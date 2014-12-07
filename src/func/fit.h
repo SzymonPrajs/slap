@@ -35,5 +35,5 @@ using namespace std;
 
 int resFunc(int, int, double*, double*, double**, void*);
 void fit(shared_ptr<Workspace>&);
-
+void printParams(shared_ptr<Workspace>&);
 #endif

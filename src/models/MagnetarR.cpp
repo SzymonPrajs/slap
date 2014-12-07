@@ -28,7 +28,7 @@ using namespace vmath;
 MagnetarR::MagnetarR(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     noSEDParams_ = 2;
     noModelParams_ = 4;
-    defaultParams_ = {30, 3, 1.5, 30};
+    defaultParams_ = {30, 3, 1.5, 10};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);
@@ -120,9 +120,11 @@ double MagnetarR::radius(double t) {
     double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
     if (rad19 > radiusCore) {
+        return rad19;
+    } else if (rad20 > 0) {
         return rad20;
     } else {
-        return rad20;
+        return 0;
     }
 
 }

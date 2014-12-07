@@ -29,20 +29,21 @@ void addplot(shared_ptr<Workspace> &w) {
 
 	if (w->plotCount_ == 0) {
 		boost::filesystem::create_directories(w->plotDir_);
-		fhandle.open(w->plotDir_ + "/info.dat");
+		fhandle.open(w->plotDir_.string() + "/info.dat");
 		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
 		fhandle.close();
+
 	} else if (w->plotCount_ < 0) {
 		cout << "Something went wrong! Cannot create a temporary folder" << endl;
 	}
 
-	if (boost::filesystem::exists(w->plotDir_ + "/info.dat")) {
-		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
+	if (boost::filesystem::exists(w->plotDir_.string() + "/info.dat")) {
+		fhandle.open(w->plotDir_.string() + "/info.dat", ios::app);
 		
 		if (w->plotType_ == "data") {
-			boost::filesystem::path s = w->LCPath_;
-			boost::filesystem::path d = w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+			boost::filesystem::path s = w->LC_;
+			boost::filesystem::path d = w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat";
 
 			if (!boost::filesystem::exists(d)) {
 				boost::filesystem::copy_file(s, d);
@@ -50,12 +51,15 @@ void addplot(shared_ptr<Workspace> &w) {
 		
 		} else if (w->plotType_ == "model") {
 			plotModel(w);
-		}
+		
+        } else if (w->plotType_ == "param") {
+            plotSEDParam(w);
+        }
 
 		fhandle << w->plotCount_;
 		fhandle << " type=" + w->plotType_;
 		fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
-		fhandle << " file=" << w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+		fhandle << " file=" << w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat";
 		fhandle << "\n";
 
 		fhandle.close();
@@ -71,6 +75,7 @@ void makeplot(shared_ptr<Workspace> &w) {
 	system("python scripts/SLAPPlot.py /Users/szymon/Projects/slap/plot");
 }
 
+
 void clearplot(shared_ptr<Workspace> &w) {
 	boost::filesystem::remove_all(w->plotDir_);
 	w->plotCount_ = 0;
@@ -83,14 +88,38 @@ void plotModel(shared_ptr<Workspace> &w) {
     double t = 0;
 
 	ofstream plotFile;
-	plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
+	plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (double mjd = w->explosionMJD_; mjd < w->endMJD_; ++mjd) { 
+        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
             t = mjd - w->explosionMJD_;
+
             plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << "\n";
         }
     }
 
     plotFile.close();
 }
+
+
+void plotSEDParam(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams(); 
+
+    double t = 0;
+
+    // ofstream plotFile;
+    // plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+
+    for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
+        t = mjd - w->explosionMJD_;
+
+        w->snmodel_->calcSEDParams(t);
+        cout << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << endl;
+
+        // plotFile << mjd << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
+    }
+
+    // plotFile.close();
+}
+

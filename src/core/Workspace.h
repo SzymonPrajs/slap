@@ -42,40 +42,64 @@ using namespace std;
 
 class Workspace {
 public:
-    /*SN and Model properties*/
+    /*Names*/
     string SNName_;
+    string plotTitle_;
+
+    /*Cosmology*/
     double z_;
+    string cosmologyUsed_;
+
+    /*Parameters*/
+    double fitExplosionMJD_;
+    double fitExplosionMJDError_;
+    double fitChi_;
+    double fitRedChi_;
     vector<double> params_;
     vector<double> fitParam_;
     vector<double> fitParamError_;
+    string rawParams_;
+
+
+    /*Dates*/
     double startMJD_;
     double explosionMJD_;
     double endMJD_;
+    string rawStartMJD_;
+    string rawExplosionMJD_;
+    string rawEndMJD_;
+
+    /*Model*/
     string model_;
+    
+    /*Filter*/
     vector<string> filterList_;
-
-    /*LC and Filter*/
     string filterFolder_;
-    string LCFile_;
-    string plotDir_;
+    string rawFilters_;
 
-    /*Program state*/
+    /*Directories*/
+    string LC_;
     boost::filesystem::path currentDir_;
-    // boost::filesystem::path plotDir_;
+    boost::filesystem::path plotDir_;
     boost::filesystem::path LCPath_;
+    
+    /*Program state*/
     bool interactiveMode_;
     bool updateParam_;
-    string rawParams_;
-    string rawFilters_;
-    string currentFunction_;
+    bool updateEvent_;
     int plotCount_;
+    string currentFunction_;
     string plotType_;
+
+
+    /*Function list*/
     map<string,int> functionList_ = {{"interactive", 0}, 
                                      {"fit", 1}, 
                                      {"plot", 2}, 
                                      {"addplot", 3}, 
                                      {"makeplot", 4},
                                      {"clearplot", 5},
+                                     {"analise", 6},
                                      {"exit", 98}, 
                                      {"quit", 99}};
 
@@ -85,20 +109,24 @@ public:
     shared_ptr<SNModel> snmodel_;
     shared_ptr<SNEvent> snevent_;
     
+
     /*Construtor*/
     Workspace();
 
-    /*Functions*/
+    /*Update individual parameters*/
     void restoreDefault();
     void updatePaths();
     void updateCosmology();
     void updateFilters();
     void updateModel();
     void updateEvent();
+    void updateDates();
     void updateMJDBounds();
     void updateMode();
     void updateRawParams();
     void updateRawFilters();
+
+    /*Perform a full update*/
     void update();
 };
 

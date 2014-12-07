@@ -29,15 +29,18 @@
 #include "Filters.h"
 #include "../vmath/range.h"
 #include "../vmath/algebra.h"
+#include "../vmath/loadtxt.h"
+#include "../vmath/interp.h"
+
 
 using namespace std;
 using namespace vmath;
 
 class SNModel {
 protected:
-    double z_; /*IS THIS NEEDED?*/
     vector<double> restWavelength_;
     vector<double> obsWavelength_;
+    vector<double> absLines_;
 
 public:
     int noModelParams_;
@@ -45,6 +48,7 @@ public:
     vector<double> SEDParams_;
     vector<double> modelParams_;
     vector<double> defaultParams_;
+    vector<double> derivedParams_;
 
     shared_ptr<Cosmology> cosmology_;
     shared_ptr<Filters> filters_;
@@ -58,6 +62,7 @@ public:
     
     double flux(double, string);
     void setWavelength();
+    void absFilter();
 };
 
 #endif

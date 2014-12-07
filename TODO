@@ -1,0 +1,9 @@
+- Generalise where the absLines files comes from in Model
+- Implement ptype=fit
+- Add residuals for SLAPplot
+- Implement Analyse
+- Find Zero points
+- Calculate Absolute Magnitudes
+- Implement the changes in start and end MJD - This includes resizing the LC
+- Plot SED params
+- RAD20 is not a correct physical equation. Something must be done about that!

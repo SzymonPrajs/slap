@@ -75,14 +75,14 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             }
 
         } else if (command[0] == "LC" || command[0] == "lc" || command[0] == "file") {
-            w->LCFile_ = command[1];
+            w->LC_ = command[1];
 
         } else if (command[0] == "filter" || command[0] == "filters") {
-            w->rawFilters_ = command[1]; /*TODO - deal with the raw input during init()*/
+            w->rawFilters_ = command[1];
 
         } else if (command[0] == "model") {
             w->model_ = command[1];
-            w->updateParam_ = true;
+            w->rawParams_ = "default";
 
         } else if (command[0] == "param" || command[0] == "params") {
             w->rawParams_ = command[1];
@@ -96,8 +96,8 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "snname") {
             w->SNName_ = command[1];
 
-        } else if (command[0] == "expMJD") {
-            w->explosionMJD_ = atof(command[1].c_str());
+        } else if (command[0] == "expMJD" || command[0] == "MJD") {
+            w->rawExplosionMJD_ = command[1];
 
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
@@ -128,20 +128,6 @@ void runCommand(shared_ptr<Workspace> w) {
 }
 
 
-void test() {
-    shared_ptr<Cosmology> cosmology(new Cosmology(0.23));
-    shared_ptr<Filters> filters(new Filters("data/filters"));
-
-    Magnetar mag(cosmology, filters);
-    mag.modelParams_ = {32.4, 7.2, 2.0, 0};
-    mag.calcDerivedParams();
-    
-    for (double i = 0; i < 100; ++i) {
-        cout << mag.lumSN(i) << endl;
-    }
-}
-
-
 int main(int argc, char *argv[]) {
     vector<string> options;
     getArgv(argc, argv, options);
@@ -157,11 +143,10 @@ int main(int argc, char *argv[]) {
     } else {
         string sInput;
         char* input, shell_prompt[1000];
-
         while (w->currentFunction_ != "quit") {
             snprintf(shell_prompt, sizeof(shell_prompt), "SLAP> ");
             input = readline(shell_prompt);
- 
+
             if (!input) {
                 break;
             }
@@ -173,8 +158,8 @@ int main(int argc, char *argv[]) {
      
             split(sInput, ' ', options);
             applyOptions(options, w);
-            w->update();
 
+            w->update();
             runCommand(w);
 
             free(input);
