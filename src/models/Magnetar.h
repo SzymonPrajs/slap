@@ -36,7 +36,7 @@ using namespace vmath;
 
 class Magnetar : public SNModel {
 /*
- * modelParam_ = {tauM, B, P, R0}
+ * modelParam_ = {tauM, B, P}
  */
 private:
     double tauP_;

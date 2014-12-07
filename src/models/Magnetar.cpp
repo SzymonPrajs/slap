@@ -58,6 +58,8 @@ void Magnetar::calcDerivedParams() {
     /* core velocity */
     temp = energyKinetic_ * 10.0 / (3.0 * ejectedMass_ * 2.0e33); 
     velocityCore_ = sqrt(temp) * 86400;
+
+    derivedParams_ = {energyMagnetar_, energyKinetic_, ejectedMass_, velocityCore_};
 }
 
 
@@ -112,7 +114,7 @@ double Magnetar::energy(double t) {
 
 
 double Magnetar::radius(double t) {
-    double radiusCore = modelParams_[3] * 1e14 + velocityCore_ * t;
+    double radiusCore = velocityCore_ * t;
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
     double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 

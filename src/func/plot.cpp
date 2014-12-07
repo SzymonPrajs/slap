@@ -33,6 +33,7 @@ void addplot(shared_ptr<Workspace> &w) {
 		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
 		fhandle.close();
+
 	} else if (w->plotCount_ < 0) {
 		cout << "Something went wrong! Cannot create a temporary folder" << endl;
 	}
@@ -50,7 +51,10 @@ void addplot(shared_ptr<Workspace> &w) {
 		
 		} else if (w->plotType_ == "model") {
 			plotModel(w);
-		}
+		
+        } else if (w->plotType_ == "param") {
+            plotSEDParam(w);
+        }
 
 		fhandle << w->plotCount_;
 		fhandle << " type=" + w->plotType_;
@@ -70,6 +74,7 @@ void addplot(shared_ptr<Workspace> &w) {
 void makeplot(shared_ptr<Workspace> &w) {
 	system("python scripts/SLAPPlot.py /Users/szymon/Projects/slap/plot");
 }
+
 
 void clearplot(shared_ptr<Workspace> &w) {
 	boost::filesystem::remove_all(w->plotDir_);
@@ -95,3 +100,26 @@ void plotModel(shared_ptr<Workspace> &w) {
 
     plotFile.close();
 }
+
+
+void plotSEDParam(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams(); 
+
+    double t = 0;
+
+    // ofstream plotFile;
+    // plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+
+    for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
+        t = mjd - w->explosionMJD_;
+
+        w->snmodel_->calcSEDParams(t);
+        cout << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << endl;
+
+        // plotFile << mjd << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
+    }
+
+    // plotFile.close();
+}
+

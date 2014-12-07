@@ -79,13 +79,6 @@ void fit(shared_ptr<Workspace> &w) {
     config.maxiter = 2000;
     status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, &config, (void*) sn.get(), &result);
 
-    // for (int i = 0; i < par.size(); ++i) {
-    //     cout << setw(10) << par[i] << setw(8) << " +/- " << setw(10) << parErr[i] << endl;
-    // }
-
-    // cout << setw(11) << "Chi^2 " << setw(17) << result.bestnorm <<  endl;
-    // cout << setw(11) << "RedChi^2 " << setw(17) << result.bestnorm / sn->mjd_.size() << endl;
-
     w->fitExplosionMJD_ = par.back();
     w->fitExplosionMJDError_ = parErr.back();
     par.pop_back();

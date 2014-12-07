@@ -82,6 +82,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
         } else if (command[0] == "model") {
             w->model_ = command[1];
+            w->rawParams_ = "default";
 
         } else if (command[0] == "param" || command[0] == "params") {
             w->rawParams_ = command[1];
@@ -95,7 +96,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "snname") {
             w->SNName_ = command[1];
 
-        } else if (command[0] == "expMJD") {
+        } else if (command[0] == "expMJD" || command[0] == "MJD") {
             w->rawExplosionMJD_ = command[1];
 
         } else {
@@ -123,20 +124,6 @@ void runCommand(shared_ptr<Workspace> w) {
 
     } else if (w->currentFunction_ == "exit") {
         w->currentFunction_ = "quit";
-    }
-}
-
-
-void test() {
-    shared_ptr<Cosmology> cosmology(new Cosmology(0.23));
-    shared_ptr<Filters> filters(new Filters("data/filters"));
-
-    Magnetar mag(cosmology, filters);
-    mag.modelParams_ = {32.4, 7.2, 2.0, 0};
-    mag.calcDerivedParams();
-    
-    for (double i = 0; i < 100; ++i) {
-        cout << mag.lumSN(i) << endl;
     }
 }
 

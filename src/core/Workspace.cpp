@@ -53,6 +53,7 @@ void Workspace::restoreDefault() {
     /*Default behaviour*/
     currentFunction_ = "quit";
     interactiveMode_ = false;
+    /*TODO - Are these needed any more?*/
     updateParam_ = true;
     updateEvent_ = true;
 
@@ -129,6 +130,7 @@ void Workspace::updateDates() {
     } else if (rawExplosionMJD_ == "fit") {
         if (fitExplosionMJD_ == -1) {
             cout << "No fits have been performed yet. Restoring default." << endl;
+            explosionMJD_ = min<double>(snevent_->mjd_);
 
         } else {
             explosionMJD_ = fitExplosionMJD_;
@@ -197,7 +199,6 @@ void Workspace::updateRawFilters() {
         /*Retail previous settings*/
 
     } else if (rawFilters_ == "LC") {
-        /*TODO: This needs to be looked up properly*/
         filterList_ = snevent_->filterList_;
 
     } else {
