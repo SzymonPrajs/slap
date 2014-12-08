@@ -5,8 +5,10 @@ import sys
 import os
 
 
-
 class Data:
+    """
+    Data: Storing the data for a single lightcurve of any type.
+    """
     mjd = np.array([])
     flux = np.array([])
     error = np.array([])
@@ -14,6 +16,9 @@ class Data:
 
 
 class Plots:
+    """
+    Plots: Read and understand the data stored in the info.dat file and each LC file
+    """
     z = ""
     SNName = ""
     title = ""
@@ -103,8 +108,12 @@ class Plots:
 
 
 class Canvas:
+    """
+    Canvas: The plotting canvas. Depending on what settings were passed a set of plots is made.
+    """
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
+    ax2 = ""
     data = Plots()
     fltColour = dict()
 
@@ -123,9 +132,12 @@ class Canvas:
         for i in range(len(self.data.UniqueFilters)):
             self.fltColour.update({self.data.UniqueFilters[i] : self.col(i)})
 
+        if (self.data.Types.count("residual") > 0):
+            self.ax2 = self.fig.add_subplot(211)
 
     def plotAll(self):
         ymax = -1000
+
         for i in range(len(self.data.dataPlots)):
             if (ymax < self.data.dataPlots[i].flux.max()):
                 ymax = self.data.dataPlots[i].flux.max()
@@ -133,23 +145,28 @@ class Canvas:
             for f in self.data.Filters[i]:
                 if (self.data.Types[i] == "data"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
-                    self.ax1.scatter(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f], label="data - "+f)
-                    self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], \
-                                      yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
+                    self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
 
                 elif (self.data.Types[i] == "model"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
                     self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f], label="model - "+f)
 
-        plt.legend()
+                elif (self.data.Types[i] == "residual"):
+                    pass
+                    # idx = np.where(self.data.dataPlots[i].flt == f)
+                    # self.ax2.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
+
+
+        # plt.legend()
         plt.xlabel("Time (MJD)")
         plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)")
         plt.ylim(-0.2*ymax, 1.2*ymax) 
         plt.show()
 
 
-
-
+"""
+Main body of the program
+"""
 if __name__ == "__main__":
     if (len(sys.argv) > 1):
         plotPath = sys.argv[1]

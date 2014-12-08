@@ -54,6 +54,9 @@ void addplot(shared_ptr<Workspace> &w) {
 		
         } else if (w->plotType_ == "param") {
             plotSEDParam(w);
+        
+        } else if (w->plotType_ == "residual") {
+            plotResidual(w);
         }
 
 		fhandle << w->plotCount_;
@@ -121,5 +124,25 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
     }
 
     // plotFile.close();
+}
+
+
+void plotResidual(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams(); 
+
+    double t = 0;
+
+    ofstream plotFile;
+    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+
+    for (int i = 0; i < w->snevent_->mjd_.size(); ++i) { 
+        t = w->snevent_->mjd_[i] - w->explosionMJD_;
+        w->snmodel_->calcSEDParams(t);
+
+        plotFile << w->snevent_->mjd_[i] << " " << w->snmodel_->flux(t, w->snevent_->filter_[i]) - w->snevent_->flux_[i] << " " << w->snevent_->fluxErr_[i] << " " << w->snevent_->filter_[i] << "\n";
+    }
+
+    plotFile.close();
 }
 
