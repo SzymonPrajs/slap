@@ -28,7 +28,8 @@ using namespace vmath;
 Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     noSEDParams_ = 2;
     noModelParams_ = 3;
-    defaultParams_ = {30.0, 3.0, 2.0};
+    defaultParams_ = {32.0, 3.0, 1.4};
+    paramNames_ = {"tauM", "B", "P"};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);
@@ -52,8 +53,9 @@ void Magnetar::calcDerivedParams() {
     energyKinetic_ = 1.0e51 + 0.5 * (energyMagnetar_ - energyRadiation_);
     
     /* Mass ejected in the explosion */
-    temp = 10 * pow(energyKinetic_ / 1.0e51, -0.25) * pow(opacity_ / 0.1, 0.5);
-    ejectedMass_ = pow(modelParams_[0] / temp, 4.0/3.0);
+    // temp = 10 * pow(energyKinetic_ / 1.0e51, -0.25) * pow(opacity_ / 0.1, 0.5);
+    // ejectedMass_ = pow(modelParams_[0] / temp, 4.0/3.0);
+    ejectedMass_ = pow(modelParams_[0] / 10, 4.0/3.0) * pow(energyKinetic_ / 1.0e51, 1.0 / 3.0) * pow(opacity_ / 0.1, -2.0 / 3.0);
 
     /* core velocity */
     temp = energyKinetic_ * 10.0 / (3.0 * ejectedMass_ * 2.0e33); 
@@ -85,7 +87,7 @@ double integralLumSN(double t, void *param) {
 double Magnetar::lumSN(double t) {
     double res = exp(-1 * pow(t / modelParams_[0], 2.0));
 
-    gsl_integration_workspace *w = gsl_integration_workspace_alloc(1000);
+    gsl_integration_workspace *w = gsl_integration_workspace_alloc(10000);
     double integ, error;
     size_t neval;
     double par[] = {tauP_, modelParams_[0], modelParams_[1], modelParams_[2]};
@@ -94,22 +96,12 @@ double Magnetar::lumSN(double t) {
     F.function = &integralLumSN;
     F.params = &par;
 
-    gsl_integration_qags(&F, 0, t, 1e39, 1e-7, 1000, w, &integ, &error);
+
+    int test = gsl_integration_qags(&F, 0, t, 1e39, 1e-7, 10000, w, &integ, &error);
     res *= integ;
     
     gsl_integration_workspace_free (w);
     return res;
-}
-
-
-double Magnetar::energy(double t) {
-    vector<double> arr(int(t+1));
-
-    for (int i = 0; i < int(t+1); ++i) {
-        arr[i] = lumSN(i);
-    }
-    
-    return trapz<double>(arr, 86400); 
 }
 
 

@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_MODEL_MAGNETARR_H_
-#define SLAP_MODEL_MAGNETARR_H_
+#ifndef SLAP_MODEL_MAGNETARK_H_
+#define SLAP_MODEL_MAGNETARK_H_
 
 #include <vector>
 #include <memory>
@@ -34,9 +34,9 @@
 using namespace std;
 using namespace vmath;
 
-class MagnetarR : public SNModel {
+class MagnetarK : public SNModel {
 /*
- * modelParam_ = {tauM, B, P, R0}
+ * modelParam_ = {Mej, B, P, k}
  */
 private:
     double tauP_;
@@ -44,12 +44,13 @@ private:
     double energyKinetic_;
     double energyRadiation_;
     double opacity_;
+    double tauM_;
     double ejectedMass_;
     double velocityCore_;
     double alpha_;
 
 public:
-    MagnetarR(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
+    MagnetarK(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
     void calcDerivedParams();
     vector<double> calcSED(double);
@@ -57,7 +58,6 @@ public:
 
     double lumMagnetar(double);
     double lumSN(double);
-    double energy(double);
     double radius(double);
     double temperature(double);
     void printDerivedVariables();

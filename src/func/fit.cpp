@@ -76,6 +76,11 @@ void fit(shared_ptr<Workspace> &w) {
     vector<double> parErr(par.size());
     result.xerror = parErr.data();
 
+    for(int i = 0; i < par.size(); ++i) {
+        pars[i].limited[0] = 1;
+        pars[2].limits[0] = 0;
+    }
+
     config.maxiter = 2000;
     status = mpfit(resFunc, sn->mjd_.size(), par.size(), par.data(), pars, &config, (void*) sn.get(), &result);
 

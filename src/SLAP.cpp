@@ -35,6 +35,7 @@
 #include "models/BB6.h"
 #include "models/Magnetar.h"
 #include "func/fit.h"
+#include "func/fit2.h"
 #include "func/plot.h"
 
 using namespace std;
@@ -108,7 +109,7 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
 void runCommand(shared_ptr<Workspace> w) {
     if (w->currentFunction_ == "fit") {
-        fit(w);
+        fit2(w);
 
     } else if (w->currentFunction_ == "plot") {
         plotModel(w);    

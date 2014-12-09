@@ -19,47 +19,41 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_MODEL_MAGNETAR_H_
-#define SLAP_MODEL_MAGNETAR_H_
+#ifndef SLAP_FUNC_FIT2_H_
+#define SLAP_FUNC_FIT2_H_
 
-#include <vector>
 #include <memory>
-#include <math.h>
-#include "../vmath/integrate.h"
-#include "../core/Cosmology.h"
-#include "../core/Filters.h"
-#include "../core/SNModel.h"
-#include <gsl/gsl_integration.h>
+#include <iomanip>
+#include <cstring>
+#include <string>
+#include "../core/Workspace.h"
+#include "../core/SNEvent.h"
+
+#include <Minuit2/FunctionMinimum.h>
+#include <Minuit2/MnUserParameterState.h>
+#include <Minuit2/FCNBase.h>
+#include <Minuit2/MnMigrad.h>
+#include <Minuit2/MnSimplex.h>
+#include <Minuit2/MnMinos.h>
 
 using namespace std;
-using namespace vmath;
+using namespace ROOT::Minuit2;
 
-class Magnetar : public SNModel {
-/*
- * modelParam_ = {tauM, B, P}
- */
-private:
-    double tauP_;
-    double energyMagnetar_;
-    double energyKinetic_;
-    double energyRadiation_;
-    double opacity_;
-    double ejectedMass_;
-    double velocityCore_;
-    double alpha_;
-
+class Residual : public FCNBase {
 public:
-    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
+  Residual(shared_ptr<Workspace>&);
+  ~Residual() {}
 
-    void calcDerivedParams();
-    vector<double> calcSED(double);
-    void calcSEDParams(double);
-
-    double lumMagnetar(double);
-    double lumSN(double);
-    double radius(double);
-    double temperature(double);
-    void printDerivedVariables();
+  virtual double Up() const {return errorDef_;}
+  virtual double operator()(const vector<double>&) const;
+  
+private:
+	shared_ptr<Workspace> w_;
+	double errorDef_;
 };
+
+
+
+void fit2(shared_ptr<Workspace> &);
 
 #endif

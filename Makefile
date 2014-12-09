@@ -2,16 +2,16 @@ CXX = clang++
 C = clang
 CPPFLAGS = -c -O3 -std=c++11
 CFLAGS = -c -O3
-LDFLAGS = -lreadline -lgsl -lboost_system -lboost_filesystem
+LDFLAGS = -lreadline -lgsl -lboost_system -lboost_filesystem -lMinuit2
 EXECUTABLE = slap
 
 
 CXXSOURCES = src/SLAP.cpp
 MPFIT = src/utils/mpfit.c
-MODELS = src/models/BB4.cpp src/models/BB6.cpp src/models/Magnetar.cpp src/models/MagnetarR.cpp
+MODELS = src/models/BB4.cpp src/models/BB6.cpp src/models/Magnetar.cpp src/models/MagnetarK.cpp
 CORE = src/core/Cosmology.cpp src/core/Filters.cpp src/core/SNModel.cpp src/core/SNEvent.cpp src/core/Workspace.cpp
 UTILS = src/utils/utils.cpp
-FUNC = src/func/fit.cpp src/func/plot.cpp
+FUNC = src/func/fit.cpp src/func/plot.cpp src/func/fit2.cpp
 
 OBJECTS = ${CXXSOURCES:.cpp=.o} ${MPFIT:.c=.o} ${MODELS:.cpp=.o} ${CORE:.cpp=.o} ${UTILS:.cpp=.o} ${FUNC:.cpp=.o}
 

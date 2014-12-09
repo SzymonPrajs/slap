@@ -49,6 +49,7 @@ public:
     vector<double> modelParams_;
     vector<double> defaultParams_;
     vector<double> derivedParams_;
+    vector<string> paramNames_;
 
     shared_ptr<Cosmology> cosmology_;
     shared_ptr<Filters> filters_;
