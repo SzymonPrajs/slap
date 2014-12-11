@@ -29,6 +29,8 @@ BB6::BB6(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel
     noSEDParams_ = 2;
     noModelParams_ = 5;
     defaultParams_ = {1.0, 0.01, 15000, 150, 1.5};
+    lParams_ = {0.1, 0.001, 5000, 10, 0.001};
+    uParams_ = {3.0, 1, 25000, 2000, 20};
     paramNames_ = {"dR", "d2R", "T0", "dT", "d2T"};
 
     modelParams_.resize(noModelParams_);

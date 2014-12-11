@@ -29,6 +29,8 @@ MagnetarK::MagnetarK(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filter
     noSEDParams_ = 2;
     noModelParams_ = 4;
     defaultParams_ = {5.0, 3, 1.5, 0.1};
+    lParams_ = {1, 0.1, 0.1, 0.01};
+    uParams_ = {30, 10, 10, 0.5};
     paramNames_ = {"Mej", "B", "P", "k"};
 
     modelParams_.resize(noModelParams_);

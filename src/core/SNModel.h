@@ -48,6 +48,8 @@ public:
     vector<double> SEDParams_;
     vector<double> modelParams_;
     vector<double> defaultParams_;
+    vector<double> lParams_;
+    vector<double> uParams_;
     vector<double> derivedParams_;
     vector<string> paramNames_;
     string absLineFile_;

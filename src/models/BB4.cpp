@@ -29,6 +29,8 @@ BB4::BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel
     noSEDParams_ = 2;
     noModelParams_ = 3;
     defaultParams_ = {1.0, 15000, 150};
+    lParams_ = {0.01, 5000, 10};
+    uParams_ = {3.0, 25000, 2000};
     paramNames_ = {"dR", "T0", "dT"};
     
     modelParams_.resize(noModelParams_);
