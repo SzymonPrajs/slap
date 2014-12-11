@@ -59,6 +59,7 @@ public:
     vector<double> fitParam_;
     vector<double> fitParamError_;
     string rawParams_;
+    string absLines_;
 
 
     /*Dates*/

@@ -100,6 +100,9 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "expMJD" || command[0] == "MJD") {
             w->rawExplosionMJD_ = command[1];
 
+        } else if (command[0] == "abs") {
+            w->absLines_ = command[1];
+
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
         }

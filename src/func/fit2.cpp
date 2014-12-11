@@ -24,42 +24,40 @@
 using namespace std;
 using namespace ROOT::Minuit2;
 
+
 Residual::Residual(shared_ptr<Workspace> &w) {
     w_ = w;
-    errorDef_ = 100.0;
+    errorDef_ = 1.0;
 }
 
 
 double Residual::operator()(const std::vector<double>& par) const {
-    assert(par.size() == (w_->snmodel_->noModelParams_ + 1));
-    double chi2 = 0.0;
-    double residual = 0.0;
-    double t = 0.0;
+    shared_ptr<SNEvent> sn = w_->snevent_ ;
+    vector<double> residual(sn->mjd_.size());
+    double t;
+    double chi2 = 0;
+    sn->explosionMJD_ = par.back();
+    for (int i = 0; i < (par.size() - 1); ++i) {
+        sn->snmodel_->modelParams_[i] = par[i];
+    }
 
-    w_->snevent_->explosionMJD_ = par.back();
-    vector<double> tpar = par;
-    tpar.pop_back();
-    w_->snmodel_->modelParams_ = tpar;
-    w_->snmodel_->calcDerivedParams();
-
-    for (int i = 0; i < w_->snevent_->mjd_.size(); ++i) {
-        if (w_->snevent_->mjd_[i] >= w_->snevent_->explosionMJD_) {
-            t = w_->snevent_->mjd_[i] - w_->snevent_->explosionMJD_;
-            residual = (w_->snevent_->flux_[i] - w_->snmodel_->flux(t, w_->snevent_->filter_[i])) / w_->snevent_->fluxErr_[i];
+    sn->snmodel_->calcDerivedParams();
+    for (int i = 0; i < sn->mjd_.size(); ++i) {
+        if (sn->mjd_[i] > sn->explosionMJD_) {
+            t = sn->mjd_[i] - sn->explosionMJD_;
+            // if (t < 200) {
+            residual[i] = (sn->flux_[i] - sn->snmodel_->flux(t, sn->filter_[i])) / sn->fluxErr_[i];
+            // }
 
         } else {
-            residual = w_->snevent_->flux_[i] / w_->snevent_->fluxErr_[i];
+            residual[i] = sn->flux_[i] / sn->fluxErr_[i];
         }
 
-        chi2 += pow(residual, 2.0);
+        chi2 += pow(residual[i], 2.0);
     }
-
-    for(int i = 0; i < par.size(); ++i) {
-        cout << par[i] << " ";
-    }
-    cout << chi2 << endl;
 
     return chi2;
+
 }
 
 
@@ -69,23 +67,33 @@ void fit2(shared_ptr<Workspace> &w) {
     // setting up fit parameters 
     MnUserParameters upar;
     for (int i = 0; i < w->params_.size(); ++i) {
-        upar.Add(w->snmodel_->paramNames_[i], w->params_[i], w->params_[i]);
-        upar.SetLowerLimit(w->snmodel_->paramNames_[i], 0.0001);
+        upar.Add(w->snmodel_->paramNames_[i], w->params_[i], 0.1 * w->params_[i]);
+        upar.SetLowerLimit(w->snmodel_->paramNames_[i], 0.01);
     }
     upar.Add("t0", w->explosionMJD_, 100.0);
-    upar.SetLowerLimit("t0", 0.0001);
+    upar.SetLowerLimit("t0", 50000);
 
     // create SIMPLEX minimizer
     MnSimplex simplex(res, upar);
     FunctionMinimum min = simplex();
-
-    /*TODO: Try again to copy over the residual finction from fit.cpp but this time copy the SNEvent class like in that code*/
     
     // MnMigrad migrad(res, upar);
     // FunctionMinimum min = migrad();
 
+    vector<double> par = min.UserState().Params();
     for(int i = 0; i < (w->params_.size() + 1); ++i) {
         cout << min.UserState().Value(i) << " ";
     }
-    cout << endl;
+    w->snmodel_->printDerivedVariables();
+    cout << res(par) << " " << res(par) / (w->snevent_->mjd_.size() - par.size()) << endl;
+
+
+    w->fitExplosionMJD_ = par.back();
+    // w->fitExplosionMJDError_ = parErr.back();
+    par.pop_back();
+    // parErr.pop_back();
+    w->fitParam_ = par;
+    // w->fitParamError_ = parErr;
+    w->fitChi_ = res(par);
+    w->fitRedChi_ = res(par) / (w->snevent_->mjd_.size() - par.size());
 }

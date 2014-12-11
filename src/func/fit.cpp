@@ -58,6 +58,7 @@ void printParams(shared_ptr<Workspace> &w) {
     cout << w->fitExplosionMJD_ << " " << w->fitExplosionMJDError_ << " ";
     cout << w->fitChi_ << " " << w->fitRedChi_ << " ";
     w->snmodel_->printDerivedVariables();
+    cout << endl;
 }
 
 
@@ -78,7 +79,7 @@ void fit(shared_ptr<Workspace> &w) {
 
     for(int i = 0; i < par.size(); ++i) {
         pars[i].limited[0] = 1;
-        pars[2].limits[0] = 0;
+        pars[2].limits[0] = 0.001;
     }
 
     config.maxiter = 2000;

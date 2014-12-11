@@ -133,7 +133,7 @@ void Magnetar::printDerivedVariables() {
     cout << energyMagnetar_ << " ";
     cout << energyKinetic_ << " ";
     cout << ejectedMass_ << " ";
-    cout << velocityCore_ << endl;
+    cout << velocityCore_ << " ";
 }
 
 

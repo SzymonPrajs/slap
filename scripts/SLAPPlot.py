@@ -145,7 +145,7 @@ class Canvas:
             for f in self.data.Filters[i]:
                 if (self.data.Types[i] == "data"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
-                    self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
+                    self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f], label="data - "+f)
 
                 elif (self.data.Types[i] == "model"):
                     idx = np.where(self.data.dataPlots[i].flt == f)

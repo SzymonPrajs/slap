@@ -91,10 +91,6 @@ double MagnetarK::lumSN(double t) {
     F.function = &integralLumSNR;
     F.params = &par;
 
-    // for (int i = 0; i < 4; ++i) {
-    //     cout << par[i] << " ";
-    // }
-    // cout << t << endl;
     int test = gsl_integration_qags(&F, 0, t, 1e39, 1e-7, 10000, w, &integ, &error);
     res *= integ;
     
@@ -131,7 +127,7 @@ void MagnetarK::printDerivedVariables() {
     cout << tauM_ << " ";
     cout << velocityCore_ << " ";
     cout << energyMagnetar_ << " ";
-    cout << energyKinetic_ << endl;
+    cout << energyKinetic_ << " ";
 }
 
 

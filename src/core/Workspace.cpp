@@ -37,6 +37,7 @@ void Workspace::restoreDefault() {
     /*Settings for a default SN*/
     LC_ = "data/sample/SN2010gx.dat";
     model_ = "Magnetar";
+    absLines_ = "06D4eu";
     rawParams_ = "default";
     rawFilters_ = "LC";
     rawStartMJD_ = "LC";
@@ -220,5 +221,9 @@ void Workspace::update() {
     updateMode();
     updateRawParams();
     updateRawFilters();
+
+    /* TODO: put the below in an update function and check if the file exists before allowing it in */
+    snmodel_->absLineFile_ = absLines_;
+    snmodel_->absFilter();
 }
 
