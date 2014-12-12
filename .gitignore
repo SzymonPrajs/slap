@@ -40,4 +40,5 @@ slap
 .DS_Store
 test
 plot
+results
 Fit.py

@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_FIT_H_
-#define SLAP_FUNC_FIT_H_
+#ifndef SLAP_FUNC_FIT3_H_
+#define SLAP_FUNC_FIT3_H_
 
 #include <memory>
 #include <iomanip>
@@ -28,7 +28,7 @@
 #include <string>
 #include "../core/Workspace.h"
 #include "../core/SNEvent.h"
-#include "multinest.h"
+#include <multinest.h>
  
 using namespace std;
 
