@@ -157,7 +157,7 @@ class Canvas:
                     # self.ax2.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
 
 
-        plt.legend()
+        # plt.legend()
         plt.xlabel("Time (MJD)")
         plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)")
         plt.ylim(-0.2*ymax, 1.2*ymax) 

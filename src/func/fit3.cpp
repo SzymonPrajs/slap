@@ -35,8 +35,10 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
     double * p = new double[npars];
     for (int i = 0; i < (npars-1); ++i) {
         p[i] = flatPrior(cube[i], sn->snmodel_->lParams_[i], sn->snmodel_->uParams_[i]);
+        cube[i] = p[i];
     }
-    p[npars-1] = flatPrior(cube[npars-1], sn->mjd_[0] - 100.0, sn->mjd_[0] + 200.0);
+    p[npars-1] = flatPrior(cube[npars-1], sn->mjd_.front() - 100.0, sn->mjd_.back());
+    cube[npars-1] = p[npars-1];
 
     double t;
     double chi2 = 0;
@@ -55,7 +57,6 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
         } else {
             residual = sn->flux_[i] / sn->fluxErr_[i];
         }
-        // cout << residual << endl;
         chi2 += powf(residual, 2.0);
     }
 
@@ -90,14 +91,14 @@ void fit3(shared_ptr<Workspace>&w) {
     int IS = 0;                 // do Nested Importance Sampling?
     int mmodal = 1;                 // do mode separation?
     int ceff = 1;                   // run in constant efficiency mode?
-    int nlive = 30 * (w->snmodel_->noModelParams_ + 1);               // number of live points
+    int nlive = 100 * (w->snmodel_->noModelParams_ + 1);               // number of live points
     double efr = 0.8;               // set the required efficiency
     double tol = 0.5;               // tol, defines the stopping criteria
     int ndims = w->snmodel_->noModelParams_ + 1;                  // dimensionality (no. of free parameters)
     int nPar = w->snmodel_->noModelParams_ + 1;                   // total no. of parameters including free & derived parameters
     int nClsPar = w->snmodel_->noModelParams_ + 1;                // no. of parameters to do mode separation on
     int updInt = 100;              // after how many iterations feedback is required & the output files should be updated  
-    double Ztol = -1E90;                // all the modes with logZ < Ztol are ignored
+    double Ztol = -1E20;                // all the modes with logZ < Ztol are ignored
     int maxModes = 100;             // expected max no. of modes (used only for memory allocation)
     int pWrap[ndims];               // which parameters to have periodic boundary conditions?
     for(int i = 0; i < ndims; i++) {
@@ -109,7 +110,7 @@ void fit3(shared_ptr<Workspace>&w) {
     int resume = 0;                 // resume from a previous job?
     int outfile = 1;                // write output files?
     int initMPI = 0;                // initialize MPI routines?, relevant only if compiling with MPI
-    double logZero = -1E90;             // points with loglike < logZero will be ignored by MultiNest
+    double logZero = -1E20;             // points with loglike < logZero will be ignored by MultiNest
     int maxiter = 0;                // max no. of iterations, a non-positive value means infinity. MultiNest will terminate if either it 
 
     shared_ptr<SNEvent> sn = w->snevent_;
