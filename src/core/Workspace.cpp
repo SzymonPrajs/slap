@@ -35,7 +35,7 @@ Workspace::Workspace() {
  */
 void Workspace::restoreDefault() {
     /*Settings for a default SN*/
-    LC_ = "data/sample/SN2010gx.dat";
+    LC_ = "data/SLSN/SN2010gx.dat";
     model_ = "Magnetar";
     absLines_ = "06D4eu";
     rawParams_ = "default";
@@ -43,6 +43,8 @@ void Workspace::restoreDefault() {
     rawStartMJD_ = "LC";
     rawExplosionMJD_ = "LC";
     rawEndMJD_ = "LC";
+    fitter_ = "minuit";
+    rawSNName_ = "default";
     z_ = 0.23;
 
     /*Default data locations*/
@@ -211,6 +213,21 @@ void Workspace::updateRawFilters() {
 }
 
 
+void Workspace::updateSNName() {
+    if (rawSNName_ == "previous") {
+        /*retain previous parameters with no changes*/
+    
+    } else if (rawSNName_ == "default") {
+        SNName_ = LCPath_.stem().string();
+        rawSNName_ = "previous";
+
+    } else {
+        SNName_ = rawSNName_;
+        rawSNName_ = "previous";
+    } 
+}
+
+
 void Workspace::update() { 
     updatePaths();
     updateCosmology();
@@ -221,6 +238,7 @@ void Workspace::update() {
     updateMode();
     updateRawParams();
     updateRawFilters();
+    updateSNName();
 
     /* TODO: put the below in an update function and check if the file exists before allowing it in */
     snmodel_->absLineFile_ = absLines_;

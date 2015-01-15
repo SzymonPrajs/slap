@@ -19,21 +19,6 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_FIT3_H_
-#define SLAP_FUNC_FIT3_H_
+#include "mag.h"
 
-#include <memory>
-#include <iomanip>
-#include <cstring>
-#include <string>
-#include "../core/Workspace.h"
-#include "../core/SNEvent.h"
-#include "../vmath/loadtxt.h"
-#include <multinest.h>
- 
 using namespace std;
-
-
-void fit3(shared_ptr<Workspace>&);
-
-#endif

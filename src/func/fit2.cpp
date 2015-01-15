@@ -87,6 +87,7 @@ void fit2(shared_ptr<Workspace> &w) {
     w->snmodel_->printDerivedVariables();
     cout << res(par) << " " << res(par) / (w->snevent_->mjd_.size() - par.size()) << endl;
 
+    cout << 1 << endl;
 
     w->fitExplosionMJD_ = par.back();
     // w->fitExplosionMJDError_ = parErr.back();
@@ -94,6 +95,9 @@ void fit2(shared_ptr<Workspace> &w) {
     // parErr.pop_back();
     w->fitParam_ = par;
     // w->fitParamError_ = parErr;
+    cout << 2 << endl;
     w->fitChi_ = res(par);
+    cout << 3 << endl;
     w->fitRedChi_ = res(par) / (w->snevent_->mjd_.size() - par.size());
+    cout << 4 << endl;
 }

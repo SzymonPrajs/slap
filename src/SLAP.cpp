@@ -96,13 +96,16 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
             w->plotType_ = command[1];
 
         } else if (command[0] == "snname") {
-            w->SNName_ = command[1];
+            w->rawSNName_ = command[1];
 
         } else if (command[0] == "expMJD" || command[0] == "MJD") {
             w->rawExplosionMJD_ = command[1];
 
         } else if (command[0] == "abs") {
             w->absLines_ = command[1];
+
+        } else if (command[0] == "fitter") {
+            w->fitter_ = command[1];
 
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
@@ -113,7 +116,16 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
 void runCommand(shared_ptr<Workspace> w) {
     if (w->currentFunction_ == "fit") {
-        fit3(w);
+        if (w->fitter_ == "mpfit") {
+            fit(w);
+        } else if (w->fitter_ == "minuit") {
+            fit2(w);
+        } else if (w->fitter_ == "multinest") {
+            fit3(w);
+        } else {
+            cout << w->fitter_ << " is not a recognised fitter. Using MINUIT instead" << endl;
+            fit2(w);
+        }
 
     } else if (w->currentFunction_ == "plot") {
         plotModel(w);    

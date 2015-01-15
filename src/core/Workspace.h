@@ -43,6 +43,7 @@ using namespace std;
 class Workspace {
 public:
     /*Names*/
+    string rawSNName_;
     string SNName_;
     string plotTitle_;
 
@@ -91,6 +92,7 @@ public:
     int plotCount_;
     string currentFunction_;
     string plotType_;
+    string fitter_;
 
 
     /*Function list*/
@@ -126,6 +128,7 @@ public:
     void updateMode();
     void updateRawParams();
     void updateRawFilters();
+    void updateSNName();
 
     /*Perform a full update*/
     void update();

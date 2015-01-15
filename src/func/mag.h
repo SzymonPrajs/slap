@@ -1,3 +1,4 @@
+
 /*SLAP - Supernova Lightcurve Analysis Package
  *
  *Copyright (C) 2014  Szymon Prajs
@@ -19,53 +20,17 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_VMATH_LOADTXT_H_
-#define SLAP_VMATH_LOADTXT_H_
+#ifndef SLAP_MAG_H_
+#define SLAP_MAG_H_
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
+#include <memory>
+#include <iomanip>
+#include <cstring>
 #include <string>
-#include <vector>
+#include <boost/filesystem.hpp>
+#include "../core/Workspace.h"
 
 using namespace std;
 
-namespace vmath {  // NAMESPACE vmath
-
-template <typename T>
-void loadtxt(const string &fileName, int l, vector< vector<T> > &data) {
-    data.resize(l);
-    for (int i = 0; i < l; ++i) {
-        data[i].clear();
-    }
-
-    ifstream file;
-    file.open(fileName);
-    T temp;
-    string s;
-
-    while (getline(file, s)) {
-        istringstream iss(s); 
-
-        for (int i = 0; i < l; ++i) {
-            iss >> temp;
-            cout << temp << endl;
-            data[i].push_back(temp);
-        }
-    }
-
-    file.close();
-}
-
-
-template <typename T>
-vector< vector<T> > loadtxt(const string &fileName, int l) {
-    vector< vector<T> > data;
-    loadtxt<T>(fileName, l, data);
-    return data;
-}
-
-
-} //NAMESPACE vmath
 
 #endif

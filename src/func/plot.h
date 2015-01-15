@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_MODEL_H_
-#define SLAP_FUNC_MODEL_H_
+#ifndef SLAP_PLOT_H_
+#define SLAP_PLOT_H_
 
 #include <memory>
 #include <iomanip>

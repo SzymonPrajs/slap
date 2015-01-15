@@ -22,7 +22,7 @@
 #include "fit3.h"
 
 using namespace std;
-
+using namespace vmath;
 
 double flatPrior(double r, double x1, double x2) {
     return x1 + r * (x2 - x1);
@@ -86,8 +86,23 @@ void dumper(int &nSamples, int &nlive, int &nPar, double **physLive, double **po
 }
 
 
-void fit3(shared_ptr<Workspace>&w) {
-    // set the MultiNest sampling parameters
+void createDirectory(shared_ptr<Workspace> &w) {
+    boost::filesystem::path resultsDir = w->currentDir_;
+    resultsDir /= "results";
+    if (!boost::filesystem::exists(resultsDir)) {
+        boost::filesystem::create_directory(resultsDir);
+    }
+
+    boost::filesystem::path dataDir = resultsDir;
+    dataDir /= w->SNName_;
+    if (!boost::filesystem::exists(dataDir)) {
+        boost::filesystem::create_directory(dataDir);
+    }
+}
+
+
+void runMultiNest(shared_ptr<Workspace> &w) {
+     // set the MultiNest sampling parameters
     int IS = 0;                 // do Nested Importance Sampling?
     int mmodal = 1;                 // do mode separation?
     int ceff = 1;                   // run in constant efficiency mode?
@@ -104,7 +119,7 @@ void fit3(shared_ptr<Workspace>&w) {
     for(int i = 0; i < ndims; i++) {
         pWrap[i] = 0;
     }
-    char root[100] = "results/test-";   // root for output files
+    string root = "results/"+ w->SNName_ + "/nest-";
     int seed = -1;                  // random no. generator seed, if < 0 then take the seed from system clock
     int fb = 1;                 // need feedback on standard output?
     int resume = 0;                 // resume from a previous job?
@@ -117,6 +132,43 @@ void fit3(shared_ptr<Workspace>&w) {
     void *context = (void*) sn.get();              // not required by MultiNest, any additional information user wants to pass
 
     // calling MultiNest
-    nested::run(IS, mmodal, ceff, nlive, tol, efr, ndims, nPar, nClsPar, maxModes, updInt, Ztol, root, seed, pWrap, fb, resume, outfile, initMPI,
+    nested::run(IS, mmodal, ceff, nlive, tol, efr, ndims, nPar, nClsPar, maxModes, updInt, Ztol, root.c_str(), seed, pWrap, fb, resume, outfile, initMPI,
     logZero, maxiter, LogLike, dumper, context);
+}
+
+
+void readFitParam(shared_ptr<Workspace> &w) {
+    string summaryPath = "results/"+ w->SNName_ + "/nest-summary.txt";
+    int npar = w->snmodel_->noModelParams_ + 1;
+    vector< vector<double> > summary = loadtxt<double>(summaryPath, npar * 4 + 2);
+    vector<double> logLike = summary[npar * 4 + 1];
+    int indexMax = distance(logLike.begin(), max_element(logLike.begin()+1, logLike.end()));
+    
+    vector<double> param(npar, 0);
+    vector<double> error(npar, 0);
+    for (int i = 0; i < npar; ++i) {
+        param[i] = summary[2*npar + i][indexMax];
+        error[i] = summary[npar + i][indexMax];
+    }  
+
+    w->fitExplosionMJD_ = param.back();
+    w->fitExplosionMJDError_ = error.back();
+    param.pop_back();
+    error.pop_back();
+    w->fitParam_ = param;
+    w->fitParamError_ = error;
+    w->fitChi_ = logLike[indexMax] / -4.0;
+    w->fitRedChi_ = w->fitChi_ / (w->snevent_->mjd_.size() - param.size());
+}
+
+
+void fit3(shared_ptr<Workspace> &w) {
+    // Set the results directory based on the SN name
+    createDirectory(w);
+
+    // Run the Multinest fitter
+    runMultiNest(w);
+
+    // Read the results
+    readFitParam(w);
 }
