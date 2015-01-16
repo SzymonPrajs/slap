@@ -56,7 +56,7 @@ void maxMag(shared_ptr<Workspace> &w) {
 
 void display(shared_ptr<Workspace> &w) {
     for (int i = 0 ; i < w->snmodel_->noModelParams_; ++i) {
-        cout << w->snmodel_->paramNames_[i] << ": " << w->snmodel_->modelParams_[i] << "\n";
+        cout << w->snmodel_->paramNames_[i] << ": " << w->params_[i] << "\n";
     }
     cout << "explosion MJD: " << w->explosionMJD_ << "\n";
     cout << "peak MJD (observer): " << w->maxMJD_ << "\n";
