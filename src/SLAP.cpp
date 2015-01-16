@@ -38,6 +38,7 @@
 #include "func/fit2.h"
 #include "func/fit3.h"
 #include "func/plot.h"
+#include "func/analyse.h"
 
 using namespace std;
 
@@ -139,6 +140,21 @@ void runCommand(shared_ptr<Workspace> w) {
     } else if (w->currentFunction_ == "clearplot") {
         clearplot(w);
 
+    } else if (w->currentFunction_ == "analyse") {
+        fit3(w);
+
+        w->rawExplosionMJD_ = "fit";
+        w->rawParams_ = "fit";
+        
+        w->update();
+        maxMag(w);
+
+        w->update();
+        display(w);
+
+    } else if (w->currentFunction_ == "mag") {
+        maxMag(w);
+
     } else if (w->currentFunction_ == "exit") {
         w->currentFunction_ = "quit";
     }
@@ -181,7 +197,7 @@ int main(int argc, char *argv[]) {
 
             free(input);
         }
-    }
+    }  
 
     clearplot(w);
     return 0;

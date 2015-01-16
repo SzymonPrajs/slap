@@ -49,7 +49,6 @@ void loadtxt(const string &fileName, int l, vector< vector<T> > &data) {
 
         for (int i = 0; i < l; ++i) {
             iss >> temp;
-            cout << temp << endl;
             data[i].push_back(temp);
         }
     }

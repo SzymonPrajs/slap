@@ -65,6 +65,7 @@ public:
     virtual void printDerivedVariables() {};
     
     double flux(double, string);
+    double mag(double, string);
     void setWavelength();
     void absFilter();
 };

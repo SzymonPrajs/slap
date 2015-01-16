@@ -46,6 +46,7 @@ struct FilterData {
     vector<double> wavelength_;
     vector<double> bandpass_;
     double area_;
+    double zp_;
 };
 
 class Filters {

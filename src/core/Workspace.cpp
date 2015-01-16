@@ -43,7 +43,7 @@ void Workspace::restoreDefault() {
     rawStartMJD_ = "LC";
     rawExplosionMJD_ = "LC";
     rawEndMJD_ = "LC";
-    fitter_ = "minuit";
+    fitter_ = "multinest";
     rawSNName_ = "default";
     z_ = 0.23;
 

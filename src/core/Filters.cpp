@@ -54,10 +54,17 @@ void Filters::loadFilter(int ID) {
     string path = folderPath_+"/"+fileList_[ID];
     loadtxt<double>(path,2,data);
 
+    double janskyConst = 3631 * 1e-23 * 299792458 * 1e10;
+    vector<double> waveSq = mult<double>(data[0], data[0]);
+    vector<double> jansky = div<double>(janskyConst, waveSq);
+    jansky = mult<double>(jansky, data[1]);
+    double fluxZp = trapz<double>(jansky, data[0][1] - data[0][0]);
+
     filter.name_ = filterName_[ID];
     filter.inputWavelength_ = data[0];
     filter.inputBandpass_ = data[1];
-    filter.area_ = trapz<double>(data[1],data[0][1]-data[0][0]);
+    filter.area_ = trapz<double>(data[1], data[0][1] - data[0][0]);
+    filter.zp_ = -2.5 * log10(fluxZp / filter.area_);
 
     filters_.push_back(filter);
 }
@@ -68,7 +75,7 @@ void Filters::rescale(const vector<double> &wavelength) {
 
     for (int i = 0; i < filters_.size(); ++i) {
         filters_[i].wavelength_ = masterWavelength_;
-        filters_[i].bandpass_ = interp<double>(masterWavelength_,filters_[0].inputWavelength_,filters_[0].inputBandpass_);
+        filters_[i].bandpass_ = interp<double>(masterWavelength_,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
     }
 }
 

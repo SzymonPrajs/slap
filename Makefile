@@ -11,7 +11,7 @@ MPFIT = src/utils/mpfit.c
 MODELS = src/models/BB4.cpp src/models/BB6.cpp src/models/Magnetar.cpp src/models/MagnetarK.cpp
 CORE = src/core/Cosmology.cpp src/core/Filters.cpp src/core/SNModel.cpp src/core/SNEvent.cpp src/core/Workspace.cpp
 UTILS = src/utils/utils.cpp
-FUNC = src/func/fit.cpp src/func/plot.cpp src/func/fit2.cpp src/func/fit3.cpp src/func/mag.cpp
+FUNC = src/func/fit.cpp src/func/plot.cpp src/func/fit2.cpp src/func/fit3.cpp src/func/analyse.cpp
 
 OBJECTS = ${CXXSOURCES:.cpp=.o} ${MPFIT:.c=.o} ${MODELS:.cpp=.o} ${CORE:.cpp=.o} ${UTILS:.cpp=.o} ${FUNC:.cpp=.o}
 

@@ -103,6 +103,9 @@ double Magnetar::lumSN(double t) {
     F.function = &integralLumSN;
     F.params = &par;
 
+    if (t > 200) {
+        return 0;
+    }
 
     int test = gsl_integration_qags(&F, 0, t, 1e39, 1e-7, 10000, w, &integ, &error);
     res *= integ;

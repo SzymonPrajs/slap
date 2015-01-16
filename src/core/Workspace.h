@@ -56,6 +56,7 @@ public:
     double fitExplosionMJDError_;
     double fitChi_;
     double fitRedChi_;
+    double MsdssU_;
     vector<double> params_;
     vector<double> fitParam_;
     vector<double> fitParamError_;
@@ -67,6 +68,7 @@ public:
     double startMJD_;
     double explosionMJD_;
     double endMJD_;
+    double maxMJD_;
     string rawStartMJD_;
     string rawExplosionMJD_;
     string rawEndMJD_;
@@ -102,7 +104,8 @@ public:
                                      {"addplot", 3}, 
                                      {"makeplot", 4},
                                      {"clearplot", 5},
-                                     {"analise", 6},
+                                     {"analyse", 6},
+                                     {"mag", 7},
                                      {"exit", 98}, 
                                      {"quit", 99}};
 

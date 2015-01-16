@@ -1,3 +1,4 @@
+
 /*SLAP - Supernova Lightcurve Analysis Package
  *
  *Copyright (C) 2014  Szymon Prajs
@@ -19,6 +20,19 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#include "mag.h"
+#ifndef SLAP_ANALYSE_H_
+#define SLAP_ANALYSE_H_
+
+#include <memory>
+#include <iomanip>
+#include <cstring>
+#include <string>
+#include <boost/filesystem.hpp>
+#include "../core/Workspace.h"
+#include "../core/SNModel.h"
 
 using namespace std;
+
+void maxMag(shared_ptr<Workspace>&);
+void display(shared_ptr<Workspace>&);
+#endif
