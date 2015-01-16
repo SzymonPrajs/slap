@@ -64,6 +64,8 @@ void Magnetar::calcDerivedParams() {
     velocityCore_ = sqrt(temp) * 86400;
 
     derivedParams_ = {energyMagnetar_, energyKinetic_, ejectedMass_, velocityCore_};
+
+    Wang14_ = 3.0 * opacity_ * ejectedMass_ * 1.989e33 / (4.0 * M_PI * pow(velocityCore_, 2.0));
 }
 
 
@@ -88,6 +90,9 @@ double integralLumSN(double t, void *param) {
 
 double Magnetar::lumSN(double t) {
     double res = exp(-1 * pow(t / modelParams_[0], 2.0));
+
+    /*Factor based on Wang et. al. (2014) */
+    res *= (1 - exp(-Wang14_ * pow(t, -2.0)));
 
     gsl_integration_workspace *w = gsl_integration_workspace_alloc(10000);
     double integ, error;

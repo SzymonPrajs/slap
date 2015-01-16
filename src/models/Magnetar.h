@@ -47,6 +47,7 @@ private:
     double ejectedMass_;
     double velocityCore_;
     double alpha_;
+    double Wang14_;
 
 public:
     Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
