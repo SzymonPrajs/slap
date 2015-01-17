@@ -138,7 +138,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
 
 
 void readFitParam(shared_ptr<Workspace> &w) {
-    string summaryPath = "results/"+ w->SNName_ + "/nest-summary.txt";
+    string summaryPath = w->currentDir_.string() +  "/results/"+ w->SNName_ + "/nest-summary.txt";
     int npar = w->snmodel_->noModelParams_ + 1;
     vector< vector<double> > summary = loadtxt<double>(summaryPath, npar * 4 + 2);
     vector<double> logLike = summary[npar * 4 + 1];

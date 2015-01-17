@@ -56,13 +56,25 @@ void maxMag(shared_ptr<Workspace> &w) {
 
 void display(shared_ptr<Workspace> &w) {
     for (int i = 0 ; i < w->snmodel_->noModelParams_; ++i) {
-        cout << w->snmodel_->paramNames_[i] << ": " << w->params_[i] << "\n";
+        cout << w->snmodel_->paramNames_[i] << ": " << w->fitParam_[i] << "  (" << w->fitParamError_[i] << ")\n";
     }
-    cout << "explosion MJD: " << w->explosionMJD_ << "\n";
+    cout << "explosion MJD: " << w->fitExplosionMJD_ << "  (" << w->fitExplosionMJDError_ << ")\n";
     cout << "peak MJD (observer): " << w->maxMJD_ << "\n";
     cout << "rise time (rest): " << (w->maxMJD_ - w->explosionMJD_) / (1 + w->cosmology_->z_) << "\n";
     cout << "M_u Mag at max: " << w->MsdssU_ << endl;
     cout << endl;
+
+    ofstream fitFile;
+    fitFile.open(w->currentDir_.string() +  "/results/"+ w->SNName_ + "/fit.txt");
+
+    fitFile << w->SNName_ << " " << w->MsdssU_ << " " << w->maxMJD_ << " ";
+    for (int i = 0 ; i < w->snmodel_->noModelParams_; ++i) {
+        fitFile << w->fitParam_[i] << " " << w->fitParamError_[i] << " ";
+    }
+    fitFile << w->fitExplosionMJD_ << " " << w->fitExplosionMJDError_ << " ";
+    fitFile << w->fitChi_ << " " << w->fitRedChi_ << "\n";
+
+    fitFile.close();
 }
 
 using namespace std;
