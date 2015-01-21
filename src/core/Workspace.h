@@ -94,6 +94,7 @@ public:
     int plotCount_;
     string currentFunction_;
     string plotType_;
+    string fig_;
     string fitter_;
 
 

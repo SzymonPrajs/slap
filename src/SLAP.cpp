@@ -96,6 +96,9 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "ptype") {
             w->plotType_ = command[1];
 
+        } else if (command[0] == "fig") {
+            w->fig_ = command[1];
+
         } else if (command[0] == "snname") {
             w->rawSNName_ = command[1];
 
@@ -151,6 +154,18 @@ void runCommand(shared_ptr<Workspace> w) {
 
         w->update();
         display(w);
+
+        clearplot(w);
+
+        w->plotType_ = "data";
+        w->update();
+        addplot(w);
+        
+        w->plotType_ = "model";
+        w->update();
+        addplot(w);
+
+        makeplot(w);
 
     } else if (w->currentFunction_ == "mag") {
         maxMag(w);

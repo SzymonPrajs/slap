@@ -51,6 +51,7 @@ void Workspace::restoreDefault() {
     filterFolder_ = "data/filters";
     plotDir_ = "/Users/szymon/Projects/slap/plot";
     plotType_ = "data";
+    fig_ = "save";
     plotCount_ = 0;
 
     /*Default behaviour*/

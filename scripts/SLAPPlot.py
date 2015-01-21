@@ -21,6 +21,7 @@ class Plots:
     """
     z = ""
     SNName = ""
+    figSave = ""
     title = ""
 
     dataPlots = []  
@@ -38,14 +39,16 @@ class Plots:
         if (len(param) == 2):
             
             if (param[0] == "z"):
-                z = param[1]
+                self.z = param[1]
 
             elif (param[0] == "name"):
-                SNName = param[1]
+                self.SNName = param[1]
 
             elif (param[0] == "title"):
-                title = param[1] 
+                self.title = param[1] 
 
+            elif (param[0] == "fig"):
+                self.figSave = param[1]
 
     def readData(self, fileName):
         data = Data()
@@ -111,7 +114,7 @@ class Canvas:
     """
     Canvas: The plotting canvas. Depending on what settings were passed a set of plots is made.
     """
-    fig = plt.figure()
+    fig = plt.figure(figsize=(16, 10), dpi=300)
     ax1 = fig.add_subplot(111)
     ax2 = ""
     data = Plots()
@@ -158,11 +161,19 @@ class Canvas:
 
 
         plt.legend()
+        plt.title(self.data.SNName + "   z=" + self.data.z)
         plt.xlabel("Time (MJD)")
         plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)")
         plt.ylim(-0.2*ymax, 1.2*ymax) 
-        plt.show()
+        
+        if (self.data.figSave == "save"):
+            plt.savefig("results/"+self.data.SNName+"/"+self.data.SNName+".png")
 
+        elif (self.data.figSave == "show"):
+            plt.show()
+
+        else:
+            plt.show()
 
 """
 Main body of the program

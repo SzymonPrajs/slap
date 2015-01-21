@@ -32,6 +32,7 @@ void addplot(shared_ptr<Workspace> &w) {
 		fhandle.open(w->plotDir_.string() + "/info.dat");
 		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
+        fhandle << "fig=" << w->fig_ << "\n";
 		fhandle.close();
 
 	} else if (w->plotCount_ < 0) {
