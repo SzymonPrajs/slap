@@ -36,7 +36,7 @@ using namespace vmath;
 
 class MagnetarK : public SNModel {
 /*
- * modelParam_ = {Mej, B, P, k}
+ * modelParam_ = {tauM, B, P}
  */
 private:
     double tauP_;
@@ -44,10 +44,10 @@ private:
     double energyKinetic_;
     double energyRadiation_;
     double opacity_;
-    double tauM_;
     double ejectedMass_;
     double velocityCore_;
     double alpha_;
+    double Wang14_;
 
 public:
     MagnetarK(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);

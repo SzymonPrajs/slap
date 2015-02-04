@@ -60,6 +60,7 @@ public:
     vector<double> params_;
     vector<double> fitParam_;
     vector<double> fitParamError_;
+    vector<double> fitDerivedParam_;
     string rawParams_;
     string absLines_;
 

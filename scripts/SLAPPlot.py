@@ -152,13 +152,17 @@ class Canvas:
 
                 elif (self.data.Types[i] == "model"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
-                    self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], color=self.fltColour[f], label="model - "+f)
+                    self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], lw=2, color=self.fltColour[f], label="model - "+f)
 
                 elif (self.data.Types[i] == "residual"):
                     pass
                     # idx = np.where(self.data.dataPlots[i].flt == f)
                     # self.ax2.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
 
+        #plt.xticks(fontsize=20)
+        #plt.yticks(fontsize=20)
+        #plt.xlabel("Time (MJD)",fontsize=20)
+        #plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)",fontsize=20)
 
         plt.legend()
         plt.title(self.data.SNName + "   z=" + self.data.z)

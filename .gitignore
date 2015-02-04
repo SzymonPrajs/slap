@@ -41,4 +41,6 @@ slap
 test
 plot
 results
-Fit.py
+
+# Script files
+*.sh
