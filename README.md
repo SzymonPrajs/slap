@@ -1,4 +1,4 @@
-SLAP - v0.2.4
+SLAP - v0.3.0
 =============
 
 Supernova Lightcurve Analysis Package
@@ -6,7 +6,8 @@ Supernova Lightcurve Analysis Package
 
 Install
 -------
-In the testing phase only a local installation is possible. 
+In the testing phase only a local installation is possible but the dirrectory tree.
+Would requite some path changes in the code. This will be fixed in the furthcoming releases. 
 
 ```
 make
@@ -18,7 +19,7 @@ Usage
 The interface is still under construction. For the purpose of testing use the following:
 
 ```
-./slap fit LC=data/test/06D4eu.dat z=1.588 model=BB4
+./slap analyse LC=data/test/06D4eu.dat z=1.588 model=Magnetar abs=06D4eu
 ```
 
 Future releases will introduce a full documentation.
@@ -31,8 +32,12 @@ BB6 - dynamic BB model parametrised by dR/dt, d2R/dt2, T0, dT/dt, d2T/dt2 and MJ
 
 Magnetar - Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magnetic field - B (1e14 G), Spin period - P (ms) , Initial Radius - R0 (1e14cm) and explosion MJD 
 
+Magnetar - Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magnetic field - B (1e14 G), Spin period - P (ms) , Initial Radius - R0 (1e14cm), k - opacity  and explosion MJD
+
 Releases
 --------
+**v0.3.0**: Large number of changes, Introducing MultiNest fitting. Improving the Magnetar model (Wang et. al), introducing spectral corrections and Analyse.
+
 **v0.2.4**: Squashed a large number of bugs.
 
 **v0.2.3**: Add more filter responces.
@@ -56,9 +61,9 @@ implemented by me that find their, better, alternatives in these libraries. This
 
 Licence
 -------
-SLAP - Supernova Lightcurve Analysis Package v0.2.4
+SLAP - Supernova Lightcurve Analysis Package v0.3.0
 
-Copyright (C) 2014  Szymon Prajs
+Copyright (C) 2014-2015  Szymon Prajs
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
