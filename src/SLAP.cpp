@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2014-2015  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
