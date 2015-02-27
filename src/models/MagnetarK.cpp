@@ -30,7 +30,7 @@ MagnetarK::MagnetarK(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filter
     noModelParams_ = 4;
     defaultParams_ = {32.0, 3.0, 1.4, 0.1};
     lParams_ = {10, 0.1, 0.1, 0.01};
-    uParams_ = {100, 10, 10, 0.3};
+    uParams_ = {100, 50, 50, 0.3};
     paramNames_ = {"tauM", "B", "P", "Kappa"};
 
     modelParams_.resize(noModelParams_);

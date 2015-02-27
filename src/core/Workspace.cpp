@@ -35,7 +35,7 @@ Workspace::Workspace() {
  */
 void Workspace::restoreDefault() {
     /*Settings for a default SN*/
-    LC_ = "data/SLSN/SN2010gx.dat";
+    LC_ = "/Users/szymon/Projects/slap/data/SLSN/SN2010gx.dat";
     model_ = "Magnetar";
     absLines_ = "06D4eu";
     rawParams_ = "default";
@@ -48,8 +48,8 @@ void Workspace::restoreDefault() {
     z_ = 0.23;
 
     /*Default data locations*/
-    filterFolder_ = "data/filters";
-    plotDir_ = "/Users/szymon/Projects/slap/plot";
+    filterFolder_ = "/Users/szymon/Projects/slap/data/filters";
+    plotDir_ = "plot";
     plotType_ = "data";
     fig_ = "save";
     plotCount_ = 0;
