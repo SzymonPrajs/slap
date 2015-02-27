@@ -76,7 +76,7 @@ void addplot(shared_ptr<Workspace> &w) {
 
 
 void makeplot(shared_ptr<Workspace> &w) {
-	system("python scripts/SLAPPlot.py /Users/szymon/Projects/slap/plot");
+	system("python /Users/szymon/Projects/slap/scripts/SLAPPlot.py plot");
 }
 
 

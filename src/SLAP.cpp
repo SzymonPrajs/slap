@@ -132,8 +132,12 @@ void runCommand(shared_ptr<Workspace> w) {
         }
 
     } else if (w->currentFunction_ == "plot") {
-        plotModel(w);    
-
+        w->plotType_ = "data";
+        w->update();
+        addplot(w);
+        makeplot(w);
+        clearplot(w);
+        
     } else if (w->currentFunction_ == "addplot") {
         addplot(w);
 

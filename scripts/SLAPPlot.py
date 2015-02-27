@@ -171,7 +171,13 @@ class Canvas:
         plt.ylim(-0.2*ymax, 1.2*ymax) 
         
         if (self.data.figSave == "save"):
-            plt.savefig("results/"+self.data.SNName+"/"+self.data.SNName+".png")
+            if not os.path.exists("results"):
+                os.mkdir("results")
+            if not os.path.exists("results/"+self.data.SNName):
+                os.mkdir("results/"+self.data.SNName)
+            plt.savefig("results/"+self.data.SNName+"/"+self.data.SNName+".png", bbox_inches='tight')
+            
+            # plt.savefig("results/"+self.data.SNName+".png")
 
         elif (self.data.figSave == "show"):
             plt.show()
