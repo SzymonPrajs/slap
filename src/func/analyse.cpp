@@ -21,6 +21,8 @@
 
 #include "analyse.h"
 
+using namespace std;
+
 void maxMag(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
@@ -77,5 +79,3 @@ void display(shared_ptr<Workspace> &w) {
 
     fitFile.close();
 }
-
-using namespace std;
