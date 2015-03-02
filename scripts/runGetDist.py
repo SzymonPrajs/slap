@@ -5,8 +5,8 @@ import subprocess
 
 rangesMagnetar = \
 "par1	10	100\n\
-par2	0.1 20\n\
-par3	0.1	20\n\
+par2	0.1 50\n\
+par3	0.1	50\n\
 par4	52000	58000"
 
 paramnamesMagnetar = \
@@ -15,15 +15,27 @@ par2      B\n\
 par3      P\n\
 par4      expMJD"
 
+rangesMagnetarK = \
+"par1	10	100\n\
+par2	0.1 50\n\
+par3	0.1	50\n\
+par4	0.01 1.0\n\
+par5	52000	58000"
 
+paramnamesMagnetarK = \
+"par1      \\tau_{M}\n\
+par2      B\n\
+par3      P\n\
+par4	  \kappa\n\
+par5      expMJD"
 
 chainDir = sys.argv[1]
 SNName = chainDir.split("/")[-1]
-SNModel = "magnetar"
+SNModel = sys.argv[2]
 
 getDistOutput = chainDir+"/getDist"
 if not os.path.exists(getDistOutput):
-	os.mkchainDir(getDistOutput)
+	os.makedirs(getDistOutput)
 	print getDistOutput
 
 shutil.copy(chainDir+"/nest-.txt", getDistOutput+"/"+SNName+"_1.txt")
@@ -31,11 +43,15 @@ shutil.copy(chainDir+"/nest-.txt", getDistOutput+"/"+SNName+"_1.txt")
 fHandle = open(getDistOutput+"/"+SNName+".ranges","w")
 if SNModel == "magnetar" or SNModel == "Magnetar":
 	fHandle.write(rangesMagnetar)
+elif SNModel == "magnetarK" or SNModel == "MagnetarK":
+	fHandle.write(rangesMagnetarK)
 fHandle.close()
 
 fHandle = open(getDistOutput+"/"+SNName+".paramnames","w")
 if SNModel == "magnetar" or SNModel == "Magnetar":
 	fHandle.write(paramnamesMagnetar)
+elif SNModel == "magnetarK" or SNModel == "MagnetarK":
+	fHandle.write(paramnamesMagnetarK)
 fHandle.close()
 
 

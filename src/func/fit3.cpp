@@ -104,7 +104,7 @@ void createDirectory(shared_ptr<Workspace> &w) {
 void runMultiNest(shared_ptr<Workspace> &w) {
      // set the MultiNest sampling parameters
     int IS = 0;                 // do Nested Importance Sampling?
-    int mmodal = 0;                 // do mode separation?
+    int mmodal = 1;                 // do mode separation?
     int ceff = 1;                   // run in constant efficiency mode?
     int nlive = 100 * (w->snmodel_->noModelParams_ + 1);               // number of live points
     double efr = 0.8;               // set the required efficiency
