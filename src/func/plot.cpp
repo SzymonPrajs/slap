@@ -76,7 +76,12 @@ void addplot(shared_ptr<Workspace> &w) {
 
 
 void makeplot(shared_ptr<Workspace> &w) {
-	system("python /Users/szymon/Projects/slap/scripts/SLAPPlot.py plot");
+    if (w->plotType_ == "model" || w->plotType_ == "data") {
+    	system("python /Users/szymon/Projects/slap/scripts/plotLC.py plot");
+    
+    } else {
+        cout << "This will be implemented soon!" << endl;
+    }
 }
 
 
@@ -112,19 +117,16 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
 
     double t = 0;
 
-    // ofstream plotFile;
-    // plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+    ofstream plotFile;
+    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
 
     for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
         t = mjd - w->explosionMJD_;
-
         w->snmodel_->calcSEDParams(t);
-        cout << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << endl;
-
-        // plotFile << mjd << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
+        plotFile << mjd << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
     }
 
-    // plotFile.close();
+    plotFile.close();
 }
 
 

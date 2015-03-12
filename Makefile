@@ -29,3 +29,6 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
+
+install:
+	cp slap /usr/local/bin/
