@@ -19,26 +19,26 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#include "Magnetar.h"
+#include "MagnetarR.h"
 
 using namespace std;
 using namespace vmath;
 
 
-Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
+MagnetarR::MagnetarR(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     noSEDParams_ = 2;
-    noModelParams_ = 3;
-    defaultParams_ = {32.0, 3.0, 1.4};
-    lParams_ = {10, 0.1, 0.1};
-    uParams_ = {100, 20, 20};
-    paramNames_ = {"tauM", "B", "P"};
+    noModelParams_ = 4;
+    defaultParams_ = {32.0, 3.0, 1.4, 1.0};
+    lParams_ = {10, 0.1, 0.1, 0.0001};
+    uParams_ = {100, 20, 20, 100};
+    paramNames_ = {"tauM", "B", "P", "R0"};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);
 }
 
 
-void Magnetar::calcDerivedParams() {
+void MagnetarR::calcDerivedParams() {
     double temp;
     /* Constant quantities */
     opacity_ = 0.1;
@@ -69,12 +69,12 @@ void Magnetar::calcDerivedParams() {
 }
 
 
-double Magnetar::lumMagnetar(double t) {
+double MagnetarR::lumMagnetar(double t) {
     return 4.9e46 * pow(modelParams_[1], 2.0) * pow(modelParams_[2], -4.0) / pow(1 + t / tauP_, 2.0);
 }
 
 
-double integralLumSN(double t, void *param) {
+double integralLumSNR(double t, void *param) {
     double *par = (double *)param;
     double tauP = par[0];
     double modelParams0 = par[1];
@@ -88,7 +88,7 @@ double integralLumSN(double t, void *param) {
 }
 
 
-double Magnetar::lumSN(double t) {
+double MagnetarR::lumSN(double t) {
     double res = exp(-1 * pow(t / modelParams_[0], 2.0));
 
     /*Factor based on Wang et. al. (2014) */
@@ -100,7 +100,7 @@ double Magnetar::lumSN(double t) {
     double par[] = {tauP_, modelParams_[0], modelParams_[1], modelParams_[2]};
 
     gsl_function F;
-    F.function = &integralLumSN;
+    F.function = &integralLumSNR;
     F.params = &par;
 
     if (t > 200) {
@@ -115,13 +115,13 @@ double Magnetar::lumSN(double t) {
 }
 
 
-double Magnetar::radius(double t) {
+double MagnetarR::radius(double t) {
     double radiusCore = velocityCore_ * t;
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
     double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
-    double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
-    double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
+    double rad19 = modelParams_[3] + radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
+    double rad20 = modelParams_[3] + radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
     if (rad19 > radiusCore) {
         return rad19;
@@ -134,12 +134,12 @@ double Magnetar::radius(double t) {
 }
 
 
-double Magnetar::temperature(double t) {
+double MagnetarR::temperature(double t) {
     return pow(lumSN(t) / (CGS_SIGMA * 4 * M_PI * pow(radius(t), 2)), 0.25);
 }
 
 
-void Magnetar::printDerivedVariables() {
+void MagnetarR::printDerivedVariables() {
     cout << energyMagnetar_ << " ";
     cout << energyKinetic_ << " ";
     cout << ejectedMass_ << " ";
@@ -147,13 +147,13 @@ void Magnetar::printDerivedVariables() {
 }
 
 
-void Magnetar::calcSEDParams(double t) {
+void MagnetarR::calcSEDParams(double t) {
     SEDParams_[0] = radius(t);
     SEDParams_[1] = temperature(t);
 }
    
  
-vector<double> Magnetar::calcSED(double t) {
+vector<double> MagnetarR::calcSED(double t) {
     calcSEDParams(t);
     vector<double> sed(restWavelength_.size(), 0);
 

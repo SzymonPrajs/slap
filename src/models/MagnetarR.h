@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_MODEL_MAGNETAR_H_
-#define SLAP_MODEL_MAGNETAR_H_
+#ifndef SLAP_MODEL_MAGNETARR_H_
+#define SLAP_MODEL_MAGNETARR_H_
 
 #include <vector>
 #include <memory>
@@ -34,9 +34,9 @@
 using namespace std;
 using namespace vmath;
 
-class Magnetar : public SNModel {
+class MagnetarR : public SNModel {
 /*
- * modelParam_ = {tauM, B, P}
+ * modelParam_ = {tauM, B, P, R0}
  */
 private:
     double tauP_;
@@ -50,7 +50,7 @@ private:
     double Wang14_;
 
 public:
-    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
+    MagnetarR(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
     void calcDerivedParams();
     vector<double> calcSED(double);

@@ -33,6 +33,7 @@
 #include "../models/BB6.h"
 #include "../models/Magnetar.h"
 #include "../models/MagnetarK.h"
+#include "../models/MagnetarR.h"
 #include "../utils/utils.h"
 #include "../vmath/stat.h"
 
