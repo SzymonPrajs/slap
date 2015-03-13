@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014-2015  Szymon Prajs
+ *Copyright (C) 2015  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -120,8 +120,8 @@ double MagnetarR::radius(double t) {
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
     double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
-    double rad19 = modelParams_[3] + radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
-    double rad20 = modelParams_[3] + radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
+    double rad19 = modelParams_[3] * 1e14 + radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
+    double rad20 = modelParams_[3] * 1e14 + radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
     if (rad19 > radiusCore) {
         return rad19;
