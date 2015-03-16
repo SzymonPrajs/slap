@@ -54,6 +54,8 @@ void maxMag(shared_ptr<Workspace> &w) {
 
     w->snmodel_->cosmology_->set(z);
     w->snmodel_->setWavelength();
+
+    cout << -2.5*log10(w->snmodel_->flux(28 * (1 + w->z_), "SDSS_g"))-20.7 << endl;
 }
 
 void display(shared_ptr<Workspace> &w) {

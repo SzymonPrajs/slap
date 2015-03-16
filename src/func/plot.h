@@ -39,6 +39,7 @@ void makeplot(shared_ptr<Workspace>&);
 void clearplot(shared_ptr<Workspace>&);
 void plotModel(shared_ptr<Workspace>&);
 void plotSEDParam(shared_ptr<Workspace>&);
+void plotSED(shared_ptr<Workspace>&);
 void plotResidual(shared_ptr<Workspace>&);
 
 #endif

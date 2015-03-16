@@ -55,6 +55,9 @@ void addplot(shared_ptr<Workspace> &w) {
 		
         } else if (w->plotType_ == "param") {
             plotSEDParam(w);
+
+        } else if (w->plotType_ == "SED") {
+            plotSED(w);
         
         } else if (w->plotType_ == "residual") {
             plotResidual(w);
@@ -129,6 +132,25 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
     plotFile.close();
 }
 
+void plotSED(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams();
+    double t = 28 * (1 + w->z_);
+
+    ofstream plotFile;
+    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".txt");
+
+    vector<double> sed = w->snmodel_->SED(t);
+
+    for (int i = 0; i < sed.size(); ++i) {
+        if (w->filters_->masterWavelength_[i] > 500 && w->filters_->masterWavelength_[i] < 15000) {
+            plotFile << w->filters_->masterWavelength_[i] << " " << sed[i] << "\n";
+            cout << w->filters_->masterWavelength_[i] << " " << sed[i] << endl;
+        }
+    }
+
+    plotFile.close();
+}
 
 void plotResidual(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
