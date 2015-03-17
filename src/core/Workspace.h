@@ -71,6 +71,7 @@ public:
     double explosionMJD_;
     double endMJD_;
     double maxMJD_;
+    double t_;
     string rawStartMJD_;
     string rawExplosionMJD_;
     string rawEndMJD_;

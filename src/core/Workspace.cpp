@@ -46,6 +46,7 @@ void Workspace::restoreDefault() {
     fitter_ = "multinest";
     rawSNName_ = "default";
     z_ = 0.23;
+    t_ = 20;
 
     /*Default data locations*/
     filterFolder_ = "/Users/szymon/Projects/slap/data/filters";

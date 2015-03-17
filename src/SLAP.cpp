@@ -111,6 +111,9 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "fitter") {
             w->fitter_ = command[1];
 
+        } else if (command[0] == "t") {
+            w->t_ = atof(command[1].c_str());
+
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
         }
@@ -172,7 +175,7 @@ void runCommand(shared_ptr<Workspace> w) {
         makeplot(w);
 
     } else if (w->currentFunction_ == "mag") {
-        maxMag(w);
+        obsMag(w);
 
     } else if (w->currentFunction_ == "exit") {
         w->currentFunction_ = "quit";

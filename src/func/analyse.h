@@ -34,5 +34,6 @@
 using namespace std;
 
 void maxMag(shared_ptr<Workspace>&);
+void obsMag(shared_ptr<Workspace>&);
 void display(shared_ptr<Workspace>&);
 #endif
