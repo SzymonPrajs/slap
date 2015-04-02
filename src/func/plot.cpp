@@ -135,18 +135,25 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
 void plotSED(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
-    double t = 28 * (1 + w->z_);
+    double t, phase;
 
     ofstream plotFile;
     plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".txt");
 
-    vector<double> sed = w->snmodel_->SED(t);
+    vector<double> sed;
 
-    for (int i = 0; i < sed.size(); ++i) {
-        if (w->filters_->masterWavelength_[i] > 500 && w->filters_->masterWavelength_[i] < 15000) {
-            plotFile << w->filters_->masterWavelength_[i] << " " << sed[i] << "\n";
-            cout << w->filters_->masterWavelength_[i] << " " << sed[i] << endl;
+    for (int j = 1; j < 120; ++j) {
+        t = j * (1 + w->z_);
+        sed = w->snmodel_->SED(t);
+        phase = t - 22;
+
+        for (int i = 0; i < sed.size(); ++i) {
+            if (w->filters_->masterWavelength_[i] > 500 && w->filters_->masterWavelength_[i] < 13000) {
+                plotFile << phase << " " << w->filters_->masterWavelength_[i] << " " << sed[i] << "\n";
+                // cout << w->filters_->masterWavelength_[i] << " " << sed[i] << endl;
+            }
         }
+        cout << phase << " " << w->snmodel_->mag(t, "SDSS_u") - w->snmodel_->mag(22, "SDSS_u") << endl;
     }
 
     plotFile.close();
