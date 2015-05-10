@@ -117,6 +117,9 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
         } else if (command[0] == "t") {
             w->t_ = atof(command[1].c_str());
 
+        } else if (command[0] == "redo") {
+            w->rawFitRedo_ = command[1];
+
         } else {
             cout << "'" << command[0] << "' is not a valid command." << endl;
         }

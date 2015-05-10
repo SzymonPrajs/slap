@@ -54,6 +54,7 @@ void Workspace::restoreDefault() {
     plotType_ = "data";
     fig_ = "save";
     plotCount_ = 0;
+    rawFitRedo_ = "True";
 
     /*Default behaviour*/
     currentFunction_ = "quit";
@@ -233,6 +234,28 @@ void Workspace::updateSNName() {
     } 
 }
 
+void Workspace::updateRedo_() {
+    if (rawFitRedo_ == "previous") {
+        /*retain previous parameters with no changes*/
+    
+    } else if (rawFitRedo_ == "default") {
+        fitRedo_ = true;
+        rawFitRedo_ = "previous";
+
+    } else if (rawFitRedo_ == "True" || rawFitRedo_ == "true") {
+        fitRedo_ = true;
+        rawFitRedo_ = "previous";
+
+    } else if (rawFitRedo_ == "False" || rawFitRedo_ == "false") {
+        fitRedo_ = false;
+        rawFitRedo_ = "previous";
+
+    } else {
+        fitRedo_ = true;
+        rawFitRedo_ = "previous";
+    } 
+}
+
 
 void Workspace::update() { 
     updatePaths();
@@ -245,6 +268,7 @@ void Workspace::update() {
     updateRawParams();
     updateRawFilters();
     updateSNName();
+    updateRedo_();
 
     /* TODO: put the below in an update function and check if the file exists before allowing it in */
     snmodel_->absLineFile_ = absLines_;

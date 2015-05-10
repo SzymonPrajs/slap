@@ -103,7 +103,7 @@ void plotModel(shared_ptr<Workspace> &w) {
 	plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
+        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 50; ++mjd) { 
             t = mjd - w->explosionMJD_;
 
             plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << "\n";

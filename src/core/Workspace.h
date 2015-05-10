@@ -94,11 +94,13 @@ public:
     bool interactiveMode_;
     bool updateParam_;
     bool updateEvent_;
+    bool fitRedo_;
     int plotCount_;
     string currentFunction_;
     string plotType_;
     string fig_;
     string fitter_;
+    string rawFitRedo_;
 
 
     /*Function list*/
@@ -136,6 +138,7 @@ public:
     void updateRawParams();
     void updateRawFilters();
     void updateSNName();
+    void updateRedo_();
 
     /*Perform a full update*/
     void update();

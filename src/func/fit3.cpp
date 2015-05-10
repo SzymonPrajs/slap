@@ -167,8 +167,10 @@ void fit3(shared_ptr<Workspace> &w) {
     createDirectory(w);
 
     // Run the Multinest fitter
-    runMultiNest(w);
-
+    if (w->fitRedo_) {
+        runMultiNest(w);
+    }
+    
     // Read the results
     readFitParam(w);
 }
