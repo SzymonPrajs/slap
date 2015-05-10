@@ -1,9 +1,40 @@
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
+import math
 import sys
 import os
 
+def mjd_to_date(mjd):
+    arr = []
+    for i in range(np.size(mjd)):
+        jd = mjd[i] + 2400000.5 + 0.5
+
+        F, I = math.modf(jd)
+        I = int(I)
+        A = math.trunc((I - 1867216.25)/36524.25)
+        if I > 2299160:
+            B = I + 1 + A - math.trunc(A / 4.)
+        else:
+            B = I
+        C = B + 1524
+        D = math.trunc((C - 122.1) / 365.25)
+        E = math.trunc(365.25 * D)
+        G = math.trunc((C - E) / 30.6001)
+        day = C - E + F - math.trunc(30.6001 * G)
+        if G < 13.5:
+            month = G - 1
+        else:
+            month = G - 13
+            
+        if month > 2.5:
+            year = D - 4716
+        else:
+            year = D - 4715
+        Date = str(year) + "-" + str(month) + "-" + str(int(day+0.5))
+        Date = str(int(day+0.5)) + "/" + str(month)+ "/" +str(year-2000)
+        arr.append(Date)
+    return np.array(arr)
 
 class Data:
     """
@@ -116,16 +147,19 @@ class Canvas:
     """
     fig = plt.figure(figsize=(16, 10), dpi=300)
     ax1 = fig.add_subplot(111)
-    ax2 = ""
+    ax2 = ax1.twiny()
     data = Plots()
     fltColour = dict()
 
 
     def col(self, i):
-        colour = {0 : "#2ecc71", 1 : "#3498db", 2 : "#9b59b6", \
-                  3 : "#34495e", 4 : "#f1c40f", 5 : "#e67e22", \
-                  6 : "#e74c3c", 7 : "#1abc9c"}
+        # colour = {0 : "#2ecc71", 1 : "#3498db", 2 : "#9b59b6", \
+        #           3 : "#34495e", 4 : "#f1c40f", 5 : "#e67e22", \
+        #           6 : "#e74c3c", 7 : "#1abc9c"}
 
+        colour = {0 : "#59D11D", 1 : "#A61C00", 2 : "#F2990A", \
+                  3 : "#000000", 4 : "#f1c40f", 5 : "#e67e22", \
+                  6 : "#e74c3c", 7 : "#1abc9c"}
         return colour[i % 8]
 
 
@@ -135,43 +169,62 @@ class Canvas:
         for i in range(len(self.data.UniqueFilters)):
             self.fltColour.update({self.data.UniqueFilters[i] : self.col(i)})
 
-        if (self.data.Types.count("residual") > 0):
-            self.ax2 = self.fig.add_subplot(211)
+        # if (self.data.Types.count("residual") > 0):
+        #     self.ax2 = self.fig.add_subplot(211)
 
     def plotAll(self):
         ymax = -1000
-
+        xmax = 0
+        xmin = 100000
         for i in range(len(self.data.dataPlots)):
             if (ymax < self.data.dataPlots[i].flux.max()):
                 ymax = self.data.dataPlots[i].flux.max()
+
+            if (xmax < self.data.dataPlots[i].mjd.max()):
+                xmax = self.data.dataPlots[i].mjd.max()
+
+            if (xmin > self.data.dataPlots[i].mjd.min()):
+                xmin = self.data.dataPlots[i].mjd.min()
 
             for f in self.data.Filters[i]:
                 if (self.data.Types[i] == "data"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
                     self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f], label="data - "+f)
+                    self.ax1.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], markersize=10, fmt='o', color=self.fltColour[f])
 
                 elif (self.data.Types[i] == "model"):
                     idx = np.where(self.data.dataPlots[i].flt == f)
                     self.ax1.plot(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], lw=2, color=self.fltColour[f], label="model - "+f)
-
+                    
                 elif (self.data.Types[i] == "residual"):
                     pass
                     # idx = np.where(self.data.dataPlots[i].flt == f)
                     # self.ax2.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
 
-        #plt.xticks(fontsize=20)
-        #plt.yticks(fontsize=20)
-        #plt.xlabel("Time (MJD)",fontsize=20)
-        #plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)",fontsize=20)
-
-        plt.legend()
-        plt.title(self.data.SNName + "   z=" + self.data.z)
-        plt.xlabel("Time (MJD)")
-        plt.ylabel("Flux ($erg$ $s^{-1} cm^{-2} A^{-1}$)")
-        plt.ylim(-0.2*ymax, 1.2*ymax) 
+        self.ax1.legend(loc=2, fontsize=20)
+        self.ax1.set_ylabel("Flux ($erg$ $s^{-1} cm^{-2} \AA^{-1}$)",fontsize=20)
+        self.ax1.set_ylim(-0.05*ymax, 1.12*ymax) 
+        self.ax1.set_xlabel("Time (MJD)",fontsize=20)
+        self.ax1.set_xlim(xmin-5, xmax+5)
+        self.ax2.set_title(self.data.SNName + "   z=" + self.data.z, y=1.04,fontsize=28)
+        self.ax2.set_xlim(xmin-20, xmax+20)
+        ticks = np.linspace(xmin, xmax, 6)
+        self.ax2.set_xticks(ticks) 
+        self.ax2.set_xticklabels(mjd_to_date(ticks), fontsize=20)
         
+        for tick in self.ax1.xaxis.get_major_ticks():
+            tick.label.set_fontsize(20) 
+
+        for tick in self.ax1.yaxis.get_major_ticks():
+            tick.label.set_fontsize(20) 
+
+
         if (self.data.figSave == "save"):
-            plt.savefig("results/"+self.data.SNName+"/"+self.data.SNName+".png")
+            if not os.path.exists("results"):
+                os.mkdir("results")
+            if not os.path.exists("results/"+self.data.SNName):
+                os.mkdir("results/"+self.data.SNName)
+            plt.savefig("results/"+self.data.SNName+"/"+self.data.SNName+".pdf", bbox_inches='tight')
 
         elif (self.data.figSave == "show"):
             plt.show()

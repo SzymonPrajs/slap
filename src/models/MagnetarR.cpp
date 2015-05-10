@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2015  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,28 +19,29 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#include "MagnetarK.h"
+#include "MagnetarR.h"
 
 using namespace std;
 using namespace vmath;
 
 
-MagnetarK::MagnetarK(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
+MagnetarR::MagnetarR(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
     noSEDParams_ = 2;
     noModelParams_ = 4;
-    defaultParams_ = {32.0, 3.0, 1.4, 0.1};
-    lParams_ = {10, 0.1, 0.1, 0.01};
-    uParams_ = {100, 20, 20, 0.3};
-    paramNames_ = {"tauM", "B", "P", "Kappa"};
+    defaultParams_ = {32.0, 3.0, 1.4, 1.0};
+    lParams_ = {10, 0.1, 0.1, 0.0001};
+    uParams_ = {100, 20, 20, 100};
+    paramNames_ = {"tauM", "B", "P", "R0"};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);
 }
 
 
-void MagnetarK::calcDerivedParams() {
+void MagnetarR::calcDerivedParams() {
     double temp;
     /* Constant quantities */
+    opacity_ = 0.1;
     energyRadiation_ = 0;
     alpha_ = 10;
 
@@ -54,9 +55,9 @@ void MagnetarK::calcDerivedParams() {
     energyKinetic_ = 1.0e51 + 0.5 * (energyMagnetar_ - energyRadiation_);
     
     /* Mass ejected in the explosion */
-    // temp = 10 * pow(energyKinetic_ / 1.0e51, -0.25) * pow(modelParams_[3] / 0.1, 0.5);
+    // temp = 10 * pow(energyKinetic_ / 1.0e51, -0.25) * pow(opacity_ / 0.1, 0.5);
     // ejectedMass_ = pow(modelParams_[0] / temp, 4.0/3.0);
-    ejectedMass_ = pow(modelParams_[0] / 10, 4.0/3.0) * pow(energyKinetic_ / 1.0e51, 1.0 / 3.0) * pow(modelParams_[3] / 0.1, -2.0 / 3.0);
+    ejectedMass_ = pow(modelParams_[0] / 10, 4.0/3.0) * pow(energyKinetic_ / 1.0e51, 1.0 / 3.0) * pow(opacity_ / 0.1, -2.0 / 3.0);
 
     /* core velocity */
     temp = energyKinetic_ * 10.0 / (3.0 * ejectedMass_ * 2.0e33); 
@@ -64,16 +65,16 @@ void MagnetarK::calcDerivedParams() {
 
     derivedParams_ = {energyMagnetar_, energyKinetic_, ejectedMass_, velocityCore_};
 
-    Wang14_ = 3.0 * modelParams_[3] * ejectedMass_ * 1.989e33 / (4.0 * M_PI * pow(velocityCore_, 2.0));
+    Wang14_ = 3.0 * opacity_ * ejectedMass_ * 1.989e33 / (4.0 * M_PI * pow(velocityCore_, 2.0));
 }
 
 
-double MagnetarK::lumMagnetar(double t) {
+double MagnetarR::lumMagnetar(double t) {
     return 4.9e46 * pow(modelParams_[1], 2.0) * pow(modelParams_[2], -4.0) / pow(1 + t / tauP_, 2.0);
 }
 
 
-double integralLumSNK(double t, void *param) {
+double integralLumSNR(double t, void *param) {
     double *par = (double *)param;
     double tauP = par[0];
     double modelParams0 = par[1];
@@ -87,7 +88,7 @@ double integralLumSNK(double t, void *param) {
 }
 
 
-double MagnetarK::lumSN(double t) {
+double MagnetarR::lumSN(double t) {
     double res = exp(-1 * pow(t / modelParams_[0], 2.0));
 
     /*Factor based on Wang et. al. (2014) */
@@ -99,7 +100,7 @@ double MagnetarK::lumSN(double t) {
     double par[] = {tauP_, modelParams_[0], modelParams_[1], modelParams_[2]};
 
     gsl_function F;
-    F.function = &integralLumSNK;
+    F.function = &integralLumSNR;
     F.params = &par;
 
     if (t > 200) {
@@ -114,13 +115,13 @@ double MagnetarK::lumSN(double t) {
 }
 
 
-double MagnetarK::radius(double t) {
+double MagnetarR::radius(double t) {
     double radiusCore = velocityCore_ * t;
     double rhoCore = 3 * ejectedMass_ * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
-    double tauCore = modelParams_[3] * rhoCore * velocityCore_ * t;
+    double tauCore = opacity_ * rhoCore * velocityCore_ * t;
 
-    double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
-    double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (modelParams_[3] * rhoCore); 
+    double rad19 = modelParams_[3] * 1e14 + radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
+    double rad20 = modelParams_[3] * 1e14 + radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
 
     if (rad19 > radiusCore) {
         return rad19;
@@ -133,12 +134,12 @@ double MagnetarK::radius(double t) {
 }
 
 
-double MagnetarK::temperature(double t) {
+double MagnetarR::temperature(double t) {
     return pow(lumSN(t) / (CGS_SIGMA * 4 * M_PI * pow(radius(t), 2)), 0.25);
 }
 
 
-void MagnetarK::printDerivedVariables() {
+void MagnetarR::printDerivedVariables() {
     cout << energyMagnetar_ << " ";
     cout << energyKinetic_ << " ";
     cout << ejectedMass_ << " ";
@@ -146,13 +147,13 @@ void MagnetarK::printDerivedVariables() {
 }
 
 
-void MagnetarK::calcSEDParams(double t) {
+void MagnetarR::calcSEDParams(double t) {
     SEDParams_[0] = radius(t);
     SEDParams_[1] = temperature(t);
 }
    
  
-vector<double> MagnetarK::calcSED(double t) {
+vector<double> MagnetarR::calcSED(double t) {
     calcSEDParams(t);
     vector<double> sed(restWavelength_.size(), 0);
 

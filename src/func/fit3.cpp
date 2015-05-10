@@ -53,7 +53,7 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
         if (sn->mjd_[i] >= sn->explosionMJD_) {
             t = sn->mjd_[i] - sn->explosionMJD_;
             residual = (sn->flux_[i] - sn->snmodel_->flux(t, sn->filter_[i])) / sn->fluxErr_[i];
-
+            
         } else {
             residual = sn->flux_[i] / sn->fluxErr_[i];
         }
@@ -167,8 +167,10 @@ void fit3(shared_ptr<Workspace> &w) {
     createDirectory(w);
 
     // Run the Multinest fitter
-    runMultiNest(w);
-
+    if (w->fitRedo_) {
+        runMultiNest(w);
+    }
+    
     // Read the results
     readFitParam(w);
 }

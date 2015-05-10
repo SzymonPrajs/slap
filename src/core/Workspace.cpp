@@ -35,7 +35,7 @@ Workspace::Workspace() {
  */
 void Workspace::restoreDefault() {
     /*Settings for a default SN*/
-    LC_ = "data/SLSN/SN2010gx.dat";
+    LC_ = "/Users/szymon/Projects/slap/data/SLSN/SN2010gx.dat";
     model_ = "Magnetar";
     absLines_ = "06D4eu";
     rawParams_ = "default";
@@ -46,13 +46,15 @@ void Workspace::restoreDefault() {
     fitter_ = "multinest";
     rawSNName_ = "default";
     z_ = 0.23;
+    t_ = 20;
 
     /*Default data locations*/
-    filterFolder_ = "data/filters";
-    plotDir_ = "/Users/szymon/Projects/slap/plot";
+    filterFolder_ = "/Users/szymon/Projects/slap/data/filters";
+    plotDir_ = "plot";
     plotType_ = "data";
     fig_ = "save";
     plotCount_ = 0;
+    rawFitRedo_ = "True";
 
     /*Default behaviour*/
     currentFunction_ = "quit";
@@ -109,6 +111,10 @@ void Workspace::updateModel() {
     } else if (model_ == "MagnetarK" || model_ == "magnetarK") {
         shared_ptr<MagnetarK> magnetarK(new MagnetarK(cosmology_, filters_));
         snmodel_ = magnetarK;
+
+    } else if (model_ == "MagnetarR" || model_ == "magnetarR") {
+        shared_ptr<MagnetarR> magnetarR(new MagnetarR(cosmology_, filters_));
+        snmodel_ = magnetarR;
 
     } else {
         cout << model_ << " is not a recognised model. Restoring default (Magnetar)" << endl;
@@ -228,6 +234,28 @@ void Workspace::updateSNName() {
     } 
 }
 
+void Workspace::updateRedo_() {
+    if (rawFitRedo_ == "previous") {
+        /*retain previous parameters with no changes*/
+    
+    } else if (rawFitRedo_ == "default") {
+        fitRedo_ = true;
+        rawFitRedo_ = "previous";
+
+    } else if (rawFitRedo_ == "True" || rawFitRedo_ == "true") {
+        fitRedo_ = true;
+        rawFitRedo_ = "previous";
+
+    } else if (rawFitRedo_ == "False" || rawFitRedo_ == "false") {
+        fitRedo_ = false;
+        rawFitRedo_ = "previous";
+
+    } else {
+        fitRedo_ = true;
+        rawFitRedo_ = "previous";
+    } 
+}
+
 
 void Workspace::update() { 
     updatePaths();
@@ -240,6 +268,7 @@ void Workspace::update() {
     updateRawParams();
     updateRawFilters();
     updateSNName();
+    updateRedo_();
 
     /* TODO: put the below in an update function and check if the file exists before allowing it in */
     snmodel_->absLineFile_ = absLines_;

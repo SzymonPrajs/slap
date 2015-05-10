@@ -55,6 +55,9 @@ void addplot(shared_ptr<Workspace> &w) {
 		
         } else if (w->plotType_ == "param") {
             plotSEDParam(w);
+
+        } else if (w->plotType_ == "SED") {
+            plotSED(w);
         
         } else if (w->plotType_ == "residual") {
             plotResidual(w);
@@ -76,7 +79,12 @@ void addplot(shared_ptr<Workspace> &w) {
 
 
 void makeplot(shared_ptr<Workspace> &w) {
-	system("python scripts/SLAPPlot.py /Users/szymon/Projects/slap/plot");
+    if (w->plotType_ == "model" || w->plotType_ == "data") {
+    	system("python /Users/szymon/Projects/slap/scripts/plotLC.py plot");
+    
+    } else {
+        cout << "This will be implemented soon!" << endl;
+    }
 }
 
 
@@ -95,7 +103,7 @@ void plotModel(shared_ptr<Workspace> &w) {
 	plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
+        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 50; ++mjd) { 
             t = mjd - w->explosionMJD_;
 
             plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << "\n";
@@ -112,21 +120,44 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
 
     double t = 0;
 
-    // ofstream plotFile;
-    // plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+    ofstream plotFile;
+    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
 
     for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
         t = mjd - w->explosionMJD_;
-
         w->snmodel_->calcSEDParams(t);
-        cout << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << endl;
-
-        // plotFile << mjd << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
+        plotFile << mjd << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
     }
 
-    // plotFile.close();
+    plotFile.close();
 }
 
+void plotSED(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams();
+    double t, phase;
+
+    ofstream plotFile;
+    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".txt");
+
+    vector<double> sed;
+
+    for (int j = 1; j < 120; ++j) {
+        t = j * (1 + w->z_);
+        sed = w->snmodel_->SED(t);
+        phase = t - 22;
+
+        for (int i = 0; i < sed.size(); ++i) {
+            if (w->filters_->masterWavelength_[i] > 500 && w->filters_->masterWavelength_[i] < 13000) {
+                plotFile << phase << " " << w->filters_->masterWavelength_[i] << " " << sed[i] << "\n";
+                // cout << w->filters_->masterWavelength_[i] << " " << sed[i] << endl;
+            }
+        }
+        cout << phase << " " << w->snmodel_->mag(t, "SDSS_u") - w->snmodel_->mag(22, "SDSS_u") << endl;
+    }
+
+    plotFile.close();
+}
 
 void plotResidual(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;

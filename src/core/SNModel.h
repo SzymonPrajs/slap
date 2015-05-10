@@ -64,6 +64,7 @@ public:
     virtual void calcDerivedParams() {};
     virtual void printDerivedVariables() {};
     
+    vector<double> SED(double); 
     double flux(double, string);
     double mag(double, string);
     void setWavelength();

@@ -1,14 +1,14 @@
 CXX = clang++
 C = clang
 CPPFLAGS = -c -O3 -std=c++11
-CFLAGS = -c -O3
+CFLAGS = -c  -O3
 LDFLAGS = -lreadline -lgsl -lboost_system -lboost_filesystem -lMinuit2 -lnest3 -lgfortran -llapack -Wl,-no_compact_unwind
 EXECUTABLE = slap
 
 
 CXXSOURCES = src/SLAP.cpp
 MPFIT = src/utils/mpfit.c
-MODELS = src/models/BB4.cpp src/models/BB6.cpp src/models/Magnetar.cpp src/models/MagnetarK.cpp
+MODELS = src/models/BB4.cpp src/models/BB6.cpp src/models/Magnetar.cpp src/models/MagnetarK.cpp src/models/MagnetarR.cpp
 CORE = src/core/Cosmology.cpp src/core/Filters.cpp src/core/SNModel.cpp src/core/SNEvent.cpp src/core/Workspace.cpp
 UTILS = src/utils/utils.cpp
 FUNC = src/func/fit.cpp src/func/plot.cpp src/func/fit2.cpp src/func/fit3.cpp src/func/analyse.cpp
@@ -29,3 +29,6 @@ $(EXECUTABLE): $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) $(EXECUTABLE)
+
+install:
+	cp slap /usr/local/bin/

@@ -33,6 +33,7 @@
 #include "../models/BB6.h"
 #include "../models/Magnetar.h"
 #include "../models/MagnetarK.h"
+#include "../models/MagnetarR.h"
 #include "../utils/utils.h"
 #include "../vmath/stat.h"
 
@@ -70,6 +71,7 @@ public:
     double explosionMJD_;
     double endMJD_;
     double maxMJD_;
+    double t_;
     string rawStartMJD_;
     string rawExplosionMJD_;
     string rawEndMJD_;
@@ -92,11 +94,13 @@ public:
     bool interactiveMode_;
     bool updateParam_;
     bool updateEvent_;
+    bool fitRedo_;
     int plotCount_;
     string currentFunction_;
     string plotType_;
     string fig_;
     string fitter_;
+    string rawFitRedo_;
 
 
     /*Function list*/
@@ -134,6 +138,7 @@ public:
     void updateRawParams();
     void updateRawFilters();
     void updateSNName();
+    void updateRedo_();
 
     /*Perform a full update*/
     void update();

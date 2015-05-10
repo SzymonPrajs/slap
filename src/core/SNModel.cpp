@@ -44,6 +44,12 @@ SNModel::SNModel(shared_ptr<Filters> filters) {
     setWavelength();
 }
 
+vector<double> SNModel::SED(double t) {
+    vector<double> sed = calcSED(t * cosmology_->a_);
+    sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
+    sed = mult<double>(sed, absLines_);
+    return sed;
+}
 
 double SNModel::flux(double t, string filterName) {
     vector<double> sed = calcSED(t * cosmology_->a_);
@@ -75,7 +81,7 @@ void SNModel::absFilter() {
 
     for (int i = 0; i < restWavelength_.size(); ++i) {
         if (restWavelength_[i] < min) {
-            absLines_[i] = 0.2;
+            absLines_[i] = 0.4;
         
         } else if (restWavelength_[i] > max) {
             absLines_[i] = 1.0;

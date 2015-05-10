@@ -21,6 +21,8 @@
 
 #include "analyse.h"
 
+using namespace std;
+
 void maxMag(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
@@ -54,6 +56,17 @@ void maxMag(shared_ptr<Workspace> &w) {
     w->snmodel_->setWavelength();
 }
 
+void obsMag(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams();
+    w->snmodel_->setWavelength();
+
+    for (int i = 0; i < w->filterList_.size(); ++i) {
+        cout << w->filterList_[i] << " - ";
+        cout << w->snmodel_->mag(w->t_, w->filterList_[i]) << endl;
+    }
+}
+
 void display(shared_ptr<Workspace> &w) {
     for (int i = 0 ; i < w->snmodel_->noModelParams_; ++i) {
         cout << w->snmodel_->paramNames_[i] << ": " << w->fitParam_[i] << "  (" << w->fitParamError_[i] << ")\n";
@@ -77,5 +90,3 @@ void display(shared_ptr<Workspace> &w) {
 
     fitFile.close();
 }
-
-using namespace std;

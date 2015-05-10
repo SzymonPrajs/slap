@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2014-2015  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters)
     noModelParams_ = 3;
     defaultParams_ = {32.0, 3.0, 1.4};
     lParams_ = {10, 0.1, 0.1};
-    uParams_ = {100, 10, 10};
+    uParams_ = {100, 20, 20};
     paramNames_ = {"tauM", "B", "P"};
 
     modelParams_.resize(noModelParams_);
