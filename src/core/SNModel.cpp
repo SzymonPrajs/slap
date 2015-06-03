@@ -25,10 +25,10 @@ using namespace std;
 using namespace vmath;
 
 
-SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
+SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters, shared_ptr<Absorption> absorption) {
     cosmology_ = cosmology;
     filters_ = filters;
-    absorption_ = shared_ptr<Absorption>(new Absorption("/Users/szymon/Projects/slap/data/absLines"));
+    absorption_ = absorption;
     absFile_ = "06D4eu"; /*TODO: Need to be globaly setup*/
     derivedParams_ = {}; /*TODO: Why is this here?*/
 }
@@ -76,25 +76,3 @@ double SNModel::mag(double t, string filterName) {
     int ID = filters_->filterID_.at(filterName);
     return -2.5 * log10(flux(t, filterName)) - filters_->filters_[ID].zp_;
 }
-
-
-// void SNModel::absFilter() {
-//     vector <vector<double> > data;
-//     loadtxt<double>("/Users/szymon/Projects/slap/data/absLines/" + absLineFile_ + ".abs", 2, data);
-//     double min = data[0].front();
-//     double max = data[0].back();
-//     absLines_.resize(restWavelength_.size());
-
-//     for (int i = 0; i < restWavelength_.size(); ++i) {
-//         if (restWavelength_[i] < min) {
-//             absLines_[i] = 0.4;
-        
-//         } else if (restWavelength_[i] > max) {
-//             absLines_[i] = 1.0;
-        
-//         } else {
-//             absLines_[i] = interp(restWavelength_[i], data[0], data[1]);
-//         }
-//     }
-// }
-

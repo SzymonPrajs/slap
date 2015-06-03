@@ -35,7 +35,7 @@ using namespace vmath;
 
 class BB4 : public SNModel {
 public:
-    BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
+    BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);
 
     double calcSED(double);
     void calcSEDParams(double);

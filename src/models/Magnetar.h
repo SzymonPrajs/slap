@@ -50,7 +50,7 @@ private:
     double Wang14_;
 
 public:
-    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
+    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);
 
     void calcDerivedParams();
     double calcSED(double);

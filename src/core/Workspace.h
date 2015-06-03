@@ -30,6 +30,7 @@
 #include "SNModel.h"
 #include "Filters.h"
 #include "SNEvent.h"
+#include "Absorption.h"
 #include "../models/BB4.h"
 #include "../models/BB6.h"
 #include "../models/Magnetar.h"
@@ -64,7 +65,6 @@ public:
     vector<double> fitParamError_;
     vector<double> fitDerivedParam_;
     string rawParams_;
-    string absLines_;
 
     /*Dates*/
     double startMJD_;
@@ -83,6 +83,10 @@ public:
     vector<string> filterList_;
     string filterFolder_;
     string rawFilters_;
+
+    /*Absorption*/
+    string absFolder_;
+    string absLines_;
 
     /*Directories*/
     string LC_;
@@ -119,6 +123,7 @@ public:
     shared_ptr<Filters> filters_;
     shared_ptr<SNModel> snmodel_;
     shared_ptr<SNEvent> snevent_;
+    shared_ptr<Absorption> absorption_;
     
 
     /*Construtor*/
@@ -129,6 +134,7 @@ public:
     void updatePaths();
     void updateCosmology();
     void updateFilters();
+    void updateAbsorption();
     void updateModel();
     void updateEvent();
     void updateDates();

@@ -49,6 +49,7 @@ void Workspace::restoreDefault() {
 
     /*Default data locations*/
     filterFolder_ = "/Users/szymon/Projects/slap/data/filters";
+    absFolder_ = "/Users/szymon/Projects/slap/data/absLines";
     plotDir_ = "plot";
     plotType_ = "data";
     fig_ = "save";
@@ -92,30 +93,36 @@ void Workspace::updateFilters() {
 }
 
 
+void Workspace::updateAbsorption() {
+    shared_ptr<Absorption> absorption(new Absorption(absFolder_));
+    absorption_ = absorption;
+}
+
+
 void Workspace::updateModel() {
     if (model_ == "BB4") {
-        shared_ptr<BB4> bb4(new BB4(cosmology_, filters_));
+        shared_ptr<BB4> bb4(new BB4(cosmology_, filters_, absorption_));
         snmodel_ = bb4;
 
     } else if (model_ == "BB6") {
-        shared_ptr<BB6> bb6(new BB6(cosmology_, filters_));
+        shared_ptr<BB6> bb6(new BB6(cosmology_, filters_, absorption_));
         snmodel_ = bb6;
 
     } else if (model_ == "Magnetar" || model_ == "magnetar") {
-        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
+        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_, absorption_));
         snmodel_ = magnetar;
 
     } else if (model_ == "MagnetarK" || model_ == "magnetarK") {
-        shared_ptr<MagnetarK> magnetarK(new MagnetarK(cosmology_, filters_));
+        shared_ptr<MagnetarK> magnetarK(new MagnetarK(cosmology_, filters_, absorption_));
         snmodel_ = magnetarK;
 
     } else if (model_ == "MagnetarR" || model_ == "magnetarR") {
-        shared_ptr<MagnetarR> magnetarR(new MagnetarR(cosmology_, filters_));
+        shared_ptr<MagnetarR> magnetarR(new MagnetarR(cosmology_, filters_, absorption_));
         snmodel_ = magnetarR;
 
     } else {
         cout << model_ << " is not a recognised model. Restoring default (Magnetar)" << endl;
-        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_));
+        shared_ptr<Magnetar> magnetar(new Magnetar(cosmology_, filters_, absorption_));
         snmodel_ = magnetar;
     }
 }
@@ -260,6 +267,7 @@ void Workspace::update() {
     updatePaths();
     updateCosmology();
     updateFilters();
+    updateAbsorption();
     updateModel();
     updateEvent();
     updateDates();
@@ -268,5 +276,8 @@ void Workspace::update() {
     updateRawFilters();
     updateSNName();
     updateRedo_();
+
+    /*TODO: Make this part of Absorption*/
+    snmodel_->absFile_ = absLines_;
 }
 

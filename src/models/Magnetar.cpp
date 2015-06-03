@@ -25,7 +25,7 @@ using namespace std;
 using namespace vmath;
 
 
-Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
+Magnetar::Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters, shared_ptr<Absorption> absorption) : SNModel(cosmology, filters, absorption) {
     noSEDParams_ = 2;
     noModelParams_ = 3;
     defaultParams_ = {32.0, 3.0, 1.4};

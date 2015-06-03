@@ -25,7 +25,7 @@ using namespace std;
 using namespace vmath;
 
 
-BB4::BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) : SNModel(cosmology, filters) {
+BB4::BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters, shared_ptr<Absorption> absorption) : SNModel(cosmology, filters, absorption) {
     noSEDParams_ = 2;
     noModelParams_ = 3;
     defaultParams_ = {1.0, 15000, 150};

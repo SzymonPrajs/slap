@@ -1,4 +1,4 @@
-SLAP - v0.3.0
+SLAP - v0.8.0
 =============
 
 Supernova Lightcurve Analysis Package
@@ -6,62 +6,51 @@ Supernova Lightcurve Analysis Package
 
 Install
 -------
-In the testing phase only a local installation is possible but the dirrectory tree.
-Would requite some path changes in the code. This will be fixed in the furthcoming releases. 
-
+The code is currently set up in a way which requires path modification on other than my machines but with the v0.9.0 release this will be fixed.
+The installation procedure will be:
 ```
+./configure --prefix=/path/to/install --CXX=compiler_to_use
 make
+sudo make install
 ```
-
+Default path will be set as /usr/local which will require the use of ```sudo```.
 
 Usage
 -----
-The interface is still under construction. For the purpose of testing use the following:
+Full documentation for SLAP will be available soon. For the purpose of testing, the following can be used:
 
 ```
-./slap analyse LC=data/test/06D4eu.dat z=1.588 model=Magnetar abs=06D4eu
+slap analyse LC=data/test/06D4eu.dat z=1.588 model=Magnetar abs=06D4eu
 ```
-
-Future releases will introduce a full documentation.
+Running SLAP with only parameters and no command will enter an interactive shell. The uses of this will be documented shortly. 
 
 Models
 ------
-BB4 - dynamic BB model parametrised by dR/dt, T0, dT/dt and MJD_explosion 
+BB4 - dynamic BB model: dR/dt, T0, dT/dt and explosion_MJD
 
-BB6 - dynamic BB model parametrised by dR/dt, d2R/dt2, T0, dT/dt, d2T/dt2 and MJD_explosion 
+BB6 - dynamic BB model: dR/dt, d2R/dt2, T0, dT/dt, d2T/dt2 and explosion_MJD 
 
-Magnetar - Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magnetic field - B (1e14 G), Spin period - P (ms) , Initial Radius - R0 (1e14cm) and explosion MJD 
+Magnetar - Magnetar model: tau_m (days), B (1e14 G), P (ms), explosion_MJD 
 
-Magnetar - Magnetar model. Parameters: Diffusion timescale - tau_m (days), Magnetic field - B (1e14 G), Spin period - P (ms) , Initial Radius - R0 (1e14cm), k - opacity  and explosion MJD
+MagnetarR - Magnetar model + Initial radius: tau_m (days), B (1e14 G), P (ms), R0 (1e14 cm), explosion_MJD 
 
 Releases
 --------
-**v0.3.0**: Large number of changes, Introducing MultiNest fitting. Improving the Magnetar model (Wang et. al), introducing spectral corrections and Analyse.
+**v0.8.0**: Huge performance exhancement by redesigning how the SEDs are treated thoughout the code. Fixing a lot of bugs. Dropped the dependence on Boost.
 
-**v0.2.4**: Squashed a large number of bugs.
-
-**v0.2.3**: Add more filter responces.
+**v0.3.0**: Introducing MultiNest fitting. Improving the Magnetar model (Wang et. al), introducing spectral corrections and Analyse.
 
 **v0.2.2**: Introducing a plotting routine implemented in Matplotlib. Some small bug fixes.
-
-**v0.2.1**: Many bug fixes. Laying ground for the plotting function.
 
 **v0.2.0**: Major revamp to the interface. Still experimental.
 
 **v0.1.2**: Added the Magnetar model.
 
-**v0.1.1**: Minor performance and functionality enhancements.
-
 **v0.1.0**: Initial working version of the code.
-
-Future
-------
-In the near future the MPFIT will be replaced by Minuit2 as the fitting routine used. Boost and GSL will be used to replace all routines 
-implemented by me that find their, better, alternatives in these libraries. This is mainly for integrations, interpolations and filesystem. 
 
 Licence
 -------
-SLAP - Supernova Lightcurve Analysis Package v0.3.0
+SLAP - Supernova Lightcurve Analysis Package v0.8.0
 
 Copyright (C) 2014-2015  Szymon Prajs
 

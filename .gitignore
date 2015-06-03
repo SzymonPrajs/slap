@@ -44,7 +44,3 @@ results
 
 # Script files
 *.sh
-
-
-# DES data
-data/absLines/DES14S2qri.abs

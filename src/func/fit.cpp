@@ -37,7 +37,7 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
         p[i] = flatPrior(cube[i], sn->snmodel_->lParams_[i], sn->snmodel_->uParams_[i]);
         cube[i] = p[i];
     }
-    p[npars-1] = flatPrior(cube[npars-1], sn->mjd_.front() - 100.0, sn->mjd_.back());
+    p[npars-1] = flatPrior(cube[npars-1], sn->mjd_.front() - 50.0, sn->mjd_.back());
     cube[npars-1] = p[npars-1];
 
     double t;

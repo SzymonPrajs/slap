@@ -1,5 +1,5 @@
 x Generalise where the absLines files comes from in Model
-- Implement ptype=fit
+x Implement ptype=fit
 - Add residuals for SLAPplot
 x Implement Analyse
 x Find Zero points
@@ -7,3 +7,8 @@ x Calculate Absolute Magnitudes
 - Implement the changes in start and end MJD - This includes resizing the LC
 - Plot SED params
 x RAD20 is not a correct physical equation. Something must be done about that!
+- Create a configure file for Makefile
+- Fix and restore the support for Minuit2 fitting
+- Fix the bugs with interactive plotting 
+- Attend to all TODO flags in the code
+- make the Multinest number of starting points as variable

@@ -59,7 +59,7 @@ public:
     shared_ptr<Filters> filters_;
     shared_ptr<Absorption> absorption_;
     
-    SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);    
+    SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);    
     SNModel(shared_ptr<Filters> filters);
     virtual double calcSED(double) = 0;
     virtual void calcSEDParams(double) = 0;
