@@ -28,10 +28,11 @@ using namespace vmath;
 SNEvent::SNEvent(string file, shared_ptr<SNModel> model) : snmodel_(model) {
     cosmology_ = snmodel_->cosmology_;
     filters_ = snmodel_->filters_;
+    absorption_ = snmodel_->absorption_;
     readData(file);
     setFilterList();
     verifyFilters();
-    // setFilterRange();
+    setRestWavelength();
 }
 
 
@@ -57,7 +58,7 @@ void SNEvent::restoreCompleteLC() {
 }
 
 /*
- *Check entire filter array and select all unique filters. MUST BE SORTED BY FILTERS!s
+ *Check entire filter array and select all unique filters. MUST BE SORTED BY FILTERS!
  */
 void SNEvent::setFilterList() {
     vector<string> list;
@@ -78,32 +79,27 @@ void SNEvent::verifyFilters() {
     }
 }
 
+/*TODO: do this for ABSORPTION too*/
+void SNEvent::setRestWavelength() {
+    for (int i = 0; i < filters_->filters_.size(); ++i) {
+        filters_->filters_[i].restWavelength_ = mult<double>(filters_->filters_[i].wavelength_, cosmology_->a_);  
+   }
 
-void SNEvent::setFilterRange() {
-    int ID;
-    double start = 9999999; 
-    double end = 0;
-    double step = 999999;
-
-
-    for (int i = 0; i < filterList_.size(); ++i) {
-        ID = filters_->filterID_[filterList_[i]];
-
-        if (filters_->filters_[ID].inputWavelength_.front() < start) {
-            start = filters_->filters_[ID].inputWavelength_.front();
+   AbsFilter flt;
+   for (int i = 0; i < absorption_->abs_.size(); ++i) {
+        absorption_->abs_[i].filterID_ = filters_->filterID_;
+        absorption_->abs_[i].filterName_ = filters_->filterName_;
+        
+        for (int j = 0; j < absorption_->abs_[i].filterID_.size(); ++j) {
+            flt.restWavelength_ = filters_->filters_[j].restWavelength_;
+            flt.bandpass_ = interp<double>(flt.restWavelength_,
+                            absorption_->abs_[i].inputWavelength_,
+                            absorption_->abs_[i].inputBandpass_,
+                            0.4,1.0);
+            absorption_->abs_[i].filter_.push_back(flt);
         }
-        if (filters_->filters_[ID].inputWavelength_.back() > end) {
-            end = filters_->filters_[ID].inputWavelength_.back();
-        }
-        if ((filters_->filters_[ID].inputWavelength_[1] - filters_->filters_[ID].inputWavelength_[0]) < step) {
-            step = filters_->filters_[ID].inputWavelength_[1] - filters_->filters_[ID].inputWavelength_[0];
-        }
-    }
-
-    filters_->rescale(start, end, step);
-    snmodel_->setWavelength();
+   }
 }
-
 
 /*
  *TODO - Test for real data

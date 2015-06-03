@@ -19,21 +19,26 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_FIT_H_
-#define SLAP_FUNC_FIT_H_
+#ifndef SLAP_FUNC_FIT3_H_
+#define SLAP_FUNC_FIT3_H_
 
 #include <memory>
 #include <iomanip>
 #include <cstring>
 #include <string>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "../core/Workspace.h"
 #include "../core/SNEvent.h"
-#include "../utils/mpfit.h"
+#include "../vmath/loadtxt.h"
+#include <multinest.h>
+#include <chrono>
+#include <math.h>
 
+ 
 using namespace std;
 
 
-int resFunc(int, int, double*, double*, double**, void*);
 void fit(shared_ptr<Workspace>&);
-void printParams(shared_ptr<Workspace>&);
+
 #endif

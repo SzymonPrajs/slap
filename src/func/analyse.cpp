@@ -29,7 +29,8 @@ void maxMag(shared_ptr<Workspace> &w) {
     
     double z = w->snmodel_->cosmology_->z_;
     w->snmodel_->cosmology_->set(0.0);
-    w->snmodel_->setWavelength();
+/*TODO: need to figure out how to replace this*/
+    // w->snmodel_->setWavelength();
 
     vector<double> flux(150, 0);
     double tMax = 0;
@@ -53,13 +54,13 @@ void maxMag(shared_ptr<Workspace> &w) {
     w->MsdssU_ = w->snmodel_->mag(peak, "SDSS_u");
 
     w->snmodel_->cosmology_->set(z);
-    w->snmodel_->setWavelength();
+    // w->snmodel_->setWavelength();
 }
 
 void obsMag(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
-    w->snmodel_->setWavelength();
+    // w->snmodel_->setWavelength();
 
     for (int i = 0; i < w->filterList_.size(); ++i) {
         cout << w->filterList_[i] << " - ";
@@ -79,7 +80,7 @@ void display(shared_ptr<Workspace> &w) {
     cout << endl;
 
     ofstream fitFile;
-    fitFile.open(w->currentDir_.string() +  "/results/"+ w->SNName_ + "/fit.txt");
+    fitFile.open(w->currentDir_ +  "/results/"+ w->SNName_ + "/fit.txt");
 
     fitFile << w->SNName_ << " " << w->cosmology_->z_ << " " << w->MsdssU_ << " " << w->maxMJD_ << " " << (w->maxMJD_ - w->explosionMJD_) / (1 + w->cosmology_->z_) << " ";
     for (int i = 0 ; i < w->snmodel_->noModelParams_; ++i) {

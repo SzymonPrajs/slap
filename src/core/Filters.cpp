@@ -27,7 +27,6 @@ using namespace vmath;
 
 Filters::Filters(string path) : folderPath_(path) {
     readFolder();
-    setFullRange();
 }
 
 
@@ -63,6 +62,10 @@ void Filters::loadFilter(int ID) {
     filter.name_ = filterName_[ID];
     filter.inputWavelength_ = data[0];
     filter.inputBandpass_ = data[1];
+    filter.wavelength_ = filter.inputWavelength_;
+    filter.bandpass_ = filter.inputBandpass_;
+    filter.restWavelength_ = filter.inputWavelength_;
+
     filter.area_ = trapz<double>(data[1], data[0][1] - data[0][0]);
     filter.zp_ = -2.5 * log10(fluxZp / filter.area_);
 
@@ -71,45 +74,34 @@ void Filters::loadFilter(int ID) {
 
 
 void Filters::rescale(const vector<double> &wavelength) {
-    masterWavelength_ = wavelength;
-
     for (int i = 0; i < filters_.size(); ++i) {
-        filters_[i].wavelength_ = masterWavelength_;
-        filters_[i].bandpass_ = interp<double>(masterWavelength_,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
+        filters_[i].wavelength_ = wavelength;
+        filters_[i].bandpass_ = interp<double>(wavelength,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
     }
 }
 
 
 void Filters::rescale(double start, double end, double step) {
-    masterWavelength_ = range<double>(start, end, step);
-
+    vector<double> wavelength = range<double>(start, end, step);
     for (int i = 0; i < filters_.size(); ++i) {
-        filters_[i].wavelength_ = masterWavelength_;
-        filters_[i].bandpass_ = interp<double>(masterWavelength_,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
+        filters_[i].wavelength_ = wavelength;
+        filters_[i].bandpass_ = interp<double>(wavelength,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
     }
 }
 
+void Filters::rescale(double step) {
+    double start, end;
+    for (int i = 0; i < filters_.size(); ++i) {
+        start = filters_[i].inputWavelength_.front();
+        start -= fmod(start, step);
+        end = filters_[i].inputWavelength_.back();
+        end -= fmod(end, step);
+        end += step;
 
-void Filters::setFullRange() {
-    double start = filters_[0].inputWavelength_.front();
-    double end = filters_[0].inputWavelength_.back();
-    double step = filters_[0].inputWavelength_[1] - filters_[0].inputWavelength_[0];
-
-    for (int i = 1; i < filters_.size(); ++i) {
-        if (filters_[i].inputWavelength_.front() < start) {
-            start = filters_[i].inputWavelength_.front();
-        }
-        if (filters_[i].inputWavelength_.back() > end) {
-            end = filters_[i].inputWavelength_.back();
-        }
-        if ((filters_[i].inputWavelength_[1] - filters_[i].inputWavelength_[0]) < step) {
-            step = filters_[i].inputWavelength_[1] - filters_[i].inputWavelength_[0];
-        }
+        filters_[i].wavelength_ = range<double>(start, end, step);
+        filters_[i].bandpass_ = interp<double>(filters_[i].wavelength_,filters_[i].inputWavelength_,filters_[i].inputBandpass_);
     }
-
-    rescale(start, end, step);
 }
-
 
 double Filters::flux(const vector<double>& SED, const string& filterName) {
     if (filterID_.find(filterName) == filterID_.end()) {

@@ -28,6 +28,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include "../utils/utils.h"
 #include "../vmath/loadtxt.h"
 #include "../vmath/integrate.h"
@@ -43,6 +44,7 @@ struct FilterData {
     string name_;
     vector<double> inputWavelength_;  
     vector<double> inputBandpass_;
+    vector<double> restWavelength_;
     vector<double> wavelength_;
     vector<double> bandpass_;
     double area_;
@@ -64,15 +66,14 @@ public:
     map<string,int> filterID_;
     map<int,string> filterName_;
     vector<FilterData> filters_;
-    vector<double> masterWavelength_;
     
     // constructor
     Filters(string);
 
     // public functions
-    void rescale(double,double,double);
-    void rescale(const vector<double>&);
-    void setFullRange();
+    void rescale(double,double,double);   // start, end, step
+    void rescale(const vector<double>&);  // wavelength range
+    void rescale(double);         // step, start and end set automatically
     double flux(const vector<double>&, const string&);
 };
 

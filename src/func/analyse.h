@@ -27,7 +27,6 @@
 #include <iomanip>
 #include <cstring>
 #include <string>
-#include <boost/filesystem.hpp>
 #include "../core/Workspace.h"
 #include "../core/SNModel.h"
 

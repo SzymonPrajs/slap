@@ -37,7 +37,6 @@ void Workspace::restoreDefault() {
     /*Settings for a default SN*/
     LC_ = "/Users/szymon/Projects/slap/data/SLSN/SN2010gx.dat";
     model_ = "Magnetar";
-    absLines_ = "06D4eu";
     rawParams_ = "default";
     rawFilters_ = "LC";
     rawStartMJD_ = "LC";
@@ -72,13 +71,11 @@ void Workspace::restoreDefault() {
 
 
 void Workspace::updatePaths() {
-    currentDir_ = boost::filesystem::current_path();
-    boost::filesystem::path path(currentDir_);
-    path /= LC_;
-    if (boost::filesystem::exists(LC_)) {
-        LCPath_ = path;
-    
-    } else {
+    char charCurDir[PATH_MAX];
+    getcwd(charCurDir, PATH_MAX);
+    currentDir_ = charCurDir;
+    if (access(LC_.c_str(), R_OK) == -1) {
+        /*TODO: probably terminate code if no lightcurve exist*/
         cout << "Lightcurve file does not exist! Reverting to previous value." << endl;
     }
 }
@@ -225,7 +222,9 @@ void Workspace::updateSNName() {
         /*retain previous parameters with no changes*/
     
     } else if (rawSNName_ == "default") {
-        SNName_ = LCPath_.stem().string();
+        vector<char> path(LC_.c_str(), LC_.c_str() + LC_.size() + 1u);
+        SNName_ = basename(path.data());
+        SNName_ = split(SNName_,'.')[0];
         rawSNName_ = "previous";
 
     } else {
@@ -269,9 +268,5 @@ void Workspace::update() {
     updateRawFilters();
     updateSNName();
     updateRedo_();
-
-    /* TODO: put the below in an update function and check if the file exists before allowing it in */
-    snmodel_->absLineFile_ = absLines_;
-    snmodel_->absFilter();
 }
 

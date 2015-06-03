@@ -53,7 +53,7 @@ public:
     MagnetarR(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
     void calcDerivedParams();
-    vector<double> calcSED(double);
+    double calcSED(double);
     void calcSEDParams(double);
 
     double lumMagnetar(double);

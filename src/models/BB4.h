@@ -25,6 +25,7 @@
 #include <vector>
 #include <memory>
 #include <math.h>
+#include <string>
 #include "../core/Cosmology.h"
 #include "../core/Filters.h"
 #include "../core/SNModel.h"
@@ -36,7 +37,7 @@ class BB4 : public SNModel {
 public:
     BB4(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);
 
-    vector<double> calcSED(double);
+    double calcSED(double);
     void calcSEDParams(double);
 
 };

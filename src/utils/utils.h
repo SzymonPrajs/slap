@@ -44,6 +44,7 @@ vector<string> dirlist(const string&);
 
 bool compareStrings(string, string);
 
+void copyFile(string, string);
 
 template<typename T>
 string joinStrings(const vector<T> &vec, char delim) {

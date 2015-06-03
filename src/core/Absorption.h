@@ -19,52 +19,60 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_CORE_SNEVENT_H_
-#define SLAP_CORE_SNEVENT_H_
+#ifndef SLAP_CORE_ABSORPTION_H_
+#define SLAP_CORE_ABSORPTION_H_
 
+#include <vector>
+#include <map>
 #include <memory>
-#include <algorithm>
-#include "Cosmology.h"
-#include "SNModel.h"
-#include "Filters.h"
-#include "Absorption.h"
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <math.h>
 #include "../utils/utils.h"
 #include "../vmath/loadtxt.h"
-#include "../vmath/convert.h"
-#include "../vmath/stat.h"
+#include "../vmath/integrate.h"
+#include "../vmath/interp.h"
+#include "../vmath/range.h"
+#include "../vmath/algebra.h"
 
 using namespace std;
 using namespace vmath;
 
+struct AbsFilter {
+    vector<double> restWavelength_;  
+    vector<double> bandpass_;
+};
 
-class SNEvent {
+struct AbsData {
+    string name_;
+    vector<double> inputWavelength_;  
+    vector<double> inputBandpass_;
+    map<string,int> filterID_;
+    map<int,string> filterName_;
+    vector<AbsFilter> filter_;
+};
+
+class Absorption {
 private:
-	vector<double> completeMJD_;
-    vector<double> completeFlux_;
-    vector<double> completeFluxErr_;
-    vector<string> completeFilter_;
+    // private data members
+    string folderPath_;    
+    vector<string> fileList_;
+
+    // private functions 
+    void readFolder();
+    void loadAbs(int);
 
 public:
-    shared_ptr<Cosmology> cosmology_;
-    shared_ptr<Filters> filters_;
-    shared_ptr<Absorption> absorption_;
-    shared_ptr<SNModel> snmodel_;
-
-    vector<double> mjd_;
-    vector<double> flux_;    
-    vector<double> fluxErr_;
-    vector<string> filter_;
-    double explosionMJD_;
-    vector<string> filterList_;
+    // public data members 
+    map<string,int> absID_;
+    map<int,string> absName_;
+    vector<AbsData> abs_;
     
-    SNEvent(string, shared_ptr<SNModel>);
-	void readData(string);
-    void restoreCompleteLC();
-    void setFilterList();
-    void verifyFilters();
-    void setRestWavelength();
-    void removeData(double, double);
-    void removeData(string);
+    // constructor
+    Absorption(string);
+
+    // public functions
 };
 
 #endif

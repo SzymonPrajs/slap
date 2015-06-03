@@ -35,8 +35,7 @@
 #include "models/BB6.h"
 #include "models/Magnetar.h"
 #include "func/fit.h"
-#include "func/fit2.h"
-#include "func/fit3.h"
+// #include "func/fit2.h"
 #include "func/plot.h"
 #include "func/analyse.h"
 
@@ -129,15 +128,13 @@ void applyOptions(vector<string> &options, shared_ptr<Workspace> w) {
 
 void runCommand(shared_ptr<Workspace> w) {
     if (w->currentFunction_ == "fit") {
-        if (w->fitter_ == "mpfit") {
+        if (w->fitter_ == "multinest" || w->fitter_ == "MultiNest" || w->fitter_ == "Multinest") {
             fit(w);
-        } else if (w->fitter_ == "minuit") {
-            fit2(w);
-        } else if (w->fitter_ == "multinest") {
-            fit3(w);
+        // } else if (w->fitter_ == "minuit" || w->fitter_ == "Minuit") {
+        //     fit2(w);
         } else {
-            cout << w->fitter_ << " is not a recognised fitter. Using MINUIT instead" << endl;
-            fit2(w);
+            cout << w->fitter_ << " is not a recognised fitter. Using MULTINEST instead" << endl;
+            fit(w);
         }
 
     } else if (w->currentFunction_ == "plot") {
@@ -157,7 +154,7 @@ void runCommand(shared_ptr<Workspace> w) {
         clearplot(w);
 
     } else if (w->currentFunction_ == "analyse") {
-        fit3(w);
+        fit(w);
 
         w->rawExplosionMJD_ = "fit";
         w->rawParams_ = "fit";

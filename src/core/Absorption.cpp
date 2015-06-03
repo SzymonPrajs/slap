@@ -19,21 +19,43 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_FUNC_FIT3_H_
-#define SLAP_FUNC_FIT3_H_
+#include "Absorption.h"
 
-#include <memory>
-#include <iomanip>
-#include <cstring>
-#include <string>
-#include "../core/Workspace.h"
-#include "../core/SNEvent.h"
-#include "../vmath/loadtxt.h"
-#include <multinest.h>
- 
 using namespace std;
+using namespace vmath;
 
 
-void fit3(shared_ptr<Workspace>&);
+Absorption::Absorption(string path) : folderPath_(path) {
+    readFolder();
+}
 
-#endif
+
+void Absorption::readFolder() {
+    vector<string> list = dirlist(folderPath_);
+
+    vector<string> temp;
+    for (int i = 0; i < list.size(); ++i) {
+        fileList_.push_back(list[i]);
+        split(list[i],'.',temp);
+
+        absID_[temp[0]] = i;
+        absName_[i] = temp[0];
+        
+        loadAbs(i);
+    }
+}
+
+
+void Absorption::loadAbs(int ID) {
+    AbsData absFilter;
+
+    vector< vector<double> > data;
+    string path = folderPath_+"/"+fileList_[ID];
+    loadtxt<double>(path,2,data);
+
+    absFilter.name_ = absName_[ID];
+    absFilter.inputWavelength_ = data[0];
+    absFilter.inputBandpass_ = data[1];
+    
+    abs_.push_back(absFilter);
+}

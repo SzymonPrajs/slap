@@ -28,10 +28,9 @@ using namespace vmath;
 SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters) {
     cosmology_ = cosmology;
     filters_ = filters;
-    derivedParams_ = {};
-    absLineFile_ = "06D4eu";
-    
-    setWavelength();
+    absorption_ = shared_ptr<Absorption>(new Absorption("/Users/szymon/Projects/slap/data/absLines"));
+    absFile_ = "06D4eu"; /*TODO: Need to be globaly setup*/
+    derivedParams_ = {}; /*TODO: Why is this here?*/
 }
 
 
@@ -39,23 +38,37 @@ SNModel::SNModel(shared_ptr<Filters> filters) {
     cosmology_ = shared_ptr<Cosmology>(new Cosmology(0));
     filters_ = filters;
     derivedParams_ = {};
-    absLineFile_ = "06D4eu";
-
-    setWavelength();
+    
 }
 
-vector<double> SNModel::SED(double t) {
-    vector<double> sed = calcSED(t * cosmology_->a_);
-    sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
-    sed = mult<double>(sed, absLines_);
+/* TODO: CHANGE SO THAT IT TAKES WAVELENGTH AS INPUT*/
+vector<double> SNModel::SED(double t, string f) {
+    calcSEDParams(t);
+    int ID = filters_->filterID_.at(f);
+    int absID = absorption_->absID_.at(absFile_);
+    vector<double> sed(filters_->filters_[ID].restWavelength_.size(), 0);
+    for(int i = 0; i < filters_->filters_[ID].restWavelength_.size(); ++i) {
+        sed[i] = calcSED(filters_->filters_[ID].restWavelength_[i]);
+        sed[i] *= cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2));
+        sed[i] *= absorption_->abs_[absID].filter_[ID].bandpass_[i];
+    }
+
     return sed;
 }
 
-double SNModel::flux(double t, string filterName) {
-    vector<double> sed = calcSED(t * cosmology_->a_);
-    sed = mult<double>(sed, cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2)));
-    sed = mult<double>(sed, absLines_);
-    return filters_->flux(sed, filterName);
+double SNModel::flux(double t, string f) {
+    calcSEDParams(t);
+    int ID = filters_->filterID_.at(f);
+    int absID = absorption_->absID_.at(absFile_);
+    vector<double> sed(filters_->filters_[ID].restWavelength_.size(), 0);
+
+    for(int i = 0; i < filters_->filters_[ID].restWavelength_.size(); ++i) {
+        sed[i] = calcSED(filters_->filters_[ID].restWavelength_[i]);
+        sed[i] *= cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2));
+        sed[i] *= absorption_->abs_[absID].filter_[ID].bandpass_[i];
+    }
+
+    return filters_->flux(sed, f);
 }
 
 
@@ -65,30 +78,23 @@ double SNModel::mag(double t, string filterName) {
 }
 
 
-void SNModel::setWavelength() {
-    obsWavelength_ = filters_->masterWavelength_;
-    restWavelength_ = mult<double>(obsWavelength_,cosmology_->a_);
-    absFilter();
-}
+// void SNModel::absFilter() {
+//     vector <vector<double> > data;
+//     loadtxt<double>("/Users/szymon/Projects/slap/data/absLines/" + absLineFile_ + ".abs", 2, data);
+//     double min = data[0].front();
+//     double max = data[0].back();
+//     absLines_.resize(restWavelength_.size());
 
-
-void SNModel::absFilter() {
-    vector <vector<double> > data;
-    loadtxt<double>("/Users/szymon/Projects/slap/data/absLines/" + absLineFile_ + ".abs", 2, data);
-    double min = data[0].front();
-    double max = data[0].back();
-    absLines_.resize(restWavelength_.size());
-
-    for (int i = 0; i < restWavelength_.size(); ++i) {
-        if (restWavelength_[i] < min) {
-            absLines_[i] = 0.4;
+//     for (int i = 0; i < restWavelength_.size(); ++i) {
+//         if (restWavelength_[i] < min) {
+//             absLines_[i] = 0.4;
         
-        } else if (restWavelength_[i] > max) {
-            absLines_[i] = 1.0;
+//         } else if (restWavelength_[i] > max) {
+//             absLines_[i] = 1.0;
         
-        } else {
-            absLines_[i] = interp(restWavelength_[i], data[0], data[1]);
-        }
-    }
-}
+//         } else {
+//             absLines_[i] = interp(restWavelength_[i], data[0], data[1]);
+//         }
+//     }
+// }
 

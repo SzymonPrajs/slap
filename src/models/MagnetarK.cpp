@@ -152,18 +152,12 @@ void MagnetarK::calcSEDParams(double t) {
 }
    
  
-vector<double> MagnetarK::calcSED(double t) {
-    calcSEDParams(t);
-    vector<double> sed(restWavelength_.size(), 0);
-
+double MagnetarK::calcSED(double wav) {
     double res;
-    for(int i = 0; i < restWavelength_.size (); ++i) {
-        res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(restWavelength_[i] * 1e-8, 5);
-        res /= exp(CGS_H * CGS_C / (restWavelength_[i] * 1e-8 * CGS_K * SEDParams_[1])) - 1.0;
-        res *= 4 * M_PI * pow(SEDParams_[0],2);
-        res *= 1e-8;
-        sed[i] = res;
-    }
+    res = 2.0 * CGS_H * M_PI * pow(CGS_C,2) / pow(wav * 1e-8, 5);
+    res /= exp(CGS_H * CGS_C / (wav * 1e-8 * CGS_K * SEDParams_[1])) - 1.0;
+    res *= 4 * M_PI * pow(SEDParams_[0],2);
+    res *= 1e-8;
 
-    return sed;
+    return res;
 }

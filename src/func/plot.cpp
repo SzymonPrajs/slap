@@ -28,8 +28,8 @@ void addplot(shared_ptr<Workspace> &w) {
 	ofstream fhandle;
 
 	if (w->plotCount_ == 0) {
-		boost::filesystem::create_directories(w->plotDir_);
-		fhandle.open(w->plotDir_.string() + "/info.dat");
+        mkdir(w->plotDir_.c_str(), 0755);
+		fhandle.open(w->plotDir_ + "/info.dat");
 		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
         fhandle << "fig=" << w->fig_ << "\n";
@@ -39,15 +39,14 @@ void addplot(shared_ptr<Workspace> &w) {
 		cout << "Something went wrong! Cannot create a temporary folder" << endl;
 	}
 
-	if (boost::filesystem::exists(w->plotDir_.string() + "/info.dat")) {
-		fhandle.open(w->plotDir_.string() + "/info.dat", ios::app);
+    if (access((w->plotDir_ + "/info.dat").c_str(), R_OK) != -1) {
+		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
 		
 		if (w->plotType_ == "data") {
-			boost::filesystem::path s = w->LC_;
-			boost::filesystem::path d = w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat";
+			string dest = w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
 
-			if (!boost::filesystem::exists(d)) {
-				boost::filesystem::copy_file(s, d);
+			if (access(w->LC_.c_str(), R_OK) != -1) {
+				copyFile(w->LC_, dest);
 			}
 		
 		} else if (w->plotType_ == "model") {
@@ -66,7 +65,7 @@ void addplot(shared_ptr<Workspace> &w) {
 		fhandle << w->plotCount_;
 		fhandle << " type=" + w->plotType_;
 		fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
-		fhandle << " file=" << w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat";
+		fhandle << " file=" << w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
 		fhandle << "\n";
 
 		fhandle.close();
@@ -89,7 +88,11 @@ void makeplot(shared_ptr<Workspace> &w) {
 
 
 void clearplot(shared_ptr<Workspace> &w) {
-	boost::filesystem::remove_all(w->plotDir_);
+    /*TODO: This need to be done in a better way*/
+    struct stat s;
+    if (stat(w->plotDir_.c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
+	   system(("rm -r " + w->plotDir_).c_str());
+    }
 	w->plotCount_ = 0;
 }
 
@@ -100,7 +103,7 @@ void plotModel(shared_ptr<Workspace> &w) {
     double t = 0;
 
 	ofstream plotFile;
-	plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+	plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
         for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 50; ++mjd) { 
@@ -121,7 +124,7 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
     double t = 0;
 
     ofstream plotFile;
-    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+    plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
         t = mjd - w->explosionMJD_;
@@ -133,30 +136,31 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
 }
 
 void plotSED(shared_ptr<Workspace> &w) {
-    w->snmodel_->modelParams_ = w->params_;
-    w->snmodel_->calcDerivedParams();
-    double t, phase;
+    // w->snmodel_->modelParams_ = w->params_;
+    // w->snmodel_->calcDerivedParams();
+    // double t, phase;
 
-    ofstream plotFile;
-    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".txt");
+    // ofstream plotFile;
+    // plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".txt");
 
-    vector<double> sed;
+    // vector<double> sed;
 
-    for (int j = 1; j < 120; ++j) {
-        t = j * (1 + w->z_);
-        sed = w->snmodel_->SED(t);
-        phase = t - 22;
+    // for (int j = 1; j < 120; ++j) {
+    //     t = j * (1 + w->z_);
+    //     sed = w->snmodel_->SED(t, "SDSS_g"); /*TODO: NEEDS TO TAKE WAVELENGTH AS INPUT*/
+    //     phase = t - 22;
 
-        for (int i = 0; i < sed.size(); ++i) {
-            if (w->filters_->masterWavelength_[i] > 500 && w->filters_->masterWavelength_[i] < 13000) {
-                plotFile << phase << " " << w->filters_->masterWavelength_[i] << " " << sed[i] << "\n";
-                // cout << w->filters_->masterWavelength_[i] << " " << sed[i] << endl;
-            }
-        }
-        cout << phase << " " << w->snmodel_->mag(t, "SDSS_u") - w->snmodel_->mag(22, "SDSS_u") << endl;
-    }
+    //     for (int i = 0; i < sed.size(); ++i) {
+    //        // TODO: Deprecated when above is implemented
+    //         if (w->filters_->masterWavelength_[i] > 500 && w->filters_->masterWavelength_[i] < 13000) {
+    //             plotFile << phase << " " << w->filters_->masterWavelength_[i] << " " << sed[i] << "\n";
+    //             cout << w->filters_->masterWavelength_[i] << " " << sed[i] << endl;
+    //         }
+    //     }
+    //     cout << phase << " " << w->snmodel_->mag(t, "SDSS_u") - w->snmodel_->mag(22, "SDSS_u") << endl;
+    // }
 
-    plotFile.close();
+    // plotFile.close();
 }
 
 void plotResidual(shared_ptr<Workspace> &w) {
@@ -166,7 +170,7 @@ void plotResidual(shared_ptr<Workspace> &w) {
     double t = 0;
 
     ofstream plotFile;
-    plotFile.open(w->plotDir_.string() + "/" + to_string(w->plotCount_) + ".dat");
+    plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int i = 0; i < w->snevent_->mjd_.size(); ++i) { 
         t = w->snevent_->mjd_[i] - w->explosionMJD_;

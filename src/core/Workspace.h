@@ -24,11 +24,12 @@
 
 #include <memory>
 #include <string>
+#include <unistd.h>
+#include <libgen.h>
 #include "Cosmology.h"
 #include "SNModel.h"
 #include "Filters.h"
 #include "SNEvent.h"
-#include <boost/filesystem.hpp>
 #include "../models/BB4.h"
 #include "../models/BB6.h"
 #include "../models/Magnetar.h"
@@ -65,7 +66,6 @@ public:
     string rawParams_;
     string absLines_;
 
-
     /*Dates*/
     double startMJD_;
     double explosionMJD_;
@@ -86,9 +86,8 @@ public:
 
     /*Directories*/
     string LC_;
-    boost::filesystem::path currentDir_;
-    boost::filesystem::path plotDir_;
-    boost::filesystem::path LCPath_;
+    string currentDir_;
+    string plotDir_;
     
     /*Program state*/
     bool interactiveMode_;

@@ -26,11 +26,12 @@
 #include <iomanip>
 #include <cstring>
 #include <string>
-#include <boost/filesystem.hpp>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "../core/Workspace.h"
 #include "../core/SNModel.h"
 #include "../core/SNEvent.h"
-#include "../utils/mpfit.h"
+#include "../utils/utils.h"
 
 using namespace std;
 

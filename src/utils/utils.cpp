@@ -72,3 +72,16 @@ vector<string> dirlist(const string &path) {
 bool compareStrings(string i, string j) {
     return (i==j);
 }
+
+void copyFile(string in, string out) {
+    ifstream source(in, ios::binary);
+    ofstream dest(out, ios::binary);
+
+    istreambuf_iterator<char> begin_source(source);
+    istreambuf_iterator<char> end_source;
+    ostreambuf_iterator<char> begin_dest(dest); 
+    copy(begin_source, end_source, begin_dest);
+
+    source.close();
+    dest.close();
+}

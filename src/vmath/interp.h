@@ -30,13 +30,15 @@ using namespace std;
 namespace vmath {  // NAMESPACE vmath
 
 template <typename T>
-T interp(T org_x, const vector<T> &temp_x, const vector<T> &temp_y, T out = 0) {
-    T org_y = out;
+T interp(T org_x, const vector<T> &temp_x, const vector<T> &temp_y, T low = 0, T up = 0) {
+    T org_y = low;
     T m;
     T c;
     
-    if (org_x < temp_x.front() || org_x > temp_x.back()) {
-        return org_y;
+    if (org_x < temp_x.front()) {
+        return low;
+    } else if (org_x > temp_x.back()) {
+        return up;
     }
 
     T stepTry = temp_x[1] - temp_x[0];
@@ -76,11 +78,11 @@ T interp(T org_x, const vector<T> &temp_x, const vector<T> &temp_y, T out = 0) {
 
 
 template <typename T>
-vector<T> interp(const vector<T> &org_x, const vector<T> &temp_x, const vector<T> &temp_y, T out = 0) {
-    vector<T> org_y(org_x.size(), out);
+vector<T> interp(const vector<T> &org_x, const vector<T> &temp_x, const vector<T> &temp_y, T low = 0, T up = 0) {
+    vector<T> org_y(org_x.size(), low);
 
     for (int i = 0; i < org_x.size(); ++i) {
-        org_y[i] = interp<T>(org_x[i], temp_x, temp_y, out);
+        org_y[i] = interp<T>(org_x[i], temp_x, temp_y, low, up);
     }
  
     return org_y;

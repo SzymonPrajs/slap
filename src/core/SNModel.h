@@ -25,8 +25,10 @@
 #include <math.h>
 #include <vector>
 #include <memory>
+#include <string>
 #include "Cosmology.h"
 #include "Filters.h"
+#include "Absorption.h"
 #include "../vmath/range.h"
 #include "../vmath/algebra.h"
 #include "../vmath/loadtxt.h"
@@ -40,7 +42,6 @@ class SNModel {
 protected:
     vector<double> restWavelength_;
     vector<double> obsWavelength_;
-    vector<double> absLines_;
 
 public:
     int noModelParams_;
@@ -52,23 +53,22 @@ public:
     vector<double> uParams_;
     vector<double> derivedParams_;
     vector<string> paramNames_;
-    string absLineFile_;
+    string absFile_;
     
     shared_ptr<Cosmology> cosmology_;
     shared_ptr<Filters> filters_;
+    shared_ptr<Absorption> absorption_;
     
     SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>);    
     SNModel(shared_ptr<Filters> filters);
-    virtual vector<double> calcSED(double) = 0;
+    virtual double calcSED(double) = 0;
     virtual void calcSEDParams(double) = 0;
     virtual void calcDerivedParams() {};
     virtual void printDerivedVariables() {};
     
-    vector<double> SED(double); 
+    vector<double> SED(double, string); 
     double flux(double, string);
     double mag(double, string);
-    void setWavelength();
-    void absFilter();
 };
 
 #endif
