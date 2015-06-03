@@ -54,13 +54,11 @@ void maxMag(shared_ptr<Workspace> &w) {
     w->MsdssU_ = w->snmodel_->mag(peak, "SDSS_u");
 
     w->snmodel_->cosmology_->set(z);
-    // w->snmodel_->setWavelength();
 }
 
 void obsMag(shared_ptr<Workspace> &w) {
     w->snmodel_->modelParams_ = w->params_;
     w->snmodel_->calcDerivedParams();
-    // w->snmodel_->setWavelength();
 
     for (int i = 0; i < w->filterList_.size(); ++i) {
         cout << w->filterList_[i] << " - ";

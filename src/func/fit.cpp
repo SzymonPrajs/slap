@@ -73,15 +73,15 @@ void dumper(int &nSamples, int &nlive, int &nPar, double **physLive, double **po
     // postdist will have nPar parameters in the first nPar columns & loglike value & the posterior probability in the last two columns
     int i, j;
     double postdist[nSamples][nPar + 2];
-    for( i = 0; i < nPar + 2; i++ )
-        for( j = 0; j < nSamples; j++ )
+    for (i = 0; i < nPar + 2; i++)
+        for (j = 0; j < nSamples; ++j)
             postdist[j][i] = posterior[0][i * nSamples + j];
     
     // last set of live points
     // pLivePts will have nPar parameters in the first nPar columns & loglike value in the last column  
     double pLivePts[nlive][nPar + 1];
-    for( i = 0; i < nPar + 1; i++ )
-        for( j = 0; j < nlive; j++ )
+    for (i = 0; i < nPar + 1; i++)
+        for (j = 0; j < nlive; j++)
             pLivePts[j][i] = physLive[0][i * nlive + j];
 }
 
@@ -117,7 +117,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
     double Ztol = -1E20;            // all the modes with logZ < Ztol are ignored
     int maxModes = 100;             // expected max no. of modes (used only for memory allocation)
     int pWrap[ndims];               // which parameters to have periodic boundary conditions?
-    for(int i = 0; i < ndims; i++) {
+    for (int i = 0; i < ndims; i++) {
         pWrap[i] = 0;
     }
     string root = "results/"+ w->SNName_ + "/nest-";

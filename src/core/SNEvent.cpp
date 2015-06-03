@@ -79,11 +79,10 @@ void SNEvent::verifyFilters() {
     }
 }
 
-/*TODO: do this for ABSORPTION too*/
 void SNEvent::setRestWavelength() {
     for (int i = 0; i < filters_->filters_.size(); ++i) {
         filters_->filters_[i].restWavelength_ = mult<double>(filters_->filters_[i].wavelength_, cosmology_->a_);  
-   }
+    }
 
    AbsFilter flt;
    for (int i = 0; i < absorption_->abs_.size(); ++i) {
@@ -96,9 +95,17 @@ void SNEvent::setRestWavelength() {
                             absorption_->abs_[i].inputWavelength_,
                             absorption_->abs_[i].inputBandpass_,
                             0.4,1.0);
-            absorption_->abs_[i].filter_.push_back(flt);
+            absorption_->abs_[i].filter_.push_back(flt);  
         }
-   }
+    }
+    // int ID = absorption_->abs_[3].filterID_.at("SDSS_u");
+    // for (int k = 0; k < absorption_->abs_[3].filter_[ID].restWavelength_.size(); ++k) {
+    //     cout << absorption_->abs_[3].name_ << " "
+    //          << absorption_->abs_[3].filterName_[ID] << " " 
+    //          << absorption_->abs_[3].filter_[ID].restWavelength_[k] << " " 
+    //          << absorption_->abs_[3].filter_[ID].bandpass_[k] << " " 
+    //          << endl;
+    //     }  
 }
 
 /*
