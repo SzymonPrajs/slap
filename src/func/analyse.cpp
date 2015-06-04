@@ -29,8 +29,7 @@ void maxMag(shared_ptr<Workspace> &w) {
     
     double z = w->snmodel_->cosmology_->z_;
     w->snmodel_->cosmology_->set(0.0);
-/*TODO: need to figure out how to replace this*/
-    // w->snmodel_->setWavelength();
+    w->snevent_->setRestWavelength();
 
     vector<double> flux(150, 0);
     double tMax = 0;
@@ -54,6 +53,7 @@ void maxMag(shared_ptr<Workspace> &w) {
     w->MsdssU_ = w->snmodel_->mag(peak, "SDSS_u");
 
     w->snmodel_->cosmology_->set(z);
+    w->snevent_->setRestWavelength();
 }
 
 void obsMag(shared_ptr<Workspace> &w) {

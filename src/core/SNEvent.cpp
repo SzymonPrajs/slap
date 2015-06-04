@@ -88,6 +88,7 @@ void SNEvent::setRestWavelength() {
    for (int i = 0; i < absorption_->abs_.size(); ++i) {
         absorption_->abs_[i].filterID_ = filters_->filterID_;
         absorption_->abs_[i].filterName_ = filters_->filterName_;
+        absorption_->abs_[i].filter_.clear();
         
         for (int j = 0; j < absorption_->abs_[i].filterID_.size(); ++j) {
             flt.restWavelength_ = filters_->filters_[j].restWavelength_;
@@ -98,14 +99,6 @@ void SNEvent::setRestWavelength() {
             absorption_->abs_[i].filter_.push_back(flt);  
         }
     }
-    // int ID = absorption_->abs_[3].filterID_.at("SDSS_u");
-    // for (int k = 0; k < absorption_->abs_[3].filter_[ID].restWavelength_.size(); ++k) {
-    //     cout << absorption_->abs_[3].name_ << " "
-    //          << absorption_->abs_[3].filterName_[ID] << " " 
-    //          << absorption_->abs_[3].filter_[ID].restWavelength_[k] << " " 
-    //          << absorption_->abs_[3].filter_[ID].bandpass_[k] << " " 
-    //          << endl;
-    //     }  
 }
 
 /*
