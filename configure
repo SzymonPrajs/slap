@@ -1,0 +1,101 @@
+#!/bin/bash
+echo ''
+echo '*********************************'
+echo '*******  SLAP - v0.8.1  *********'
+echo '*********************************'
+echo ''
+echo 'Beginning configuration ...'
+
+prefix=/usr/local
+FC=gfortran
+CC=gcc
+CXX=g++
+CXXFLAGS='-c -O3 -std=c++11'
+CFLAGS='-c  -O3'
+LDFLAGS='-lreadline -lgsl -lnest3 -lgfortran -llapack'
+LDFLAGSmac=' -Wl,-no_compact_unwind'
+
+build_dir=$(pwd)
+
+for arg in "$@"
+do
+	flag=`echo "$arg" | sed -e "s/--prefix=//"`
+	if test "$flag" != "$arg"
+	then
+		prefix="$flag"
+	fi
+	flag=`echo "$arg" | sed -e "s/--CXX=//"`
+	if test "$flag" != "$arg"
+	then
+		CXX="$flag"
+	fi
+	flag=`echo "$arg" | sed -e "s/--CC=//"`
+	if test "$flag" != "$arg"
+	then
+		CC="$flag"
+	fi
+	flag=`echo "$arg" | sed -e "s/--build_dir=//"`
+	if test "$flag" != "$arg"
+	then
+		build_dir="$flag"
+	fi
+done
+
+echo 'Software will be installed in: '$prefix
+
+if [ -f $build_dir/Makefile ]; then
+    rm Makefile
+fi
+
+if [ -f $build_dir/DEFINE.h ]; then
+    rm DEFINE.h
+fi
+
+if [ ! -d $build_dir/bin ]; then
+    mkdir $build_dir/bin
+fi
+
+if [ ! -d $build_dir/share ]; then
+    mkdir $build_dir/share
+    cp -r data $build_dir/share/slap
+    cp -r scripts $build_dir/share/slap/scripts
+fi
+
+osname=$(uname)
+
+if [ "$osname" == "Linux" ]; then
+	echo 'Configuring for Linux'
+elif [ "$osname" == "Darwin" ]; then
+	echo 'Configuring for OSX'
+	LDFLAGS=$LDFLAGS$LDFLAGSmac
+else
+	echo 'Configuring for unknown OS - Assumining Linux'
+fi
+
+mkdir -p $prefix
+
+# CREATE THE MAKEFILE
+echo prefix=$prefix >> Makefile
+echo build_dir=$build_dir >> Makefile
+echo CC=$CC >> Makefile
+echo CXX=$CXX >> Makefile
+echo CFLAGS=$CFLAGS >> Makefile
+echo CXXFLAGS=$CXXFLAGS >> Makefile
+echo LDFLAGS=$LDFLAGS >> Makefile
+echo '' >> Makefile
+echo EXECUTABLE=$build_dir'/bin/slap' >> Makefile
+
+cat Make.ini >> Makefile 
+
+echo '	install -c '$build_dir'/bin/* '$prefix'/bin' >> Makefile
+echo '	install -c -d '$build_dir'/share/SLSN/* '$prefix'/shareSLSN/* ' >> Makefile
+echo '	install -c -d '$build_dir'/share/absLines/* '$prefix'/shareabsLines/*' >> Makefile
+echo '	install -c -d '$build_dir'/share/filters/* '$prefix'/sharefilters/*' >> Makefile
+echo '	install -c -d '$build_dir'/share/scripts/* '$prefix'/sharescripts/*' >> Makefile
+
+# CREATE DEFINE.H
+echo '#define DATA "'$prefix'/share/slap/"' >> DEFINE.h
+echo '#define RESULTS "results"' >> DEFINE.h
+
+
+echo 'Done!'

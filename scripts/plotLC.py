@@ -201,7 +201,7 @@ class Canvas:
                     # idx = np.where(self.data.dataPlots[i].flt == f)
                     # self.ax2.errorbar(self.data.dataPlots[i].mjd[idx], self.data.dataPlots[i].flux[idx], yerr=self.data.dataPlots[i].error[idx], fmt='o', color=self.fltColour[f])
 
-        self.ax1.legend(loc=2, fontsize=20)
+        self.ax1.legend(loc=1, fontsize=20)
         self.ax1.set_ylabel("Flux ($erg$ $s^{-1} cm^{-2} \AA^{-1}$)",fontsize=20)
         self.ax1.set_ylim(-0.05*ymax, 1.12*ymax) 
         self.ax1.set_xlabel("Time (MJD)",fontsize=20)

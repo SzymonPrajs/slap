@@ -73,30 +73,30 @@ void dumper(int &nSamples, int &nlive, int &nPar, double **physLive, double **po
     // postdist will have nPar parameters in the first nPar columns & loglike value & the posterior probability in the last two columns
     int i, j;
     double postdist[nSamples][nPar + 2];
-    for( i = 0; i < nPar + 2; i++ )
-        for( j = 0; j < nSamples; j++ )
+    for (i = 0; i < nPar + 2; i++)
+        for (j = 0; j < nSamples; ++j)
             postdist[j][i] = posterior[0][i * nSamples + j];
     
     // last set of live points
     // pLivePts will have nPar parameters in the first nPar columns & loglike value in the last column  
     double pLivePts[nlive][nPar + 1];
-    for( i = 0; i < nPar + 1; i++ )
-        for( j = 0; j < nlive; j++ )
+    for (i = 0; i < nPar + 1; i++)
+        for (j = 0; j < nlive; j++)
             pLivePts[j][i] = physLive[0][i * nlive + j];
 }
 
 
 void createDirectory(shared_ptr<Workspace> &w) {
     string resultsDir = w->currentDir_;
-    resultsDir += "/results";
+    resultsDir += "/" + string(RESULTS);
     struct stat s;
-    if (stat(resultsDir.c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
+    if (stat(resultsDir.c_str(), &s) != 0) {
         mkdir(resultsDir.c_str(), 0755);
     }
 
     string dataDir = resultsDir;
-    dataDir += w->SNName_;
-    if (stat(dataDir.c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
+    dataDir += ("/" + w->SNName_);
+    if (stat(dataDir.c_str(), &s) != 0) {
         mkdir(dataDir.c_str(), 0755);
     }
 }
@@ -117,10 +117,10 @@ void runMultiNest(shared_ptr<Workspace> &w) {
     double Ztol = -1E20;            // all the modes with logZ < Ztol are ignored
     int maxModes = 100;             // expected max no. of modes (used only for memory allocation)
     int pWrap[ndims];               // which parameters to have periodic boundary conditions?
-    for(int i = 0; i < ndims; i++) {
+    for (int i = 0; i < ndims; i++) {
         pWrap[i] = 0;
     }
-    string root = "results/"+ w->SNName_ + "/nest-";
+    string root = string(RESULTS) + "/"+ w->SNName_ + "/nest-";
     int seed = -1;                  // random no. generator seed, if < 0 then take the seed from system clock
     int fb = 1;                     // need feedback on standard output?
     int resume = 0;                 // resume from a previous job?
@@ -139,7 +139,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
 
 
 void readFitParam(shared_ptr<Workspace> &w) {
-    string summaryPath = w->currentDir_ +  "/results/"+ w->SNName_ + "/nest-summary.txt";
+    string summaryPath = w->currentDir_ +  "/" + string(RESULTS) + "/"+ w->SNName_ + "/nest-summary.txt";
     int npar = w->snmodel_->noModelParams_ + 1;
     vector< vector<double> > summary = loadtxt<double>(summaryPath, npar * 4 + 2);
     vector<double> logLike = summary[npar * 4 + 1];

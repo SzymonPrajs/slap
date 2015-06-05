@@ -34,7 +34,7 @@
 #include <multinest.h>
 #include <chrono>
 #include <math.h>
-
+#include "../../DEFINE.h"
  
 using namespace std;
 

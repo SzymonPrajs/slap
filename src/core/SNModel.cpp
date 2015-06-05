@@ -43,7 +43,7 @@ SNModel::SNModel(shared_ptr<Filters> filters) {
 
 /* TODO: CHANGE SO THAT IT TAKES WAVELENGTH AS INPUT*/
 vector<double> SNModel::SED(double t, string f) {
-    calcSEDParams(t);
+    calcSEDParams(t * cosmology_->a_);
     int ID = filters_->filterID_.at(f);
     int absID = absorption_->absID_.at(absFile_);
     vector<double> sed(filters_->filters_[ID].restWavelength_.size(), 0);
@@ -57,7 +57,7 @@ vector<double> SNModel::SED(double t, string f) {
 }
 
 double SNModel::flux(double t, string f) {
-    calcSEDParams(t);
+    calcSEDParams(t * cosmology_->a_);
     int ID = filters_->filterID_.at(f);
     int absID = absorption_->absID_.at(absFile_);
     vector<double> sed(filters_->filters_[ID].restWavelength_.size(), 0);
@@ -74,5 +74,6 @@ double SNModel::flux(double t, string f) {
 
 double SNModel::mag(double t, string filterName) {
     int ID = filters_->filterID_.at(filterName);
+    cout << flux(t, filterName) << " " << filters_->filters_[ID].name_ << " " << filters_->filters_[ID].zp_ << endl;
     return -2.5 * log10(flux(t, filterName)) - filters_->filters_[ID].zp_;
 }

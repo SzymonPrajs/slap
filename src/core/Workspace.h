@@ -38,7 +38,7 @@
 #include "../models/MagnetarR.h"
 #include "../utils/utils.h"
 #include "../vmath/stat.h"
-
+#include "../../DEFINE.h"
 
 using namespace std;
 

@@ -111,7 +111,6 @@ double Filters::flux(const vector<double>& SED, const string& filterName) {
         int ID = filterID_.at(filterName);
         vector<double> filteredSED = mult<double>(SED, filters_[ID].bandpass_);
         double integFlux = trapz<double>(filteredSED, filters_[ID].wavelength_[1] - filters_[ID].wavelength_[0]);
-
         return integFlux / filters_[ID].area_;
     }
 }
