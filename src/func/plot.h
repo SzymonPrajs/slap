@@ -32,7 +32,7 @@
 #include "../core/SNModel.h"
 #include "../core/SNEvent.h"
 #include "../utils/utils.h"
-
+ 
 using namespace std;
 
 void addplot(shared_ptr<Workspace>&);

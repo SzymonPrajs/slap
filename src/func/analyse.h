@@ -29,7 +29,7 @@
 #include <string>
 #include "../core/Workspace.h"
 #include "../core/SNModel.h"
-
+#include "../../DEFINE.h"
 using namespace std;
 
 void maxMag(shared_ptr<Workspace>&);

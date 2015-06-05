@@ -78,7 +78,7 @@ void display(shared_ptr<Workspace> &w) {
     cout << endl;
 
     ofstream fitFile;
-    fitFile.open(w->currentDir_ +  "/results/"+ w->SNName_ + "/fit.txt");
+    fitFile.open(w->currentDir_ +  "/" + string(RESULTS) + "/"+ w->SNName_ + "/fit.txt");
 
     fitFile << w->SNName_ << " " << w->cosmology_->z_ << " " << w->MsdssU_ << " " << w->maxMJD_ << " " << (w->maxMJD_ - w->explosionMJD_) / (1 + w->cosmology_->z_) << " ";
     for (int i = 0 ; i < w->snmodel_->noModelParams_; ++i) {

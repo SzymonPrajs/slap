@@ -41,6 +41,10 @@ slap
 test
 plot
 results
+Makefile
+bin
+share
 
 # Script files
 *.sh
+DEFINE.h

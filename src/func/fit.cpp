@@ -88,7 +88,7 @@ void dumper(int &nSamples, int &nlive, int &nPar, double **physLive, double **po
 
 void createDirectory(shared_ptr<Workspace> &w) {
     string resultsDir = w->currentDir_;
-    resultsDir += "/results";
+    resultsDir += "/" + string(RESULTS);
     struct stat s;
     if (stat(resultsDir.c_str(), &s) != 0) {
         mkdir(resultsDir.c_str(), 0755);
@@ -120,7 +120,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
     for (int i = 0; i < ndims; i++) {
         pWrap[i] = 0;
     }
-    string root = "results/"+ w->SNName_ + "/nest-";
+    string root = string(RESULTS) + "/"+ w->SNName_ + "/nest-";
     int seed = -1;                  // random no. generator seed, if < 0 then take the seed from system clock
     int fb = 1;                     // need feedback on standard output?
     int resume = 0;                 // resume from a previous job?
@@ -139,7 +139,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
 
 
 void readFitParam(shared_ptr<Workspace> &w) {
-    string summaryPath = w->currentDir_ +  "/results/"+ w->SNName_ + "/nest-summary.txt";
+    string summaryPath = w->currentDir_ +  "/" + string(RESULTS) + "/"+ w->SNName_ + "/nest-summary.txt";
     int npar = w->snmodel_->noModelParams_ + 1;
     vector< vector<double> > summary = loadtxt<double>(summaryPath, npar * 4 + 2);
     vector<double> logLike = summary[npar * 4 + 1];
