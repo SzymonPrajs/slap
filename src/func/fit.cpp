@@ -90,13 +90,13 @@ void createDirectory(shared_ptr<Workspace> &w) {
     string resultsDir = w->currentDir_;
     resultsDir += "/results";
     struct stat s;
-    if (stat(resultsDir.c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
+    if (stat(resultsDir.c_str(), &s) != 0) {
         mkdir(resultsDir.c_str(), 0755);
     }
 
     string dataDir = resultsDir;
-    dataDir += w->SNName_;
-    if (stat(dataDir.c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
+    dataDir += ("/" + w->SNName_);
+    if (stat(dataDir.c_str(), &s) != 0) {
         mkdir(dataDir.c_str(), 0755);
     }
 }
