@@ -87,11 +87,15 @@ echo EXECUTABLE=$build_dir'/bin/slap' >> Makefile
 
 cat Make.ini >> Makefile 
 
-echo '	install -c '$build_dir'/bin/* '$prefix'/bin' >> Makefile
-echo '	install -c -d '$build_dir'/share/SLSN/* '$prefix'/shareSLSN/* ' >> Makefile
-echo '	install -c -d '$build_dir'/share/absLines/* '$prefix'/shareabsLines/*' >> Makefile
-echo '	install -c -d '$build_dir'/share/filters/* '$prefix'/sharefilters/*' >> Makefile
-echo '	install -c -d '$build_dir'/share/scripts/* '$prefix'/sharescripts/*' >> Makefile
+echo '	install '$build_dir'/bin/* '$prefix'/bin' >> Makefile
+echo '	install -d '$build_dir'/share/slap/SLSN '$prefix'/share/slap/SLSN' >> Makefile
+echo '	install -d '$build_dir'/share/slap/absLines '$prefix'/share/slap/absLines' >> Makefile
+echo '	install -d '$build_dir'/share/slap/filters '$prefix'/share/slap/filters' >> Makefile
+echo '	install -d '$build_dir'/share/slap/scripts '$prefix'/share/slap/scripts' >> Makefile
+echo '	install '$build_dir'/share/slap/SLSN/* '$prefix'/share/slap/SLSN' >> Makefile
+echo '	install '$build_dir'/share/slap/absLines/* '$prefix'/share/slap/absLines' >> Makefile
+echo '	install '$build_dir'/share/slap/filters/* '$prefix'/share/slap/filters' >> Makefile
+echo '	install '$build_dir'/share/slap/scripts/* '$prefix'/share/slap/scripts' >> Makefile
 
 # CREATE DEFINE.H
 echo '#define DATA "'$prefix'/share/slap/"' >> DEFINE.h
