@@ -79,7 +79,10 @@ void addplot(shared_ptr<Workspace> &w) {
 
 void makeplot(shared_ptr<Workspace> &w) {
     if (w->plotType_ == "model" || w->plotType_ == "data") {
-    	system("python /Users/szymon/Projects/slap/scripts/plotLC.py plot");
+        string command = "python ";
+        command += DATA;
+        command += "/scripts/plotLC.py plot";
+    	system(command.c_str());
     
     } else {
         cout << "This will be implemented soon!" << endl;

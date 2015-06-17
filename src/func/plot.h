@@ -32,6 +32,7 @@
 #include "../core/SNModel.h"
 #include "../core/SNEvent.h"
 #include "../utils/utils.h"
+#include "../../DEFINE.h"
  
 using namespace std;
 
