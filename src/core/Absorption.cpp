@@ -31,7 +31,7 @@ Absorption::Absorption(string path) : folderPath_(path) {
 
 
 void Absorption::readFolder() {
-    vector<string> list = dirlist(folderPath_);
+    vector<string> list = loadtxt<string>(folderPath_ + "/list.txt", 1)[0];
 
     vector<string> temp;
     for (int i = 0; i < list.size(); ++i) {

@@ -44,6 +44,7 @@ void Workspace::restoreDefault() {
     rawEndMJD_ = "LC";
     fitter_ = "multinest";
     rawSNName_ = "default";
+    absLines_ = "NoAbs";
     z_ = 0.23;
     t_ = 20;
 

@@ -61,6 +61,9 @@ if [ ! -d $build_dir/share ]; then
     cp -r scripts $build_dir/share/slap/scripts
 fi
 
+ls $build_dir/share/slap/filters/ > $build_dir/share/slap/filters/list.txt
+ls $build_dir/share/slap/absLines/ > $build_dir/share/slap/absLines/list.txt
+
 osname=$(uname)
 
 if [ "$osname" == "Linux" ]; then
