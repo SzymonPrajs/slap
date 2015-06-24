@@ -28,8 +28,8 @@ void addplot(shared_ptr<Workspace> &w) {
 	ofstream fhandle;
 
 	if (w->plotCount_ == 0) {
-        mkdir(w->plotDir_.c_str(), 0755);
-		fhandle.open(w->plotDir_ + "/info.dat");
+        mkdir((w->plotDir_ + w->SNName_).c_str(), 0755);
+		fhandle.open(w->plotDir_ + w->SNName_ + "/info.dat");
 		fhandle << "name=" << w->SNName_ << "\n";
 		fhandle << "z=" << w->z_ << "\n";
         fhandle << "fig=" << w->fig_ << "\n";
@@ -39,11 +39,11 @@ void addplot(shared_ptr<Workspace> &w) {
 		cout << "Something went wrong! Cannot create a temporary folder" << endl;
 	}
 
-    if (access((w->plotDir_ + "/info.dat").c_str(), R_OK) != -1) {
-		fhandle.open(w->plotDir_ + "/info.dat", ios::app);
+    if (access((w->plotDir_ + w->SNName_ + "/info.dat").c_str(), R_OK) != -1) {
+		fhandle.open(w->plotDir_ + w->SNName_ + "/info.dat", ios::app);
 		
 		if (w->plotType_ == "data") {
-			string dest = w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+			string dest = w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".dat";
 
 			if (access(w->LC_.c_str(), R_OK) != -1) {
 				copyFile(w->LC_, dest);
@@ -65,7 +65,7 @@ void addplot(shared_ptr<Workspace> &w) {
 		fhandle << w->plotCount_;
 		fhandle << " type=" + w->plotType_;
 		fhandle << " filters=" << joinStrings<string>(w->filterList_, ',');
-		fhandle << " file=" << w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat";
+		fhandle << " file=" << w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".dat";
 		fhandle << "\n";
 
 		fhandle.close();
@@ -81,7 +81,8 @@ void makeplot(shared_ptr<Workspace> &w) {
     if (w->plotType_ == "model" || w->plotType_ == "data") {
         string command = "python ";
         command += DATA;
-        command += "/scripts/plotLC.py plot";
+        command += "/scripts/plotLC.py ";
+        command += w->plotDir_ + w->SNName_;
     	system(command.c_str());
     
     } else {
@@ -93,8 +94,8 @@ void makeplot(shared_ptr<Workspace> &w) {
 void clearplot(shared_ptr<Workspace> &w) {
     /*TODO: This need to be done in a better way*/
     struct stat s;
-    if (stat(w->plotDir_.c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
-	   system(("rm -r " + w->plotDir_).c_str());
+    if (stat((w->plotDir_ + w->SNName_).c_str(), &s) == 0 && S_ISDIR(s.st_mode)) {
+	   system(("rm -r " + w->plotDir_ + w->SNName_).c_str());
     }
 	w->plotCount_ = 0;
 }
@@ -106,7 +107,7 @@ void plotModel(shared_ptr<Workspace> &w) {
     double t = 0;
 
 	ofstream plotFile;
-	plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
+	plotFile.open(w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
         for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 50; ++mjd) { 
@@ -127,7 +128,7 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
     double t = 0;
 
     ofstream plotFile;
-    plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
+    plotFile.open(w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
         t = mjd - w->explosionMJD_;
@@ -144,7 +145,7 @@ void plotSED(shared_ptr<Workspace> &w) {
     // double t, phase;
 
     // ofstream plotFile;
-    // plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".txt");
+    // plotFile.open(w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".txt");
 
     // vector<double> sed;
 
@@ -173,7 +174,7 @@ void plotResidual(shared_ptr<Workspace> &w) {
     double t = 0;
 
     ofstream plotFile;
-    plotFile.open(w->plotDir_ + "/" + to_string(w->plotCount_) + ".dat");
+    plotFile.open(w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int i = 0; i < w->snevent_->mjd_.size(); ++i) { 
         t = w->snevent_->mjd_[i] - w->explosionMJD_;
