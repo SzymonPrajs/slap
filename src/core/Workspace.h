@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2014-2016  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@
 #include "../models/Magnetar.h"
 #include "../models/MagnetarK.h"
 #include "../models/MagnetarR.h"
+#include "../models/MagnetarPiro.h"
+#include "../models/Piro.h"
 #include "../utils/utils.h"
 #include "../vmath/stat.h"
 #include "../../DEFINE.h"

@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2014-2016  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -120,6 +120,14 @@ void Workspace::updateModel() {
     } else if (model_ == "MagnetarR" || model_ == "magnetarR") {
         shared_ptr<MagnetarR> magnetarR(new MagnetarR(cosmology_, filters_, absorption_));
         snmodel_ = magnetarR;
+
+    } else if (model_ == "Piro" || model_ == "piro") {
+        shared_ptr<Piro> piro(new Piro(cosmology_, filters_, absorption_));
+        snmodel_ = piro;
+
+    } else if (model_ == "Magnetar+Piro" || model_ == "magnetar+piro" || model_ == "Piro+Magnetar"|| model_ == "piro+magnetar") {
+        shared_ptr<MagnetarPiro> magnetarpiro(new MagnetarPiro(cosmology_, filters_, absorption_));
+        snmodel_ = magnetarpiro;
 
     } else {
         cout << model_ << " is not a recognised model. Restoring default (Magnetar)" << endl;

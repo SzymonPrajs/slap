@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014-2016  Szymon Prajs
+ *Copyright (C) 2014-2015  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_MODEL_MAGNETAR_H_
-#define SLAP_MODEL_MAGNETAR_H_
+#ifndef SLAP_MODEL_PIRO_H_
+#define SLAP_MODEL_PIRO_H_
 
 #include <vector>
 #include <memory>
@@ -34,33 +34,35 @@
 using namespace std;
 using namespace vmath;
 
-class Magnetar : public SNModel {
+class Piro : public SNModel {
 /*
- * modelParam_ = {tauM, B, P}
+ * modelParam_ = {Re, Me, Mc}
  */
 private:
-    double tauP_;
-    double energyMagnetar_;
-    double energyKinetic_;
-    double energyRadiation_;
+    /* contants */
     double opacity_;
-    double ejectedMass_;
-    double velocityCore_;
-    double alpha_;
-    double Wang14_;
+    double energyKinetic_;
+
+    /* Piro derived variables */
+    double timescalePeak_;
+    double velocityExtended_;
+    double timescaleExtended_;
+    double energyExtended_;
 
 public:
-    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);
+    /* Constructor */
+    Piro(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);
 
+    /* SNModel virtual classes */
     void calcDerivedParams();
     double calcSED(double);
     void calcSEDParams(double);
+    void printDerivedVariables();
 
-    double lumMagnetar(double);
+    /* Piro model */
     double lumSN(double);
     double radius(double);
     double temperature(double);
-    void printDerivedVariables();
 };
 
 #endif

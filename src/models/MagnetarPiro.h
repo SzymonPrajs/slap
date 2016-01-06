@@ -19,8 +19,8 @@
  Contact author: S.Prajs@soton.ac.uk
  */
 
-#ifndef SLAP_MODEL_MAGNETAR_H_
-#define SLAP_MODEL_MAGNETAR_H_
+#ifndef SLAP_MODEL_MAGNETARPIRO_H_
+#define SLAP_MODEL_MAGNETARPIRO_H_
 
 #include <vector>
 #include <memory>
@@ -34,33 +34,46 @@
 using namespace std;
 using namespace vmath;
 
-class Magnetar : public SNModel {
+class MagnetarPiro : public SNModel {
 /*
- * modelParam_ = {tauM, B, P}
+ * modelParam_ = {Re, Me, Mc, B, P}
  */
 private:
+    /* contants */
+    double opacity_;
+    double energyKinetic_;
     double tauP_;
     double energyMagnetar_;
-    double energyKinetic_;
     double energyRadiation_;
-    double opacity_;
-    double ejectedMass_;
+    double energySN_;
+    double tauM_;
     double velocityCore_;
     double alpha_;
     double Wang14_;
 
-public:
-    Magnetar(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);
+    /* Piro derived variables */
+    double timescalePeak_;
+    double velocityExtended_;
+    double timescaleExtended_;
+    double energyExtended_;
 
+public:
+    /* Constructor */
+    MagnetarPiro(shared_ptr<Cosmology> cosmology, shared_ptr<Filters>, shared_ptr<Absorption>);
+
+    /* SNModel virtual classes */
     void calcDerivedParams();
     double calcSED(double);
     void calcSEDParams(double);
+    void printDerivedVariables();
 
-    double lumMagnetar(double);
+    /* Piro model */
+    double lumMag(double);
+    double lumPiro(double);
     double lumSN(double);
+    double lumMagnetar(double);
     double radius(double);
     double temperature(double);
-    void printDerivedVariables();
 };
 
 #endif

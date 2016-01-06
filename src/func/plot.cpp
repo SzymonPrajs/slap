@@ -110,7 +110,7 @@ void plotModel(shared_ptr<Workspace> &w) {
 	plotFile.open(w->plotDir_ + w->SNName_ + "/" + to_string(w->plotCount_) + ".dat");
 
     for (int j = 0; j < w->filterList_.size(); ++j) {
-        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 50; ++mjd) { 
+        for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 100; ++mjd) { 
             t = mjd - w->explosionMJD_;
 
             plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << "\n";
@@ -138,6 +138,20 @@ void plotSEDParam(shared_ptr<Workspace> &w) {
 
     plotFile.close();
 }
+
+
+void printSEDParam(shared_ptr<Workspace> &w) {
+    w->snmodel_->modelParams_ = w->params_;
+    w->snmodel_->calcDerivedParams(); 
+
+    double t = 0;
+    for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_; ++mjd) { 
+        t = mjd - w->explosionMJD_;
+        w->snmodel_->calcSEDParams(t);
+        cout << mjd << " " << (mjd-w->maxMJD_) / (1 + w->cosmology_->z_) << " " << w->snmodel_->SEDParams_[0] << " " << w->snmodel_->SEDParams_[1] << "\n";
+    }
+}
+
 
 void plotSED(shared_ptr<Workspace> &w) {
     // w->snmodel_->modelParams_ = w->params_;
