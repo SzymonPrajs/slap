@@ -74,6 +74,5 @@ double SNModel::flux(double t, string f) {
 
 double SNModel::mag(double t, string filterName) {
     int ID = filters_->filterID_.at(filterName);
-    cout << flux(t, filterName) << " " << filters_->filters_[ID].name_ << " " << filters_->filters_[ID].zp_ << endl;
     return -2.5 * log10(flux(t, filterName)) - filters_->filters_[ID].zp_;
 }

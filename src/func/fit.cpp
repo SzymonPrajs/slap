@@ -60,7 +60,7 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
         chi2 += powf(residual, 2.0);
     }
 
-    lnew = -2.0 * chi2;
+    lnew = -0.5 * chi2;
     delete[] p;
 }
 

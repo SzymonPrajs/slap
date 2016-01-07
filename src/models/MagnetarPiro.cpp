@@ -27,11 +27,11 @@ using namespace vmath;
 
 MagnetarPiro::MagnetarPiro(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters, shared_ptr<Absorption> absorption) : SNModel(cosmology, filters, absorption) {
     noSEDParams_ = 2;
-    noModelParams_ = 6;
-    defaultParams_ = {2e13, 3.0, 10.0, 3.0, 1.4, 6e51};
-    lParams_ = {1e12, 0.1, 1, 0.1, 0.1, 1e51};
-    uParams_ = {5e14, 10.0, 100, 20, 20, 5e52};
-    paramNames_ = {"Re", "Me", "Mc", "B", "P", "Ek"};
+    noModelParams_ = 7;
+    defaultParams_ = {2e13, 3.0, 10.0, 3.0, 1.4, 10, 1e51};
+    lParams_ = {1e12, 0.1, 1, 0.1, 0.1, 1.0, 5e50};
+    uParams_ = {5e14, 10.0, 100, 20, 20, 20, 1e52};
+    paramNames_ = {"Re", "Me", "Mc", "B", "P", "dt", "E"};
 
     modelParams_.resize(noModelParams_);
     SEDParams_.resize(noSEDParams_);
@@ -44,7 +44,7 @@ void MagnetarPiro::calcDerivedParams() {
     /* Constant quantities */
     opacity_ = 0.1;
     energyRadiation_ = 0;
-    energySN_ = 1e51;
+    energySN_ = modelParams_[6];
     alpha_ = 10;
 
     /* Magnetar spin down timescale */
@@ -54,13 +54,13 @@ void MagnetarPiro::calcDerivedParams() {
     energyMagnetar_ = 4.9e46 * pow(modelParams_[3], 2.0) * pow(modelParams_[4], -4.0) * tauP_ * 86400;
     
     /* Kinetic energy of the system */
-    energyKinetic_ = modelParams_[5] + 0.5 * (energyMagnetar_ - energyRadiation_);
+    energyKinetic_ = energySN_ + 0.5 * (energyMagnetar_ - energyRadiation_);
 
     /* Piro derived parameters */
-    velocityExtended_ = 2.0e9 * pow(modelParams_[5] / 1e51, 0.5) * pow(modelParams_[2], -0.35) * pow (modelParams_[1] / 0.01, -0.15); 
+    velocityExtended_ = 2.0e9 * pow(energySN_ / 1e51, 0.5) * pow(modelParams_[2], -0.35) * pow (modelParams_[1] / 0.01, -0.15); 
     timescaleExtended_ = modelParams_[0] / velocityExtended_;
-    timescalePeak_ = (0.9 * pow(opacity_ / 0.34,0.5) * pow(modelParams_[5] / 1e51,0.25) * pow(modelParams_[2],0.17) * pow(modelParams_[1] / 0.01,0.57)) * 86400;
-    energyExtended_ = 4e49 * (modelParams_[5] / 1e51) * pow(modelParams_[2],-0.7) * pow(modelParams_[1] / 0.01,0.7); 
+    timescalePeak_ = (0.9 * pow(opacity_ / 0.34,0.5) * pow(energySN_ / 1e51,0.25) * pow(modelParams_[2],0.17) * pow(modelParams_[1] / 0.01,0.57)) * 86400;
+    energyExtended_ = 4e49 * (energySN_ / 1e51) * pow(modelParams_[2],-0.7) * pow(modelParams_[1] / 0.01,0.7); 
 
     /* Diffusion timecale */
     tauM_ = pow(modelParams_[2] * pow(energyKinetic_ / 1.0e51, -1.0 / 3.0) * pow(opacity_ / 0.1, 2.0 / 3.0), 3.0 / 4.0) * 10;
@@ -110,7 +110,7 @@ double MagnetarPiro::lumMag(double t) {
     F.function = &integralLumMag;
     F.params = &par;
 
-    if (t > 200) {
+    if (t > 200 || t <= 0) {
         return 0;
     }
 
@@ -129,7 +129,7 @@ double MagnetarPiro::lumPiro(double t) {
 
 
 double MagnetarPiro::lumSN(double t) {
-    return lumMag(t) + lumPiro(t);
+    return lumMag(t-modelParams_[5]) + lumPiro(t);
 }
 
 double MagnetarPiro::temperature(double t) {
@@ -139,15 +139,21 @@ double MagnetarPiro::temperature(double t) {
 double MagnetarPiro::radius(double t) {
     double radPiro = modelParams_[0] + velocityExtended_ * t * 86400;
 
-    double radiusCore = velocityCore_ * t;
-    double rhoCore = 3 * modelParams_[2] * 2e33 / (4 * M_PI * pow(velocityCore_ * t, 3));
-    double tauCore = opacity_ * rhoCore * velocityCore_ * t;
+    double rad19 = 0; 
+    double rad20 = 0; 
+    double radiusCore = 0;
 
-    double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
-    double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
+    if ((t-modelParams_[5]) > 0) {
+        radiusCore = velocityCore_ * (t-modelParams_[5]);
+        double rhoCore = 3 * modelParams_[2] * 2e33 / (4 * M_PI * pow(velocityCore_ * (t-modelParams_[5]), 3));
+        double tauCore = opacity_ * rhoCore * velocityCore_ * (t-modelParams_[5]);
+
+        double rad19 = radiusCore * pow((alpha_ - 1) / tauCore, 1 / (1 - alpha_)); 
+        double rad20 = radiusCore - (1 - tauCore / (alpha_ - 1)) / (opacity_ * rhoCore); 
+    }
 
     if (radPiro > rad19) {
-        return rad19;
+        return radPiro;
     } else if (radPiro < rad19 && rad19 > radiusCore) {
         return rad19;
     } else if (rad20 > 0) {
