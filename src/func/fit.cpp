@@ -106,7 +106,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
      // set the MultiNest sampling parameters
     int IS = 0;                     // do Nested Importance Sampling?
     int mmodal = 1;                 // do mode separation?
-    int ceff = 1;                   // run in constant efficiency mode?
+    int ceff = 0;                   // run in constant efficiency mode?
     int nlive = 100 * (w->snmodel_->noModelParams_ + 1);          // number of live points
     double efr = 0.8;               // set the required efficiency
     double tol = 0.5;               // tol, defines the stopping criteria

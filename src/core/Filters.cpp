@@ -68,6 +68,19 @@ void Filters::loadFilter(int ID) {
 
     filter.area_ = trapz<double>(data[1], data[0][1] - data[0][0]);
     filter.zp_ = -2.5 * log10(fluxZp / filter.area_);
+    filter.centralWavelength_ = trapz<double>(mult<double>(data[1], data[0]), data[0][1] - data[0][0]) / filter.area_;
+
+    filter.min_ = -1;
+    filter.max_ = -1;
+    for (int i = 1; i < (filter.bandpass_.size() - 1); i++) {
+        if (filter.bandpass_[i] != 0 and filter.min_ == -1) {
+            filter.min_ = filter.wavelength_[i-1];
+        }
+        if (filter.bandpass_[filter.bandpass_.size() - 1 - i] != 0 and filter.max_ == -1) {
+            filter.max_ = filter.wavelength_[filter.bandpass_.size() - i];
+        }
+        if (filter.min_ != -1 && filter.max_ != -1) break;
+    }
 
     filters_.push_back(filter);
 }

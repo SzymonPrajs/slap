@@ -121,6 +121,10 @@ void Workspace::updateModel() {
         shared_ptr<MagnetarR> magnetarR(new MagnetarR(cosmology_, filters_, absorption_));
         snmodel_ = magnetarR;
 
+    } else if (model_ == "MagnetarE" || model_ == "magnetarE") {
+        shared_ptr<MagnetarE> magnetarE(new MagnetarE(cosmology_, filters_, absorption_));
+        snmodel_ = magnetarE;
+
     } else if (model_ == "Piro" || model_ == "piro") {
         shared_ptr<Piro> piro(new Piro(cosmology_, filters_, absorption_));
         snmodel_ = piro;

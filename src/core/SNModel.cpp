@@ -25,6 +25,33 @@ using namespace std;
 using namespace vmath;
 
 
+vector<double> SMCExtinction(vector<double> wavelength, double Rv, double A) {
+    vector<double> x(wavelength.size(), 1.0e4);
+    x = div(x, wavelength);
+    double C1 = -4.959;
+    double C2 = 2.264;
+    double C3 = 0.389;
+    double C4 = 0.461;
+    double x0 = 4.6;
+    double g = 1.0;
+
+    vector<double> D(x.size());
+    for (int i = 0; i < x.size(); i++) {
+        D[i] = x[i]*x[i]*pow(pow(x[i]*x[i] - x0*x0, 2) + x[i]*x[i]*g*g, -2);
+        D[i] = C1+C2*x[i]+C3*D[i];
+
+        if ( x[i] >= 5.9) {
+            D[i] += C4 * (0.5392 * pow((x[i]-5.9),2) + 0.05644*pow((x[i]-5.9),3));
+        }
+
+        D[i] += Rv;
+        D[i] *= A;
+        D[i] = pow(10.0, D[i]/2.5);
+    }
+
+    return D;
+}
+
 SNModel::SNModel(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filters, shared_ptr<Absorption> absorption) {
     cosmology_ = cosmology;
     filters_ = filters;

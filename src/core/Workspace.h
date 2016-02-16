@@ -36,6 +36,7 @@
 #include "../models/Magnetar.h"
 #include "../models/MagnetarK.h"
 #include "../models/MagnetarR.h"
+#include "../models/MagnetarE.h"
 #include "../models/MagnetarPiro.h"
 #include "../models/Piro.h"
 #include "../utils/utils.h"
