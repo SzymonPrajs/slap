@@ -67,8 +67,8 @@ public:
     virtual void printDerivedVariables() {};
     
     vector<double> SED(double, string); 
-    double flux(double, string);
-    double mag(double, string);
+    double flux(double, string, double EBmV=0.0, double Rv=3.0);
+    double mag(double, string, double EBmV=0.0, double Rv=3.0);
 };
 
 #endif

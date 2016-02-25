@@ -33,10 +33,15 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
     class SNEvent *sn = (struct SNEvent *) context;
 
     double * p = new double[npars];
-    for (int i = 0; i < (npars-1); ++i) {
+    for (int i = 0; i < (npars-2); ++i) {
         p[i] = flatPrior(cube[i], sn->snmodel_->lParams_[i], sn->snmodel_->uParams_[i]);
         cube[i] = p[i];
     }
+    /*EBmV*/
+    p[npars-2] = flatPrior(cube[npars-2], 0.001, 0.2);
+    cube[npars-2] = p[npars-2];
+
+    /*Explosion MJD*/
     p[npars-1] = flatPrior(cube[npars-1], sn->mjd_.front() - 50.0, sn->mjd_.back());
     cube[npars-1] = p[npars-1];
 
@@ -44,15 +49,16 @@ void LogLike(double *cube, int &ndim, int &npars, double &lnew, void *context) {
     double chi2 = 0;
     double residual;
     sn->explosionMJD_ = p[npars-1];
-    for (int i = 0; i < npars-1; ++i) {
+    for (int i = 0; i < npars-2; ++i) {
         sn->snmodel_->modelParams_[i] = p[i];
     }
+
 
     sn->snmodel_->calcDerivedParams();
     for (int i = 0; i < sn->mjd_.size(); ++i) {
         if (sn->mjd_[i] >= sn->explosionMJD_) {
             t = sn->mjd_[i] - sn->explosionMJD_;
-            residual = (sn->flux_[i] - sn->snmodel_->flux(t, sn->filter_[i])) / sn->fluxErr_[i];
+            residual = (sn->flux_[i] - sn->snmodel_->flux(t, sn->filter_[i], p[npars-2])) / sn->fluxErr_[i];
             
         } else {
             residual = sn->flux_[i] / sn->fluxErr_[i];
@@ -107,12 +113,12 @@ void runMultiNest(shared_ptr<Workspace> &w) {
     int IS = 0;                     // do Nested Importance Sampling?
     int mmodal = 1;                 // do mode separation?
     int ceff = 0;                   // run in constant efficiency mode?
-    int nlive = 100 * (w->snmodel_->noModelParams_ + 1);          // number of live points
+    int nlive = 100 * (w->snmodel_->noModelParams_ + 2);          // number of live points
     double efr = 0.8;               // set the required efficiency
     double tol = 0.5;               // tol, defines the stopping criteria
-    int ndims = w->snmodel_->noModelParams_ + 1;                  // dimensionality (no. of free parameters)
-    int nPar = w->snmodel_->noModelParams_ + 1;                   // total no. of parameters including free & derived parameters
-    int nClsPar = w->snmodel_->noModelParams_ + 1;                // no. of parameters to do mode separation on
+    int ndims = w->snmodel_->noModelParams_ + 2;                  // dimensionality (no. of free parameters)
+    int nPar = w->snmodel_->noModelParams_ + 2;                   // total no. of parameters including free & derived parameters
+    int nClsPar = w->snmodel_->noModelParams_ + 2;                // no. of parameters to do mode separation on
     int updInt = 100;               // after how many iterations feedback is required & the output files should be updated  
     double Ztol = -1E20;            // all the modes with logZ < Ztol are ignored
     int maxModes = 100;             // expected max no. of modes (used only for memory allocation)
@@ -140,7 +146,7 @@ void runMultiNest(shared_ptr<Workspace> &w) {
 
 void readFitParam(shared_ptr<Workspace> &w) {
     string summaryPath = w->currentDir_ +  "/" + string(RESULTS) + "/"+ w->SNName_ + "/nest-summary.txt";
-    int npar = w->snmodel_->noModelParams_ + 1;
+    int npar = w->snmodel_->noModelParams_ + 2;
     vector< vector<double> > summary = loadtxt<double>(summaryPath, npar * 4 + 2);
     vector<double> logLike = summary[npar * 4 + 1];
     int indexMax = distance(logLike.begin(), max_element(logLike.begin()+1, logLike.end()));
@@ -151,9 +157,12 @@ void readFitParam(shared_ptr<Workspace> &w) {
         param[i] = summary[2*npar + i][indexMax];
         error[i] = summary[npar + i][indexMax];
     }  
-
     w->fitExplosionMJD_ = param.back();
     w->fitExplosionMJDError_ = error.back();
+    param.pop_back();
+    error.pop_back();
+    w->fitEBmV_ = param.back();
+    w->fitEBmVError_ = error.back();
     param.pop_back();
     error.pop_back();
     w->fitParam_ = param;

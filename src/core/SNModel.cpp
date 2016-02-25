@@ -25,7 +25,7 @@ using namespace std;
 using namespace vmath;
 
 
-vector<double> SMCExtinction(vector<double> wavelength, double Rv, double A) {
+vector<double> SMCExtinctionF(vector<double> wavelength, double Rv) {
     vector<double> x(wavelength.size(), 1.0e4);
     x = div(x, wavelength);
     double C1 = -4.959;
@@ -45,8 +45,27 @@ vector<double> SMCExtinction(vector<double> wavelength, double Rv, double A) {
         }
 
         D[i] += Rv;
+    }
+
+    return D;
+}
+
+vector<double> SMCExtinction(shared_ptr<Filters> filters, vector<double> wavelength, double EBmV, double Rv) {
+    int ID = filters->filterID_.at("V");
+    vector<double> ext = SMCExtinctionF(filters->filters_[ID].restWavelength_, Rv);
+    for (int i = 0; i < ext.size(); i++) {
+        ext[i] = pow(10.0, ext[i] / 2.5);
+    }
+    double Av = -2.5 * log10(filters->flux(ext, "V"));
+    double A = Rv * EBmV / Av;
+    vector<double> D(wavelength.size(), 0);
+    if (EBmV != 0) {
+        vector<double> D = SMCExtinctionF(wavelength, Rv);
+    }
+
+    for (int i = 0; i < D.size(); i++) {
         D[i] *= A;
-        D[i] = pow(10.0, D[i]/2.5);
+        D[i] = pow(10.0, D[i] / 2.5);
     }
 
     return D;
@@ -83,23 +102,25 @@ vector<double> SNModel::SED(double t, string f) {
     return sed;
 }
 
-double SNModel::flux(double t, string f) {
+double SNModel::flux(double t, string f, double EBmV, double Rv) {
     calcSEDParams(t * cosmology_->a_);
     int ID = filters_->filterID_.at(f);
     int absID = absorption_->absID_.at(absFile_);
     vector<double> sed(filters_->filters_[ID].restWavelength_.size(), 0);
+    vector<double> extinction = SMCExtinction(filters_, filters_->filters_[ID].restWavelength_, Rv, EBmV);
 
     for(int i = 0; i < filters_->filters_[ID].restWavelength_.size(); ++i) {
         sed[i] = calcSED(filters_->filters_[ID].restWavelength_[i]);
         sed[i] *= cosmology_->a_ / (4 * M_PI * pow(cosmology_->lumDisCGS_, 2));
         sed[i] *= absorption_->abs_[absID].filter_[ID].bandpass_[i];
+        sed[i] *= extinction[i];
     }
 
     return filters_->flux(sed, f);
 }
 
 
-double SNModel::mag(double t, string filterName) {
+double SNModel::mag(double t, string filterName, double Rv, double EBmV) {
     int ID = filters_->filterID_.at(filterName);
-    return -2.5 * log10(flux(t, filterName)) - filters_->filters_[ID].zp_;
+    return -2.5 * log10(flux(t, filterName, Rv, EBmV)) - filters_->filters_[ID].zp_;
 }

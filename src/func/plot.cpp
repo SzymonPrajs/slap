@@ -113,10 +113,9 @@ void plotModel(shared_ptr<Workspace> &w) {
         for (double mjd = w->explosionMJD_ + 1; mjd < w->endMJD_ + 100; ++mjd) { 
             t = mjd - w->explosionMJD_;
 
-            plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j]) << " " << w->filterList_[j] << "\n";
+            plotFile << mjd << " " << w->snmodel_->flux(t, w->filterList_[j], w->fitEBmV_) << " " << w->filterList_[j] << "\n";
         }
     }
-
     plotFile.close();
 }
 
@@ -194,7 +193,7 @@ void plotResidual(shared_ptr<Workspace> &w) {
         t = w->snevent_->mjd_[i] - w->explosionMJD_;
         w->snmodel_->calcSEDParams(t);
 
-        plotFile << w->snevent_->mjd_[i] << " " << w->snmodel_->flux(t, w->snevent_->filter_[i]) - w->snevent_->flux_[i] << " " << w->snevent_->fluxErr_[i] << " " << w->snevent_->filter_[i] << "\n";
+        plotFile << w->snevent_->mjd_[i] << " " << w->snmodel_->flux(t, w->snevent_->filter_[i], w->fitEBmV_) - w->snevent_->flux_[i] << " " << w->snevent_->fluxErr_[i] << " " << w->snevent_->filter_[i] << "\n";
     }
 
     plotFile.close();

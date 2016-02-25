@@ -29,7 +29,7 @@ MagnetarE::MagnetarE(shared_ptr<Cosmology> cosmology, shared_ptr<Filters> filter
     noSEDParams_ = 2;
     noModelParams_ = 4;
     defaultParams_ = {32.0, 3.0, 1.4, 1e51};
-    lParams_ = {10, 0.1, 0.1, 5e49};
+    lParams_ = {10, 0.1, 1, 1e50};
     uParams_ = {100, 20, 20, 2e52};
     paramNames_ = {"tauM", "B", "P", "Ek"};
 

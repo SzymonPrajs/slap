@@ -56,6 +56,7 @@ void Workspace::restoreDefault() {
     fig_ = "save";
     plotCount_ = 0;
     rawFitRedo_ = "True";
+    rawReddening_ = "False";
 
     /*Default behaviour*/
     currentFunction_ = "quit";
@@ -69,6 +70,8 @@ void Workspace::restoreDefault() {
     fitParamError_ = {};
     fitExplosionMJD_ = -1;
     fitExplosionMJDError_ = -1;
+    fitEBmV_ = 0.0;
+    fitEBmVError_ = 0.0;
 }
 
 
@@ -275,6 +278,28 @@ void Workspace::updateRedo_() {
     } 
 }
 
+void Workspace::updateReddening_() {
+    if (rawReddening_ == "previous") {
+        /*retain previous parameters with no changes*/
+    
+    } else if (rawReddening_ == "default") {
+        Reddening_ = false;
+        rawReddening_ = "previous";
+
+    } else if (rawReddening_ == "True" || rawReddening_ == "true") {
+        Reddening_ = true;
+        rawReddening_ = "previous";
+
+    } else if (rawReddening_ == "False" || rawReddening_ == "false") {
+        Reddening_ = false;
+        rawReddening_ = "previous";
+
+    } else {
+        Reddening_ = false;
+        rawReddening_ = "previous";
+    } 
+}
+
 
 void Workspace::update() { 
     updatePaths();
@@ -289,6 +314,7 @@ void Workspace::update() {
     updateRawFilters();
     updateSNName();
     updateRedo_();
+    updateReddening_();
 
     /*TODO: Make this part of Absorption*/
     snmodel_->absFile_ = absLines_;

@@ -63,6 +63,8 @@ public:
     double fitChi_;
     double fitRedChi_;
     double MsdssU_;
+    double fitEBmV_;
+    double fitEBmVError_;
     vector<double> params_;
     vector<double> fitParam_;
     vector<double> fitParamError_;
@@ -101,13 +103,14 @@ public:
     bool updateParam_;
     bool updateEvent_;
     bool fitRedo_;
+    bool Reddening_;
     int plotCount_;
     string currentFunction_;
     string plotType_;
     string fig_;
     string fitter_;
     string rawFitRedo_;
-
+    string rawReddening_;
 
     /*Function list*/
     map<string,int> functionList_ = {{"interactive", 0}, 
@@ -147,6 +150,7 @@ public:
     void updateRawFilters();
     void updateSNName();
     void updateRedo_();
+    void updateReddening_();
 
     /*Perform a full update*/
     void update();
