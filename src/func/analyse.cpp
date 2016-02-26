@@ -85,6 +85,7 @@ void display(shared_ptr<Workspace> &w) {
         fitFile << w->fitParam_[i] << " " << w->fitParamError_[i] << " ";
     }
     fitFile << w->fitExplosionMJD_ << " " << w->fitExplosionMJDError_ << " ";
+    fitFile << w->fitEBmV_ << " " << w->fitEBmVError_ << " ";
     fitFile << w->fitChi_ << " " << w->fitRedChi_ << "\n";
 
     fitFile.close();
