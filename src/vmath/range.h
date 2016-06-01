@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2014-2016  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  *You should have received a copy of the GNU General Public License along
  *with this program; if not, write to the Free Software Foundation, Inc.,
- *51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. 
+ *51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  Contact author: S.Prajs@soton.ac.uk
  */
@@ -39,7 +39,7 @@ void range(T start, T end, T step, vector<T> &res) {
     for (T i = start; i < end; i+=step) {
         res.push_back(i);
     }
-} 
+}
 
 
 template <typename T>
@@ -47,7 +47,7 @@ vector<T> range(T start, T end, T step) {
     vector<T> res;
     range<T>(start, end, step, res) ;
     return res;
-} 
+}
 
 
 } // NAMESPACE vmath

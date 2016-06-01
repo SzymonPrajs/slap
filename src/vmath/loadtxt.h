@@ -1,6 +1,6 @@
 /*SLAP - Supernova Lightcurve Analysis Package
  *
- *Copyright (C) 2014  Szymon Prajs
+ *Copyright (C) 2014-2016  Szymon Prajs
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  *You should have received a copy of the GNU General Public License along
  *with this program; if not, write to the Free Software Foundation, Inc.,
- *51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA. 
+ *51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
  Contact author: S.Prajs@soton.ac.uk
  */
@@ -45,7 +45,7 @@ void loadtxt(const string &fileName, int l, vector< vector<T> > &data) {
     string s;
 
     while (getline(file, s)) {
-        istringstream iss(s); 
+        istringstream iss(s);
 
         for (int i = 0; i < l; ++i) {
             iss >> temp;
